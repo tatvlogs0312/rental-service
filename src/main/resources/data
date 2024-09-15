@@ -1,13 +1,13 @@
-insert into utility(id, name) VALUES (gen_random_uuid(), 'Điện');
-insert into utility(id, name) VALUES (gen_random_uuid(), 'Nước');
-insert into utility(id, name) VALUES (gen_random_uuid(), 'Mạng');
-insert into utility(id, name) VALUES (gen_random_uuid(), 'Gửi xe');
-insert into utility(id, name) VALUES (gen_random_uuid(), 'Giặt là');
-insert into utility(id, name) VALUES (gen_random_uuid(), 'Rác');
-insert into utility(id, name) VALUES (gen_random_uuid(), 'Vệ sinh');
-insert into utility(id, name) VALUES (gen_random_uuid(), 'Thang máy');
-insert into utility(id, name) VALUES (gen_random_uuid(), 'Nóng lạnh');
-insert into utility(id, name) VALUES (gen_random_uuid(), 'Khác');
+INSERT INTO public.utility (id, name) VALUES ('d0dd23ed-ea8a-4d2a-a4a8-0acb0374d656', 'Điện');
+INSERT INTO public.utility (id, name) VALUES ('3c5f7ef2-63c4-495f-a680-eac6c4365c57', 'Nước');
+INSERT INTO public.utility (id, name) VALUES ('261e8edf-5ba0-4419-93e9-7ca6d7ecf543', 'Mạng');
+INSERT INTO public.utility (id, name) VALUES ('2cd3e21e-7277-48d1-9b5b-35cd35a5a7b4', 'Gửi xe');
+INSERT INTO public.utility (id, name) VALUES ('4476da6f-081c-446b-b20d-575da8d62147', 'Giặt là');
+INSERT INTO public.utility (id, name) VALUES ('02dbdd1d-23ab-41ef-81e5-66fe220b3a3b', 'Rác');
+INSERT INTO public.utility (id, name) VALUES ('9fa69f47-3c9c-4beb-bf10-b5c93dd2324b', 'Vệ sinh');
+INSERT INTO public.utility (id, name) VALUES ('c6ee8183-5c44-4e69-aa80-b1d0292cbc74', 'Thang máy');
+INSERT INTO public.utility (id, name) VALUES ('cfd70b5f-cac4-4502-98bb-6e271016e7a5', 'Nóng lạnh');
+INSERT INTO public.utility (id, name) VALUES ('53a089b2-5d40-4735-b8ed-c8e6760ab57c', 'Khác');
 
 INSERT INTO public.room_type (id, name, code) VALUES ('052f5a0a-442a-4ce0-8058-c73db36bd639', 'Chung cư mini', 'MDP');
 INSERT INTO public.room_type (id, name, code) VALUES ('ea2585f1-fc32-46d4-a9cf-83fb80e9788d', 'Studio', 'STU');
