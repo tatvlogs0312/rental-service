@@ -1,0 +1,17 @@
+insert into utility(id, name) VALUES (gen_random_uuid(), 'Điện');
+insert into utility(id, name) VALUES (gen_random_uuid(), 'Nước');
+insert into utility(id, name) VALUES (gen_random_uuid(), 'Mạng');
+insert into utility(id, name) VALUES (gen_random_uuid(), 'Gửi xe');
+insert into utility(id, name) VALUES (gen_random_uuid(), 'Giặt là');
+insert into utility(id, name) VALUES (gen_random_uuid(), 'Rác');
+insert into utility(id, name) VALUES (gen_random_uuid(), 'Vệ sinh');
+insert into utility(id, name) VALUES (gen_random_uuid(), 'Thang máy');
+insert into utility(id, name) VALUES (gen_random_uuid(), 'Nóng lạnh');
+insert into utility(id, name) VALUES (gen_random_uuid(), 'Khác');
+
+INSERT INTO public.room_type (id, name, code) VALUES ('052f5a0a-442a-4ce0-8058-c73db36bd639', 'Chung cư mini', 'MDP');
+INSERT INTO public.room_type (id, name, code) VALUES ('ea2585f1-fc32-46d4-a9cf-83fb80e9788d', 'Studio', 'STU');
+INSERT INTO public.room_type (id, name, code) VALUES ('451122e0-c4ef-402f-9a49-7c591104cc2d', 'Chung cư', 'DP');
+INSERT INTO public.room_type (id, name, code) VALUES ('e74c4ab0-c82b-4b8e-beed-e203bc692942', 'Khác', 'OT');
+INSERT INTO public.room_type (id, name, code) VALUES ('2a3addb6-8d91-41a4-ac39-840156f9b9ca', 'Phòng trọ', 'MO');
+INSERT INTO public.room_type (id, name, code) VALUES ('32065838-d798-46bd-a26d-40a6d9d9dabf', 'Ký túc xá', 'DOR');
