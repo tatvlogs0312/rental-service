@@ -4,9 +4,14 @@ import com.example.rentalservice.common.JwtUtils;
 import com.example.rentalservice.entity.*;
 import com.example.rentalservice.enums.RoomStatusEnum;
 import com.example.rentalservice.exception.ApplicationException;
+import com.example.rentalservice.mapper.Mapper;
 import com.example.rentalservice.model.room.RoomReqDTO;
 import com.example.rentalservice.model.room.RoomUploadReqDTO;
 import com.example.rentalservice.model.room.RoomUtilityReqDTO;
+import com.example.rentalservice.model.room.search.IRoomData;
+import com.example.rentalservice.model.room.search.RoomDataDTO;
+import com.example.rentalservice.model.room.search.RoomSearchReqDTO;
+import com.example.rentalservice.model.search.PagingResponse;
 import com.example.rentalservice.model.user_profile.UserPaperResDTO;
 import com.example.rentalservice.proxy.StorageServiceProxy;
 import com.example.rentalservice.repository.RoomImageRepository;
@@ -16,10 +21,16 @@ import com.example.rentalservice.repository.RoomUtilityRepository;
 import com.example.rentalservice.service.DataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +43,7 @@ public class RoomService {
     private final RoomImageRepository roomImageRepository;
     private final StorageServiceProxy storageServiceProxy;
     private final DataService dataService;
+    private final Mapper mapper;
 
 
     //Tạo mới thông tin phòng
@@ -75,6 +87,40 @@ public class RoomService {
         room.setPrice(req.getPrice());
 
         roomRepository.save(room);
+    }
+
+
+    //Tìm phòng
+    public PagingResponse<RoomDataDTO> searchRoom(RoomSearchReqDTO req) {
+        PagingResponse<RoomDataDTO> response = new PagingResponse<>();
+
+        Pageable pageable = PageRequest.of(req.getPage(), req.getSize());
+        if (StringUtils.isBlank(req.getStatus())) {
+            req.setStatus(null);
+        }
+        if (StringUtils.isBlank(req.getRoomTypeId())) {
+            req.setRoomTypeId(null);
+        }
+        if (StringUtils.isBlank(req.getPosition())) {
+            req.setPosition("");
+        }
+        if (StringUtils.isBlank(req.getWard())) {
+            req.setWard("");
+        }
+        if (StringUtils.isBlank(req.getDistrict())) {
+            req.setDistrict("");
+        }
+        if (StringUtils.isBlank(req.getProvince())) {
+            req.setProvince("");
+        }
+
+        Page<IRoomData> iRoomData = roomRepository.findAllByCondition(JwtUtils.getUsername(), req.getStatus(),
+                req.getRoomTypeId(), req.getPosition(), req.getWard(), req.getDistrict(), req.getProvince(), pageable);
+        List<RoomDataDTO> models = iRoomData.getContent().stream().map(RoomDataDTO::new).toList();
+        response.setData(models);
+        response.setTotal(iRoomData.getTotalElements());
+
+        return response;
     }
 
 

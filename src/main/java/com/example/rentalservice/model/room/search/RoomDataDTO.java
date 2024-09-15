@@ -19,4 +19,16 @@ public class RoomDataDTO {
     private String province;
     private String district;
     private String ward;
+
+    public RoomDataDTO (IRoomData iRoomData) {
+        this.roomId = iRoomData.getRoomId();
+        this.roomCode = iRoomData.getRoomCode();
+        this.roomStatus = iRoomData.getRoomStatus();
+        this.type = iRoomData.getType();
+        this.typeName = iRoomData.getTypeName();
+        this.positionDetail = iRoomData.getPositionDetail();
+        this.province = iRoomData.getProvince();
+        this. district = iRoomData.getDistrict();
+        this.ward = iRoomData.getWard();
+    }
 }

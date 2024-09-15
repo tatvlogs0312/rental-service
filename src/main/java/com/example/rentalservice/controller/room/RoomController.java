@@ -3,6 +3,7 @@ package com.example.rentalservice.controller.room;
 import com.example.rentalservice.aop.Secured;
 import com.example.rentalservice.enums.RoleEnum;
 import com.example.rentalservice.model.room.RoomReqDTO;
+import com.example.rentalservice.model.room.search.RoomSearchReqDTO;
 import com.example.rentalservice.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,5 +32,11 @@ public class RoomController {
     public ResponseEntity<Object> updateRoom(@RequestBody RoomReqDTO req) {
         roomService.updateRoomInfo(req);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Secured(roles = {RoleEnum.LESSOR})
+    @PostMapping("/search")
+    public ResponseEntity<Object> searchRoom(@RequestBody RoomSearchReqDTO req) {
+        return new ResponseEntity<>(roomService.searchRoom(req), HttpStatus.OK);
     }
 }
