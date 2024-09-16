@@ -1,3 +1,4 @@
+delete from utility where 1 = 1;
 INSERT INTO public.utility (id, name) VALUES ('d0dd23ed-ea8a-4d2a-a4a8-0acb0374d656', 'Điện');
 INSERT INTO public.utility (id, name) VALUES ('3c5f7ef2-63c4-495f-a680-eac6c4365c57', 'Nước');
 INSERT INTO public.utility (id, name) VALUES ('261e8edf-5ba0-4419-93e9-7ca6d7ecf543', 'Mạng');
@@ -9,18 +10,47 @@ INSERT INTO public.utility (id, name) VALUES ('c6ee8183-5c44-4e69-aa80-b1d0292cb
 INSERT INTO public.utility (id, name) VALUES ('cfd70b5f-cac4-4502-98bb-6e271016e7a5', 'Nóng lạnh');
 INSERT INTO public.utility (id, name) VALUES ('53a089b2-5d40-4735-b8ed-c8e6760ab57c', 'Khác');
 
-INSERT INTO public.room_type (id, name, code) VALUES ('052f5a0a-442a-4ce0-8058-c73db36bd639', 'Chung cư mini', 'MDP');
-INSERT INTO public.room_type (id, name, code) VALUES ('ea2585f1-fc32-46d4-a9cf-83fb80e9788d', 'Studio', 'STU');
-INSERT INTO public.room_type (id, name, code) VALUES ('451122e0-c4ef-402f-9a49-7c591104cc2d', 'Chung cư', 'DP');
-INSERT INTO public.room_type (id, name, code) VALUES ('e74c4ab0-c82b-4b8e-beed-e203bc692942', 'Khác', 'OT');
-INSERT INTO public.room_type (id, name, code) VALUES ('2a3addb6-8d91-41a4-ac39-840156f9b9ca', 'Phòng trọ', 'MO');
-INSERT INTO public.room_type (id, name, code) VALUES ('32065838-d798-46bd-a26d-40a6d9d9dabf', 'Ký túc xá', 'DOR');
 
-INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_type_id, room_code, room_status) VALUES ('f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 30, 'lessor01', 1, 4000000, '052f5a0a-442a-4ce0-8058-c73db36bd639', 'MDP1', 'EMPTY');
-INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_type_id, room_code, room_status) VALUES ('6f708e38-dfaa-4f25-b559-4e65c2ccd411', 12, 'lessor01', 1, 200000, '2a3addb6-8d91-41a4-ac39-840156f9b9ca', 'MO2', 'EMPTY');
-INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_type_id, room_code, room_status) VALUES ('75d0b682-6c5f-4817-b25a-96f504b00379', 18, 'lessor01', 1, 3000000, '2a3addb6-8d91-41a4-ac39-840156f9b9ca', 'MO3', 'EMPTY');
-INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_type_id, room_code, room_status) VALUES ('eeaf0ac4-6646-4d00-a4a7-cc1195ae2836', 15, 'lessor01', 1, 2000000, '2a3addb6-8d91-41a4-ac39-840156f9b9ca', 'MO4', 'EMPTY');
+delete from room_type where 1 = 1;
+INSERT INTO public.room_type (id, code, name) VALUES ('052f5a0a-442a-4ce0-8058-c73db36bd639', 'MDP', 'Chung cư mini');
+INSERT INTO public.room_type (id, code, name) VALUES ('ea2585f1-fc32-46d4-a9cf-83fb80e9788d', 'STU', 'Studio');
+INSERT INTO public.room_type (id, code, name) VALUES ('451122e0-c4ef-402f-9a49-7c591104cc2d', 'DP', 'Chung cư');
+INSERT INTO public.room_type (id, code, name) VALUES ('e74c4ab0-c82b-4b8e-beed-e203bc692942', 'OT', 'Khác');
+INSERT INTO public.room_type (id, code, name) VALUES ('2a3addb6-8d91-41a4-ac39-840156f9b9ca', 'MO', 'Phòng trọ');
+INSERT INTO public.room_type (id, code, name) VALUES ('32065838-d798-46bd-a26d-40a6d9d9dabf', 'DOR', 'Ký túc xá');
 
+
+delete from user_profile where 1 = 1;
+INSERT INTO public.user_profile (id, email, first_name, identity_number, last_name, password, phone_number, role, status, username) VALUES ('d72d5510-4af5-48a2-bde6-49fa7907df31', null, null, null, null, 'dkmCwlIW+IRBOJygfUV5rOfxJnO1BPy9//2N+APOh9XCMByaer2LX9adFWIuligpV7lUkD4hyJ0Nyd3kiBE1jBayDu8kE1wWOW3SDm9fEP4rYoxbW5op+PaA2znLLJAtZWGzj03bcD+28sEw7rVmG7G2dooAzUoUp6NXHFgNJgM=', null, 'LESSOR', 'PENDING', 'lessor01');
+INSERT INTO public.user_profile (id, email, first_name, identity_number, last_name, password, phone_number, role, status, username) VALUES ('6b2b6e80-dd30-4cd5-951a-36e9e892241f', 'tanhtuan093@gmail.com', 'Trần Anh', '036202008596', 'Tuấn', 'k3o5KlBj6a+igfL4wu+A3Sz8lw1foll5lFKizS+ytNu2aGmOeOTM0gCMOwBk/Ec8p1qGatdoDJz7pCoPteTrIHl0+HkwEmi6UO/UZd7YoOOlFxrbJuE+0xFVCebVhuRR91ITfZc4urUF/pzdI3cAaL7KrC0hRxBIYyxoaIWKhPk=', '0384551953', 'TENANT', 'ACTIVE', 'tenant01');
+INSERT INTO public.user_profile (id, email, first_name, identity_number, last_name, password, phone_number, role, status, username) VALUES ('df181cb9-ab71-4c90-8461-20930b90e6df', null, null, null, null, 'gPGokzmPpcbZ+crpPSD4xkBYZGU2diH/P5oWIgjWuhcuhOB9pp9LJoWT1rfE+Kj9ZPezS4CtW4hCQvQJutKxaOqRLniLKxmNQS9qinMcoiWWz2FRvbXwm+58A6JaUtxFR2MGU6d8dhQTNN2EfTFIwMagprNTxWif1luO/MqDpIs=', null, 'ADMIN', 'PENDING', 'admin01');
+
+
+delete from user_profile_upload where 1 = 1;
+INSERT INTO public.user_profile_upload (id, type, url, username) VALUES ('adb91eb6-0fde-4a49-93d5-3f78b929d07c', 'SELFIE', 'a0752a4b-5b91-4966-b9b9-233344f599d6.png', 'tenant01');
+
+
+delete from room where 1 = 1;
+INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 30, 'lessor01', 1, 4000000, 'MDP1', 'EMPTY', '052f5a0a-442a-4ce0-8058-c73db36bd639');
+INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('6f708e38-dfaa-4f25-b559-4e65c2ccd411', 12, 'lessor01', 1, 200000, 'MO2', 'EMPTY', '2a3addb6-8d91-41a4-ac39-840156f9b9ca');
+INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('75d0b682-6c5f-4817-b25a-96f504b00379', 18, 'lessor01', 1, 3000000, 'MO3', 'EMPTY', '2a3addb6-8d91-41a4-ac39-840156f9b9ca');
+INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('eeaf0ac4-6646-4d00-a4a7-cc1195ae2836', 15, 'lessor01', 1, 2000000, 'MO4', 'EMPTY', '2a3addb6-8d91-41a4-ac39-840156f9b9ca');
+INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('941c14b9-cef3-4fc9-9a35-823b95570fa5', 35, 'lessor01', 1, 2800000, 'MO5', 'EMPTY', '2a3addb6-8d91-41a4-ac39-840156f9b9ca');
+INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('53e6e3ee-829e-44a0-b662-7882bd0a2ccd', 20, 'lessor01', 1, 3000000, 'MO6', 'EMPTY', '2a3addb6-8d91-41a4-ac39-840156f9b9ca');
+INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('8678d0e2-b843-47af-a6e2-74e048cb233c', 40, 'lessor01', 2, 6500000, 'MDP7', 'EMPTY', '052f5a0a-442a-4ce0-8058-c73db36bd639');
+
+
+delete from room_position where 1 = 1;
+INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('f9ec9244-6eb8-45b1-a462-a07082cc7298', 'Số 7A ngõ 132 Phố Hoa Bằng', 'Cầu Giấy', 'Hà Nội', 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 'Yên Hòa');
+INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('8ad5dbd1-bc1d-434e-afd8-d5b411630db9', 'Số 48 ngõ 132 Đường Cầu Giấy', 'Cầu Giấy', 'Hà Nội', '6f708e38-dfaa-4f25-b559-4e65c2ccd411', 'Quan Hoa');
+INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('4eb94865-a9b0-4778-b2dc-e71888e290bc', 'Số 45C ngõ 85 Đường Cầu Giấy', 'Cầu Giấy', 'Hà Nội', '75d0b682-6c5f-4817-b25a-96f504b00379', 'Xuân Thủy');
+INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('42365f93-5d9d-419e-b246-63c2aad48cdd', 'Số 7A ngõ 132 Đường Cầu Giấy', 'Cầu Giấy', 'Hà Nội', 'eeaf0ac4-6646-4d00-a4a7-cc1195ae2836', 'Quan Hoa');
+INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('2bbdd400-4eb2-4144-818f-3cb25afdce96', 'Số 8 ngõ 99 Phố Hoa Bằng', 'Cầu Giấy', 'Hà Nội', '941c14b9-cef3-4fc9-9a35-823b95570fa5', 'Yên Hòa');
+INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('e62d2974-f8d8-4b1f-bad5-8432b535dc6b', '68 Cầu Giấy', 'Cầu Giấy', 'Hà Nội', '53e6e3ee-829e-44a0-b662-7882bd0a2ccd', 'Xuân Thủy');
+INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('6c0c271d-f962-43aa-988e-90cd94c868b3', '355 Phạm Văn Đồng', 'Bắc Từ Liêm', 'Hà Nội', '8678d0e2-b843-47af-a6e2-74e048cb233c', 'Cổ Nhuế');
+
+
+delete from room_image where 1 = 1;
 INSERT INTO public.room_image (id, room_id, url) VALUES ('c51bd617-abb6-46ce-8218-8016c7d95e4c', 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 'f5d2cffc-fc70-4ff5-8141-1089b994676f.png');
 INSERT INTO public.room_image (id, room_id, url) VALUES ('3b60024f-56c1-4d5c-bd11-5a4555c58552', 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', '9c0b95cc-a3e4-4046-8cd1-55fcf72cbe2c.png');
 INSERT INTO public.room_image (id, room_id, url) VALUES ('b2a99b98-ed18-4f52-9c02-3b6b5e3699fc', 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 'cff510dd-c483-4d92-b33b-73d7123b2352.png');
@@ -29,13 +59,23 @@ INSERT INTO public.room_image (id, room_id, url) VALUES ('9f16e127-ae44-4ff9-910
 INSERT INTO public.room_image (id, room_id, url) VALUES ('1898c4b3-d7bc-435b-a0ac-9209aac01b3b', '6f708e38-dfaa-4f25-b559-4e65c2ccd411', '4d6ef1d4-59d9-488f-9ca8-be118538990e.png');
 INSERT INTO public.room_image (id, room_id, url) VALUES ('d44088ac-086a-40b1-ad04-b7adf86eea26', '6f708e38-dfaa-4f25-b559-4e65c2ccd411', 'c4e24cf3-9ae7-440b-a16a-ccb3a14d8220.png');
 INSERT INTO public.room_image (id, room_id, url) VALUES ('617e932b-3a28-4ac3-8997-a911c4d942df', '6f708e38-dfaa-4f25-b559-4e65c2ccd411', 'd8696074-53c3-4570-94f5-ce589cdcaecb.png');
+INSERT INTO public.room_image (id, room_id, url) VALUES ('a6c8d08b-aeaa-47f4-a4aa-e00e86eec1a2', '941c14b9-cef3-4fc9-9a35-823b95570fa5', 'e3d0eb1c-0934-4bc1-9c4e-8cbd87e52037.png');
+INSERT INTO public.room_image (id, room_id, url) VALUES ('5e40086a-0304-452d-a219-2511fcbf6b95', '941c14b9-cef3-4fc9-9a35-823b95570fa5', '285a199d-f4e5-4a63-b641-6c5432f909f7.png');
+INSERT INTO public.room_image (id, room_id, url) VALUES ('20cbb71f-3be6-4f2a-a04e-e2ad41a4a636', '53e6e3ee-829e-44a0-b662-7882bd0a2ccd', 'cdc6e150-3a5b-45b7-aa61-0d415d09afe5.png');
+INSERT INTO public.room_image (id, room_id, url) VALUES ('834b9b49-7d17-4e40-9795-74df22771ea8', '53e6e3ee-829e-44a0-b662-7882bd0a2ccd', '1d9ae76e-96f2-4c64-9028-915518cbfb2c.png');
+INSERT INTO public.room_image (id, room_id, url) VALUES ('484d2fa3-7819-48ed-96db-d7e68d4bc77d', '53e6e3ee-829e-44a0-b662-7882bd0a2ccd', '5ddb2290-87ed-413d-ae78-e75485002ddc.png');
+INSERT INTO public.room_image (id, room_id, url) VALUES ('b92bb892-cd95-40c4-831b-097b0ae0926e', '8678d0e2-b843-47af-a6e2-74e048cb233c', '9feaa478-714d-43b3-9875-03e7c3379f23.png');
+INSERT INTO public.room_image (id, room_id, url) VALUES ('02ec4548-a05e-43b9-9a72-c3aa3f8eb7d3', '8678d0e2-b843-47af-a6e2-74e048cb233c', '13ea9286-5aa3-49e4-b87a-92255e94edfb.png');
+INSERT INTO public.room_image (id, room_id, url) VALUES ('48c4dff4-5295-4d46-b972-ba339101efd0', '8678d0e2-b843-47af-a6e2-74e048cb233c', '3f2cb1d8-2694-4b51-91ad-a079722f626f.png');
+INSERT INTO public.room_image (id, room_id, url) VALUES ('99fec160-5b6d-402a-8ae2-e2ef0f0e810d', '8678d0e2-b843-47af-a6e2-74e048cb233c', '0b4a3b12-bfe0-42c7-aa53-3316ae6341dd.png');
+INSERT INTO public.room_image (id, room_id, url) VALUES ('ae575e78-7dad-4ffa-80a0-63235696debc', '8678d0e2-b843-47af-a6e2-74e048cb233c', 'd865d8d8-5581-402f-bb58-0b77d9f12848.png');
+INSERT INTO public.room_image (id, room_id, url) VALUES ('a910fa4b-f9ab-44c7-8014-43ccbccf41f5', '8678d0e2-b843-47af-a6e2-74e048cb233c', '59b10211-8096-476d-a203-2c69d39f23e7.png');
 
-INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('f9ec9244-6eb8-45b1-a462-a07082cc7298', 'Số 7A ngõ 132 Phố Hoa Bằng', 'Cầu Giấy', 'Hà Nội', 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 'Yên Hòa');
-INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('8ad5dbd1-bc1d-434e-afd8-d5b411630db9', 'Số 48 ngõ 132 Đường Cầu Giấy', 'Cầu Giấy', 'Hà Nội', '6f708e38-dfaa-4f25-b559-4e65c2ccd411', 'Quan Hoa');
-INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('4eb94865-a9b0-4778-b2dc-e71888e290bc', 'Số 45C ngõ 85 Đường Cầu Giấy', 'Cầu Giấy', 'Hà Nội', '75d0b682-6c5f-4817-b25a-96f504b00379', 'Xuân Thủy');
-INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('42365f93-5d9d-419e-b246-63c2aad48cdd', 'Số 7A ngõ 132 Đường Cầu Giấy', 'Cầu Giấy', 'Hà Nội', 'eeaf0ac4-6646-4d00-a4a7-cc1195ae2836', 'Quan Hoa');
 
-INSERT INTO public.user_profile (id, email, first_name, identity_number, last_name, password, phone_number, role, status, username) VALUES ('d72d5510-4af5-48a2-bde6-49fa7907df31', null, null, null, null, 'dkmCwlIW+IRBOJygfUV5rOfxJnO1BPy9//2N+APOh9XCMByaer2LX9adFWIuligpV7lUkD4hyJ0Nyd3kiBE1jBayDu8kE1wWOW3SDm9fEP4rYoxbW5op+PaA2znLLJAtZWGzj03bcD+28sEw7rVmG7G2dooAzUoUp6NXHFgNJgM=', null, 'LESSOR', 'PENDING', 'lessor01');
-INSERT INTO public.user_profile (id, email, first_name, identity_number, last_name, password, phone_number, role, status, username) VALUES ('6b2b6e80-dd30-4cd5-951a-36e9e892241f', 'tanhtuan093@gmail.com', 'Trần Anh', '036202008596', 'Tuấn', 'k3o5KlBj6a+igfL4wu+A3Sz8lw1foll5lFKizS+ytNu2aGmOeOTM0gCMOwBk/Ec8p1qGatdoDJz7pCoPteTrIHl0+HkwEmi6UO/UZd7YoOOlFxrbJuE+0xFVCebVhuRR91ITfZc4urUF/pzdI3cAaL7KrC0hRxBIYyxoaIWKhPk=', '0384551953', 'TENANT', 'ACTIVE', 'tenant01');
+delete from post where 1 = 1;
+INSERT INTO public.post (id, content, create_time, lessor, room_id, title) VALUES ('9a2b8539-fb29-4673-ab51-3e9a0097d6b7', 'Cho thuê chung cư mini ở Phạm văn Đồng. Giờ giấc tự do. Gần các trường đại học như Điện Lực, Thương Mại, Quốc Gia, ...', '2024-09-16 21:51:24.859686', 'lessor01', '8678d0e2-b843-47af-a6e2-74e048cb233c', 'Cho thuê chung cư mini ở Phạm Văn Đồng');
+INSERT INTO public.post (id, content, create_time, lessor, room_id, title) VALUES ('4d03c428-fae6-4ec2-abc8-0ea6d484f5b6', 'Cho thuê chung cư mini ở ngõ 132 Hoa Bằng. Giờ giấc tự do', '2024-09-16 21:48:36.418856', 'lessor01', 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 'Cho thuê chung cư mini ở Hoa Bằng');
+INSERT INTO public.post (id, content, create_time, lessor, room_id, title) VALUES ('efaced2d-374a-43c6-b5ef-e9cde1407fbf', 'Cho thuê chung cư mini ở ngõ 132 Quan Hoa. Giờ giấc tự do, không chung chủ. Gần các trường đại học như GTVT, Ngoại thương', '2024-09-16 21:55:59.887245', 'lessor01', '6f708e38-dfaa-4f25-b559-4e65c2ccd411', 'Cho thuê phòng trọ sinh viên ở Quan Hoa');
+INSERT INTO public.post (id, content, create_time, lessor, room_id, title) VALUES ('28599c22-0127-424f-a5eb-ab6eb40c4f1c', 'Vị trí: 68 Cầu Giấy, gần các trường nhưng Quốc gia, Điện lực, Thương mại', '2024-09-16 22:00:10.500869', 'lessor01', '53e6e3ee-829e-44a0-b662-7882bd0a2ccd', 'Cho thuê phòng trọ sinh viên ở Cầu giấy');
+INSERT INTO public.post (id, content, create_time, lessor, room_id, title) VALUES ('e6857390-313b-484f-9dfb-47aa70f97a06', 'Không chung chủ, giờ giấc thoải mái', '2024-09-16 22:02:32.279527', 'lessor01', '941c14b9-cef3-4fc9-9a35-823b95570fa5', 'Cho thuê phòng trọ Hoa Bằng, Yên Hòa');
 
-INSERT INTO public.user_profile_upload (id, type, url, username) VALUES ('adb91eb6-0fde-4a49-93d5-3f78b929d07c', 'SELFIE', 'a0752a4b-5b91-4966-b9b9-233344f599d6.png', 'tenant01');

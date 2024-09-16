@@ -23,8 +23,7 @@ public class RoomController {
     @Secured(roles = {RoleEnum.LESSOR})
     @PostMapping("/create")
     public ResponseEntity<Object> createRoom(@RequestBody RoomReqDTO req) {
-        roomService.createRoom(req);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(roomService.createRoom(req), HttpStatus.OK);
     }
 
     @Secured(roles = {RoleEnum.LESSOR})

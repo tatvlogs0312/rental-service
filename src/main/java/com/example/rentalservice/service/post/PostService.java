@@ -12,6 +12,7 @@ import com.example.rentalservice.repository.RoomImageRepository;
 import com.example.rentalservice.service.DataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -32,6 +33,11 @@ public class PostService {
     public void createNewPost(NewPostReqDTO req) {
         Room room = dataService.getRoom(req.getRoomId());
 
+        Boolean existPost = postRepository.existsAllByRoomId(req.getRoomId());
+        if (BooleanUtils.isTrue(existPost)) {
+            throw new ApplicationException("Phòng đã tạo bài đăng");
+        }
+
         List<RoomImage> images = roomImageRepository.findAllByRoomId(room.getId());
         if (CollectionUtils.isEmpty(images)) {
             throw new ApplicationException("Vui lòng upload hình ảnh phòng trước khi đăng tin");
@@ -43,6 +49,7 @@ public class PostService {
         post.setContent(req.getContent());
         post.setLessor(JwtUtils.getUsername());
         post.setCreateTime(LocalDateTime.now());
+        post.setRoomId(req.getRoomId());
 
         postRepository.save(post);
     }

@@ -47,7 +47,7 @@ public class RoomService {
 
 
     //Tạo mới thông tin phòng
-    public void createRoom(RoomReqDTO req) {
+    public String createRoom(RoomReqDTO req) {
         RoomType roomType = dataService.getRoomType(req.getRoomTypeId());
 
         String lessor = JwtUtils.getUsername();
@@ -74,6 +74,8 @@ public class RoomService {
 
         roomRepository.save(room);
         roomPositionRepository.save(roomPosition);
+
+        return roomId;
     }
 
 

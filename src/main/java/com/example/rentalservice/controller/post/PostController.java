@@ -6,6 +6,7 @@ import com.example.rentalservice.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,14 +17,14 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping("/post")
-    public ResponseEntity<Object> createPost(NewPostReqDTO req) {
+    @PostMapping("/create")
+    public ResponseEntity<Object> createPost(@RequestBody NewPostReqDTO req) {
         postService.createNewPost(req);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping()
-    public ResponseEntity<Object> deletePost(PostReqDTO req) {
+    @PostMapping("/delete")
+    public ResponseEntity<Object> deletePost(@RequestBody PostReqDTO req) {
         postService.deletePost(req.getId());
         return ResponseEntity.ok().build();
     }
