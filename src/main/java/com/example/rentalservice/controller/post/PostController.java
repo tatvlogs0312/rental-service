@@ -2,8 +2,10 @@ package com.example.rentalservice.controller.post;
 
 import com.example.rentalservice.model.post.NewPostReqDTO;
 import com.example.rentalservice.model.post.PostReqDTO;
+import com.example.rentalservice.model.search.req.PostSearchReqDTO;
 import com.example.rentalservice.service.post.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,5 +29,10 @@ public class PostController {
     public ResponseEntity<Object> deletePost(@RequestBody PostReqDTO req) {
         postService.deletePost(req.getId());
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<Object> searchPost(@RequestBody PostSearchReqDTO req) {
+        return new ResponseEntity<>(postService.searchPost(req), HttpStatus.OK);
     }
 }

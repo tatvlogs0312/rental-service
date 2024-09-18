@@ -54,7 +54,8 @@ public class UtilitiesCustomRepository {
         query.setMaxResults(req.getSize());
 
         List<UtilitiesSearchResDTO> data = new ArrayList<>();
-        Long total = 0L;
+        long total = 0L;
+        long totalPage = 0L;
 
         List<Object[]> result = (List<Object[]>) query.getResultList();
         if (!CollectionUtils.isEmpty(result)) {
@@ -68,9 +69,10 @@ public class UtilitiesCustomRepository {
 
              Query queryCount = entityManager.createNativeQuery(countSql.toString());
              RepositoryUtils.setQueryParameters(queryParams, queryCount);
-             total = (Long) queryCount.getSingleResult();
+             total = (long) queryCount.getSingleResult();
+             totalPage = (long) Math.ceil((double) total / req.getSize());
         }
 
-        return new PagingResponse<>(data, total);
+        return new PagingResponse<>(data, total, totalPage);
     }
 }

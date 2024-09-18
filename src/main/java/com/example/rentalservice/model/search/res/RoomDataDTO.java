@@ -1,5 +1,6 @@
-package com.example.rentalservice.model.room.search;
+package com.example.rentalservice.model.search.res;
 
+import com.example.rentalservice.model.room.IRoomData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

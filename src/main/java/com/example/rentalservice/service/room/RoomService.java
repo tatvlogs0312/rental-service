@@ -8,9 +8,9 @@ import com.example.rentalservice.mapper.Mapper;
 import com.example.rentalservice.model.room.RoomReqDTO;
 import com.example.rentalservice.model.room.RoomUploadReqDTO;
 import com.example.rentalservice.model.room.RoomUtilityReqDTO;
-import com.example.rentalservice.model.room.search.IRoomData;
-import com.example.rentalservice.model.room.search.RoomDataDTO;
-import com.example.rentalservice.model.room.search.RoomSearchReqDTO;
+import com.example.rentalservice.model.room.IRoomData;
+import com.example.rentalservice.model.search.res.RoomDataDTO;
+import com.example.rentalservice.model.search.req.RoomSearchReqDTO;
 import com.example.rentalservice.model.search.PagingResponse;
 import com.example.rentalservice.model.user_profile.UserPaperResDTO;
 import com.example.rentalservice.proxy.StorageServiceProxy;
@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -120,7 +119,8 @@ public class RoomService {
                 req.getRoomTypeId(), req.getPosition(), req.getWard(), req.getDistrict(), req.getProvince(), pageable);
         List<RoomDataDTO> models = iRoomData.getContent().stream().map(RoomDataDTO::new).toList();
         response.setData(models);
-        response.setTotal(iRoomData.getTotalElements());
+        response.setTotalData(iRoomData.getTotalElements());
+        response.setTotalPage(iRoomData.getTotalPages());
 
         return response;
     }

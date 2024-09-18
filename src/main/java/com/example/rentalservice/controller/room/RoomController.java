@@ -3,7 +3,7 @@ package com.example.rentalservice.controller.room;
 import com.example.rentalservice.aop.Secured;
 import com.example.rentalservice.enums.RoleEnum;
 import com.example.rentalservice.model.room.RoomReqDTO;
-import com.example.rentalservice.model.room.search.RoomSearchReqDTO;
+import com.example.rentalservice.model.search.req.RoomSearchReqDTO;
 import com.example.rentalservice.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

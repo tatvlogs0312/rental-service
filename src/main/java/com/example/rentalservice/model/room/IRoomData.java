@@ -1,4 +1,4 @@
-package com.example.rentalservice.model.room.search;
+package com.example.rentalservice.model.room;
 
 public interface IRoomData {
     String getRoomId();

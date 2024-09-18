@@ -1,14 +1,12 @@
 package com.example.rentalservice.repository;
 
 import com.example.rentalservice.entity.Room;
-import com.example.rentalservice.model.room.search.IRoomData;
+import com.example.rentalservice.model.room.IRoomData;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 
 @Repository

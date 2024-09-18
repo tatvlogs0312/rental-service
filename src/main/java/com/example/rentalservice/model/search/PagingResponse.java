@@ -1,5 +1,6 @@
 package com.example.rentalservice.model.search;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,13 +14,16 @@ import org.springframework.data.domain.Page;
 @Setter
 public class PagingResponse<T> {
     //Danh sách dữ liệu
-    private List<T> data;
+    private List<T> data = new ArrayList<>();
 
     //Tổng số dữ liệu
-    private long total;
+    private long totalData = 0;
+
+    private long totalPage = 0;
 
     public PagingResponse(Page<T> page) {
-        this.total = page.getTotalElements();
+        this.totalPage = page.getTotalPages();
+        this.totalData = page.getTotalElements();
         this.data = page.getContent();
     }
 }

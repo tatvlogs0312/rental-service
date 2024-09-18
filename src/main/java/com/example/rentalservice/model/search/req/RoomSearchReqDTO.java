@@ -1,4 +1,4 @@
-package com.example.rentalservice.model.room.search;
+package com.example.rentalservice.model.search.req;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
