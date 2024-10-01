@@ -1,6 +1,7 @@
 package com.example.rentalservice.service.room;
 
 import com.example.rentalservice.common.JwtUtils;
+import com.example.rentalservice.common.RepositoryUtils;
 import com.example.rentalservice.entity.*;
 import com.example.rentalservice.enums.RoomStatusEnum;
 import com.example.rentalservice.exception.ApplicationException;
@@ -9,6 +10,9 @@ import com.example.rentalservice.model.room.RoomReqDTO;
 import com.example.rentalservice.model.room.RoomUploadReqDTO;
 import com.example.rentalservice.model.room.RoomUtilityReqDTO;
 import com.example.rentalservice.model.room.IRoomData;
+import com.example.rentalservice.model.room.detail.PositionDTO;
+import com.example.rentalservice.model.room.detail.RoomDetailDTO;
+import com.example.rentalservice.model.room.detail.UtilityDTO;
 import com.example.rentalservice.model.search.res.RoomDataDTO;
 import com.example.rentalservice.model.search.req.RoomSearchReqDTO;
 import com.example.rentalservice.model.search.PagingResponse;
@@ -26,6 +30,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -206,5 +211,50 @@ public class RoomService {
         }
 
         roomUtilityRepository.updateIsActiveById(req.getId(), false);
+    }
+
+
+    //Lay chi tiet theo id
+    public RoomDetailDTO getDetailById(String roomId) {
+        RoomDetailDTO roomDetailDTO = new RoomDetailDTO();
+
+        Room room = dataService.getRoom(roomId);
+        roomDetailDTO.setRoomId(roomId);
+        roomDetailDTO.setAcreage(room.getAcreage());
+        roomDetailDTO.setNumberOfRoom(room.getNumberOfRom());
+        roomDetailDTO.setPrice(room.getPrice());
+        roomDetailDTO.setStatus(room.getRoomStatus());
+
+        Optional<RoomPosition> roomPositionOpt = roomPositionRepository.findFirstByRoomId(roomId);
+        if (roomPositionOpt.isPresent()) {
+            RoomPosition roomPosition = roomPositionOpt.get();
+            roomDetailDTO.setPosition(PositionDTO.builder()
+                    .detail(roomPosition.getDetail())
+                    .ward(roomPosition.getWard())
+                    .district(roomPosition.getDistrict())
+                    .province(roomPosition.getDistrict())
+                    .build());
+        }
+
+        List<RoomImage> roomImages = roomImageRepository.findAllByRoomId(roomId);
+        if (!CollectionUtils.isEmpty(roomImages)) {
+            roomDetailDTO.setImage(roomImages.stream().map(RoomImage::getUrl).toList());
+        }
+
+        List<Object[]> roomUtility = roomUtilityRepository.findAllByRoomId(roomId);
+        if (!CollectionUtils.isEmpty(roomUtility)) {
+            roomDetailDTO.setUtility(
+                    roomUtility.stream()
+                            .map(x -> UtilityDTO.builder()
+                                    .utilityId(RepositoryUtils.setValueForField(String.class, x[0]))
+                                    .utilityName(RepositoryUtils.setValueForField(String.class, x[1]))
+                                    .utilityPrice(RepositoryUtils.setValueForField(Long.class, x[2]))
+                                    .utilityUnit(RepositoryUtils.setValueForField(String.class, x[3]))
+                                    .build())
+                            .toList()
+            );
+        }
+
+        return roomDetailDTO;
     }
 }

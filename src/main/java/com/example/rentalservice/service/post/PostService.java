@@ -95,6 +95,7 @@ public class PostService {
                         .typeName(RepositoryUtils.setValueForField(String.class, post[i.getAndIncrement()]))
                         .price(RepositoryUtils.setValueForField(Long.class, post[i.getAndIncrement()]))
                         .postTime(RepositoryUtils.setValueForField(LocalDateTime.class, post[i.getAndIncrement()]))
+                        .firstImage(RepositoryUtils.setValueForField(String.class, post[i.getAndIncrement()]))
                         .build();
                 models.add(postSearchResDTO);
             });
@@ -106,4 +107,6 @@ public class PostService {
 
         return response;
     }
+
+
 }

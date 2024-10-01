@@ -20,4 +20,5 @@ public class PostSearchResDTO {
     private String typeName;
     private Long price;
     private LocalDateTime postTime;
+    private String firstImage;
 }

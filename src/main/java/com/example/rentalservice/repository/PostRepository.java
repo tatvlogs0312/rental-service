@@ -23,11 +23,14 @@ public interface PostRepository extends JpaRepository<Post, String> {
                        rt.code       as typeCode,
                        rt.name       as typeName,
                        r.price       as price,
-                       p.create_time as createTime
+                       p.create_time as createTime,
+                       rit.url       as firstImage
                 from post p
                          join room r on r.id = p.room_id
                          join room_type rt on rt.id = r.room_type_id
                          join room_position rp on r.id = rp.room_id
+                         join (select id, room_id, url, row_number() over (PARTITION BY room_id order by id) as num from room_image) rit
+                              on rit.room_id = r.id and rit.num = 1
                 where 1 = 1
                   and (rt.id = :roomTypeId or :roomTypeId is null)
                   and (lower(unaccent(rp.detail)) like ('%' || lower(unaccent(:position)) || '%')
@@ -40,6 +43,5 @@ public interface PostRepository extends JpaRepository<Post, String> {
                   and (r.price between :priceFrom and :priceTo)
                 order by p.create_time desc;
             """)
-    Page<Object[]> findAllByCondition(String roomTypeId, String position, String ward, String district, String province,
-                                      Long priceFrom, Long priceTo, Pageable pageable);
+    Page<Object[]> findAllByCondition(String roomTypeId, String position, String ward, String district, String province, Long priceFrom, Long priceTo, Pageable pageable);
 }

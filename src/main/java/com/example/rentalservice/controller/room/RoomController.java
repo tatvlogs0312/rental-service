@@ -8,10 +8,7 @@ import com.example.rentalservice.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/room")
@@ -37,5 +34,11 @@ public class RoomController {
     @PostMapping("/search")
     public ResponseEntity<Object> searchRoom(@RequestBody RoomSearchReqDTO req) {
         return new ResponseEntity<>(roomService.searchRoom(req), HttpStatus.OK);
+    }
+
+//    @Secured
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getById(@PathVariable String id) {
+        return new ResponseEntity<>(roomService.getDetailById(id), HttpStatus.OK);
     }
 }
