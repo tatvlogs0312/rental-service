@@ -36,7 +36,7 @@ public class RoomController {
         return new ResponseEntity<>(roomService.searchRoom(req), HttpStatus.OK);
     }
 
-//    @Secured
+    @Secured(roles = {RoleEnum.LESSOR})
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable String id) {
         return new ResponseEntity<>(roomService.getDetailById(id), HttpStatus.OK);

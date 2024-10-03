@@ -4,16 +4,16 @@ import com.example.rentalservice.common.InputUtils;
 import com.example.rentalservice.common.JwtUtils;
 import com.example.rentalservice.common.RepositoryUtils;
 import com.example.rentalservice.common.Utils;
-import com.example.rentalservice.entity.Post;
-import com.example.rentalservice.entity.Room;
-import com.example.rentalservice.entity.RoomImage;
+import com.example.rentalservice.entity.*;
 import com.example.rentalservice.exception.ApplicationException;
 import com.example.rentalservice.model.post.NewPostReqDTO;
+import com.example.rentalservice.model.post.detail.PostDetailDTO;
+import com.example.rentalservice.model.room.detail.PositionDTO;
+import com.example.rentalservice.model.room.detail.UtilityDTO;
 import com.example.rentalservice.model.search.req.PostSearchReqDTO;
 import com.example.rentalservice.model.search.res.PostSearchResDTO;
 import com.example.rentalservice.model.search.PagingResponse;
-import com.example.rentalservice.repository.PostRepository;
-import com.example.rentalservice.repository.RoomImageRepository;
+import com.example.rentalservice.repository.*;
 import com.example.rentalservice.service.DataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +27,7 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -36,6 +37,9 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final RoomImageRepository roomImageRepository;
+    private final RoomUtilityRepository roomUtilityRepository;
+    private final RoomPositionRepository roomPositionRepository;
+    private final UserProfileRepository userProfileRepository;
     private final DataService dataService;
 
 
@@ -108,5 +112,60 @@ public class PostService {
         return response;
     }
 
+
+    //Xem chi tiet bai viet
+    public PostDetailDTO getPostById(String postId) {
+        Post post = dataService.getPost(postId);
+
+        PostDetailDTO postDetailDTO = new PostDetailDTO();
+        postDetailDTO.setPostId(post.getId());
+        postDetailDTO.setTitle(post.getTitle());
+        postDetailDTO.setContent(post.getContent());
+
+        Optional<UserProfile> userProfileOtp = userProfileRepository.findFirstByUsername(post.getLessor());
+        if (userProfileOtp.isPresent()) {
+            UserProfile userProfile = userProfileOtp.get();
+            postDetailDTO.setLessorName(userProfile.getFirstName() + " " + userProfile.getLastName());
+            postDetailDTO.setLessorNumber(userProfile.getPhoneNumber());
+        }
+
+        Room room = dataService.getRoom(post.getRoomId());
+        postDetailDTO.setRoomId(room.getId());
+        postDetailDTO.setAcreage(room.getAcreage());
+        postDetailDTO.setNumberOfRoom(room.getNumberOfRom());
+        postDetailDTO.setPrice(room.getPrice());
+
+        Optional<RoomPosition> roomPositionOpt = roomPositionRepository.findFirstByRoomId(room.getId());
+        if (roomPositionOpt.isPresent()) {
+            RoomPosition roomPosition = roomPositionOpt.get();
+            postDetailDTO.setPosition(PositionDTO.builder()
+                    .detail(roomPosition.getDetail())
+                    .ward(roomPosition.getWard())
+                    .district(roomPosition.getDistrict())
+                    .province(roomPosition.getDistrict())
+                    .build());
+        }
+
+        List<RoomImage> roomImages = roomImageRepository.findAllByRoomId(room.getId());
+        if (!CollectionUtils.isEmpty(roomImages)) {
+            postDetailDTO.setImage(roomImages.stream().map(RoomImage::getUrl).toList());
+        }
+
+        List<Object[]> roomUtility = roomUtilityRepository.findAllByRoomId(room.getId());
+        if (!CollectionUtils.isEmpty(roomUtility)) {
+            postDetailDTO.setUtility(
+                    roomUtility.stream()
+                            .map(x -> UtilityDTO.builder()
+                                    .utilityId(RepositoryUtils.setValueForField(String.class, x[0]))
+                                    .utilityName(RepositoryUtils.setValueForField(String.class, x[1]))
+                                    .utilityPrice(RepositoryUtils.setValueForField(Long.class, x[2]))
+                                    .utilityUnit(RepositoryUtils.setValueForField(String.class, x[3]))
+                                    .build())
+                            .toList()
+            );
+        }
+
+        return postDetailDTO;
+    }
 
 }

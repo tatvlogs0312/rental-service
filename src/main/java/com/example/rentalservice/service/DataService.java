@@ -1,14 +1,8 @@
 package com.example.rentalservice.service;
 
-import com.example.rentalservice.entity.Contract;
-import com.example.rentalservice.entity.Room;
-import com.example.rentalservice.entity.RoomType;
-import com.example.rentalservice.entity.Utilities;
+import com.example.rentalservice.entity.*;
 import com.example.rentalservice.exception.ApplicationException;
-import com.example.rentalservice.repository.ContractRepository;
-import com.example.rentalservice.repository.RoomRepository;
-import com.example.rentalservice.repository.RoomTypeRepository;
-import com.example.rentalservice.repository.UtilitiesRepository;
+import com.example.rentalservice.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +16,7 @@ public class DataService {
     private final RoomTypeRepository roomTypeRepository;
     private final ContractRepository contractRepository;
     private final UtilitiesRepository utilitiesRepository;
+    private final PostRepository postRepository;
 
     //Lấy data phòng theo id
     public Room getRoom(String roomId) {
@@ -58,5 +53,14 @@ public class DataService {
             throw new ApplicationException("Loại phòng không hợp lệ");
         }
         return roomType.get();
+    }
+
+    //Lay bai viet theo id
+    public Post getPost(String postId) {
+        Optional<Post> post = postRepository.findById(postId);
+        if (post.isEmpty()) {
+            throw new ApplicationException("Bai viet không hợp lệ");
+        }
+        return post.get();
     }
 }
