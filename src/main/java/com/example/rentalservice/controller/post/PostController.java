@@ -1,10 +1,12 @@
 package com.example.rentalservice.controller.post;
 
+import com.example.rentalservice.common.JsonUtils;
 import com.example.rentalservice.model.post.NewPostReqDTO;
 import com.example.rentalservice.model.post.PostReqDTO;
 import com.example.rentalservice.model.search.req.PostSearchReqDTO;
 import com.example.rentalservice.service.post.PostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/post")
+@Slf4j
 public class PostController {
 
     private final PostService postService;
@@ -30,6 +33,7 @@ public class PostController {
 
     @PostMapping("/search")
     public ResponseEntity<Object> searchPost(@RequestBody PostSearchReqDTO req) {
+        log.info("/rental-service/post/search - req: {}", JsonUtils.toJson(req ));
         return new ResponseEntity<>(postService.searchPost(req), HttpStatus.OK);
     }
 
