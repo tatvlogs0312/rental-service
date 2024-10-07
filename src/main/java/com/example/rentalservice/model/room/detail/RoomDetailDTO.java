@@ -14,6 +14,8 @@ import java.util.List;
 @Setter
 public class RoomDetailDTO {
     private String roomId;
+    private String roomCode;
+    private String roomType;
     private Integer acreage;
     private Integer numberOfRoom;
     private Long price;

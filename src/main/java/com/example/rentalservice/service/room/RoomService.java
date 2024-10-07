@@ -220,6 +220,7 @@ public class RoomService {
 
         Room room = dataService.getRoom(roomId);
         roomDetailDTO.setRoomId(roomId);
+        roomDetailDTO.setRoomCode(room.getRoomCode());
         roomDetailDTO.setAcreage(room.getAcreage());
         roomDetailDTO.setNumberOfRoom(room.getNumberOfRom());
         roomDetailDTO.setPrice(room.getPrice());

@@ -6,6 +6,7 @@ import com.example.rentalservice.model.room.RoomReqDTO;
 import com.example.rentalservice.model.search.req.RoomSearchReqDTO;
 import com.example.rentalservice.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/room")
 @RequiredArgsConstructor
+@Slf4j
 public class RoomController {
 
     private final RoomService roomService;
@@ -39,6 +41,7 @@ public class RoomController {
     @Secured(roles = {RoleEnum.LESSOR})
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable String id) {
+        log.info("call");
         return new ResponseEntity<>(roomService.getDetailById(id), HttpStatus.OK);
     }
 }
