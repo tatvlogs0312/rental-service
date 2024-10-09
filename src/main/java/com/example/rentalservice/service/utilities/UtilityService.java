@@ -18,6 +18,13 @@ public class UtilityService {
     private final UtilitiesCustomRepository utilitiesCustomRepository;
 
     public PagingResponse<UtilitiesSearchResDTO> searchUtility(UtilitiesSearchReqDTO req) {
+        if (req.getPage() == null) {
+            req.setPage(0);
+        }
+
+        if (req.getSize() == null) {
+            req.setSize(Integer.MAX_VALUE);
+        }
         return utilitiesCustomRepository.searchUtilities(req);
     }
 }

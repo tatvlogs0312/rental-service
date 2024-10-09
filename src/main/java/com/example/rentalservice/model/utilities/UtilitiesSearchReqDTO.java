@@ -14,6 +14,6 @@ import lombok.Setter;
 public class UtilitiesSearchReqDTO {
     private String id;
     private String name;
-    private int page;
-    private int size;
+    private Integer page;
+    private Integer size;
 }

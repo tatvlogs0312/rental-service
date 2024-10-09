@@ -132,7 +132,7 @@ public class RoomService {
 
 
     //Upload hình ảnh phòng trọ
-    public void uploadRoomImage(RoomUploadReqDTO req) {
+    public String uploadRoomImage(RoomUploadReqDTO req) {
         Room room = dataService.getRoom(req.getRoomId());
 
         //Upload image to storage-service
@@ -144,17 +144,19 @@ public class RoomService {
         roomImage.setUrl(uploadFile.getFile());
 
         roomImageRepository.save(roomImage);
+
+        return uploadFile.getFile();
     }
 
 
     //Xóa hình ảnh phòng trọ
     public void deleteRoomImage(RoomUploadReqDTO req) {
-        Optional<RoomImage> roomImageOptional = roomImageRepository.findById(req.getImageId());
+        Optional<RoomImage> roomImageOptional = roomImageRepository.findFirstByUrl(req.getFileName());
         if (roomImageOptional.isEmpty()) {
             throw new ApplicationException("File không tồn tại");
         }
 
-        roomImageRepository.deleteById(req.getImageId());
+        roomImageRepository.deleteById(roomImageOptional.get().getId());
     }
 
 

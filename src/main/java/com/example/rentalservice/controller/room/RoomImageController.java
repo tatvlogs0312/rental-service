@@ -5,6 +5,7 @@ import com.example.rentalservice.enums.RoleEnum;
 import com.example.rentalservice.model.room.RoomUploadReqDTO;
 import com.example.rentalservice.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/room-image")
 @RequiredArgsConstructor
+@Slf4j
 public class RoomImageController {
 
     private final RoomService roomService;
@@ -22,8 +24,8 @@ public class RoomImageController {
     @Secured(roles = {RoleEnum.LESSOR})
     @PostMapping("/upload")
     public ResponseEntity<Object> uploadRoomImage(RoomUploadReqDTO req) {
-        roomService.uploadRoomImage(req);
-        return new ResponseEntity<>(HttpStatus.OK);
+        log.info("call /room-image/upload");
+        return new ResponseEntity<>(roomService.uploadRoomImage(req), HttpStatus.OK);
     }
 
     @Secured(roles = {RoleEnum.LESSOR})
