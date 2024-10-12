@@ -1,10 +1,12 @@
 package com.example.rentalservice.controller.room;
 
 import com.example.rentalservice.aop.Secured;
+import com.example.rentalservice.common.JsonUtils;
 import com.example.rentalservice.enums.RoleEnum;
 import com.example.rentalservice.model.room.RoomUtilityReqDTO;
 import com.example.rentalservice.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/room-utility")
 @RequiredArgsConstructor
+@Slf4j
 public class RoomUtilityController {
 
     private final RoomService roomService;
@@ -22,8 +25,8 @@ public class RoomUtilityController {
     @Secured(roles = {RoleEnum.LESSOR})
     @PostMapping("/add")
     public ResponseEntity<Object> addUtilityForRoom(@RequestBody RoomUtilityReqDTO req) {
-        roomService.addUtilityForRoom(req);
-        return new ResponseEntity<>(HttpStatus.OK);
+        log.info("/room-utility/add - req: {}", JsonUtils.toJson(req));
+        return new ResponseEntity<>(roomService.addUtilityForRoom(req), HttpStatus.OK);
     }
 
     @Secured(roles = {RoleEnum.LESSOR})

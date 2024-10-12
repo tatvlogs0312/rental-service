@@ -161,7 +161,7 @@ public class RoomService {
 
 
     //Thêm tiện ích cho phòng trọ
-    public void addUtilityForRoom(RoomUtilityReqDTO req) {
+    public UtilityDTO addUtilityForRoom(RoomUtilityReqDTO req) {
         Utilities utility = dataService.getUtility(req.getUtilityId());
 
         Optional<RoomUtility> roomUtilityOptional = roomUtilityRepository
@@ -179,6 +179,12 @@ public class RoomService {
         roomUtility.setIsActive(true);
 
         roomUtilityRepository.save(roomUtility);
+
+        return UtilityDTO.builder().utilityId(roomUtility.getId())
+                .utilityName(utility.getName())
+                .utilityUnit(roomUtility.getUnit())
+                .utilityPrice(roomUtility.getPrice())
+                .build();
     }
 
 

@@ -57,6 +57,11 @@ public class PostService {
             throw new ApplicationException("Vui lòng upload hình ảnh phòng trước khi đăng tin");
         }
 
+        List<Object[]> roomUtilities = roomUtilityRepository.findAllByRoomId(room.getId());
+        if (CollectionUtils.isEmpty(roomUtilities)) {
+            throw new ApplicationException("Vui lòng thêm dịch vụ trước khi đăng tin");
+        }
+
         Post post = new Post();
         post.setId(Utils.generateId());
         post.setTitle(req.getTitle());

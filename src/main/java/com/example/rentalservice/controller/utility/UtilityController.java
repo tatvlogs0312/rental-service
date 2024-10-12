@@ -17,7 +17,7 @@ public class UtilityController {
 
     private final UtilityService utilityService;
 
-    @PostMapping("search")
+    @PostMapping("/search")
     public ResponseEntity<Object> searchRoomType(@RequestBody UtilitiesSearchReqDTO req) {
         return new ResponseEntity<>(utilityService.searchUtility(req), HttpStatus.OK);
     }

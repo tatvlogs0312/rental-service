@@ -21,6 +21,7 @@ public class PostController {
 
     @PostMapping("/create")
     public ResponseEntity<Object> createPost(@RequestBody NewPostReqDTO req) {
+        log.info("/rental-service/post/create - req: {}", JsonUtils.toJson(req));
         postService.createNewPost(req);
         return ResponseEntity.ok().build();
     }
@@ -33,7 +34,7 @@ public class PostController {
 
     @PostMapping("/search")
     public ResponseEntity<Object> searchPost(@RequestBody PostSearchReqDTO req) {
-        log.info("/rental-service/post/search - req: {}", JsonUtils.toJson(req ));
+        log.info("/rental-service/post/search - req: {}", JsonUtils.toJson(req));
         return new ResponseEntity<>(postService.searchPost(req), HttpStatus.OK);
     }
 
