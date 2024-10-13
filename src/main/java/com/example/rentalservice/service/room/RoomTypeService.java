@@ -12,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -22,6 +24,14 @@ public class RoomTypeService {
     public PagingResponse<RoomType> searchRoomType(RoomTypeSearchReqDTO req) {
         if (StringUtils.isBlank(req.getName())) {
             req.setName("");
+        }
+
+        if (Objects.isNull(req.getSize())) {
+            req.setSize(Integer.MAX_VALUE);
+        }
+
+        if (Objects.isNull(req.getPage())) {
+            req.setPage(0);
         }
 
         PagingResponse<RoomType> response = new PagingResponse<>();

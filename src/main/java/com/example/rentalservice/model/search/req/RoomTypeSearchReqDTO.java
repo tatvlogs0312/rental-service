@@ -11,6 +11,6 @@ import lombok.Setter;
 @Setter
 public class RoomTypeSearchReqDTO {
     private String name;
-    private int page;
-    private int size;
+    private Integer page;
+    private Integer size;
 }
