@@ -1,6 +1,7 @@
 package com.example.rentalservice.controller.room;
 
 import com.example.rentalservice.aop.Secured;
+import com.example.rentalservice.common.JsonUtils;
 import com.example.rentalservice.enums.RoleEnum;
 import com.example.rentalservice.model.room.RoomReqDTO;
 import com.example.rentalservice.model.search.req.RoomSearchReqDTO;
@@ -35,6 +36,7 @@ public class RoomController {
     @Secured(roles = {RoleEnum.LESSOR})
     @PostMapping("/search")
     public ResponseEntity<Object> searchRoom(@RequestBody RoomSearchReqDTO req) {
+        log.info("call /rental-service/room/search - req: {}", JsonUtils.toJson(req));
         return new ResponseEntity<>(roomService.searchRoom(req), HttpStatus.OK);
     }
 
