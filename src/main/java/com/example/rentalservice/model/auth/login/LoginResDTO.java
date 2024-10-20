@@ -14,4 +14,5 @@ import lombok.Setter;
 public class LoginResDTO {
     private String token;
     private String role;
+    private String status;
 }
