@@ -3,6 +3,7 @@ package com.example.rentalservice.common;
 import com.example.rentalservice.exception.ApplicationException;
 import com.example.rentalservice.exception.ExceptionEnums;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -63,6 +64,18 @@ public class DateUtils {
         return null;
     }
 
+    public static String toStr(LocalDateTime date, String format) {
+        try {
+            if (Objects.nonNull(date)) {
+                DateTimeFormatter formatters = DateTimeFormatter.ofPattern(format);
+                return date.format(formatters);
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return null;
+    }
+
     public static String toStr(LocalTime time, String format) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
         return time.format(dateTimeFormatter);
@@ -81,6 +94,16 @@ public class DateUtils {
         try {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
             return LocalDate.parse(dateAsString, dateTimeFormatter);
+        } catch (Exception e) {
+            log.error("convertToLocalDate error: {} {}", dateAsString, format);
+            throw new ApplicationException(ExceptionEnums.DATA_NOT_VALID);
+        }
+    }
+
+    public static LocalDateTime convertToLocalDateTime(String dateAsString, String format) {
+        try {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
+            return LocalDateTime.parse(dateAsString, dateTimeFormatter);
         } catch (Exception e) {
             log.error("convertToLocalDate error: {} {}", dateAsString, format);
             throw new ApplicationException(ExceptionEnums.DATA_NOT_VALID);

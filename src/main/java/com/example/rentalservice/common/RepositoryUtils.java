@@ -8,8 +8,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 public class RepositoryUtils {
     public static void setQueryParameters(Map<String, Object> queryParams, Query query) {
@@ -33,5 +37,17 @@ public class RepositoryUtils {
             object = ((BigDecimal) object).abs();
         }
         return (T) object;
+    }
+
+    public static Pageable createPageable(Integer page, Integer size) {
+        if (Objects.isNull(page)) {
+            page = 0;
+        }
+
+        if (Objects.isNull(size)) {
+            size = 5;
+        }
+
+        return PageRequest.of(page, size);
     }
 }

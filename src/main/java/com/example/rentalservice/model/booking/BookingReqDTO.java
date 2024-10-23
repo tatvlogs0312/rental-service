@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BookingReqDTO {
     private String roomId;
+    private String dateWatch;
 }
