@@ -1,6 +1,7 @@
 package com.example.rentalservice.controller.book;
 
 import com.example.rentalservice.aop.Secured;
+import com.example.rentalservice.enums.RoleEnum;
 import com.example.rentalservice.model.booking.BookingReqDTO;
 import com.example.rentalservice.model.search.req.BookSearchReqDTO;
 import com.example.rentalservice.service.booking.BookingService;
@@ -26,13 +27,13 @@ public class BookController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Secured
+    @Secured(roles = {RoleEnum.TENANT})
     @PostMapping("/search-for-tenant")
     public ResponseEntity<Object> searchForTenant(@RequestBody BookSearchReqDTO req) {
         return new ResponseEntity<>(bookingService.searchForTenant(req), HttpStatus.OK);
     }
 
-    @Secured
+    @Secured(roles = {RoleEnum.LESSOR})
     @PostMapping("/search-for-lessor")
     public ResponseEntity<Object> searchForLessor(@RequestBody BookSearchReqDTO req) {
         return new ResponseEntity<>(bookingService.searchForLessor(req), HttpStatus.OK);
