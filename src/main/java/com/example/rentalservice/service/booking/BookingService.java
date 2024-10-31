@@ -7,6 +7,7 @@ import com.example.rentalservice.common.Utils;
 import com.example.rentalservice.entity.Booking;
 import com.example.rentalservice.entity.Room;
 import com.example.rentalservice.enums.BookingEnum;
+import com.example.rentalservice.model.booking.ApproveRejectBookRepDTO;
 import com.example.rentalservice.model.booking.BookingReqDTO;
 import com.example.rentalservice.model.search.PagingResponse;
 import com.example.rentalservice.model.search.req.BookSearchReqDTO;
@@ -72,5 +73,12 @@ public class BookingService {
         }
 
         return new PagingResponse<>(new ArrayList<>(), 0, 0);
+    }
+
+    public void approveRejectBook(ApproveRejectBookRepDTO req) {
+        Booking booking = dataService.getBooking(req.getBookingId());
+        booking.setStatus(req.getStatus());
+        booking.setBookingMessage(req.getMessage());
+        bookingRepository.save(booking);
     }
 }

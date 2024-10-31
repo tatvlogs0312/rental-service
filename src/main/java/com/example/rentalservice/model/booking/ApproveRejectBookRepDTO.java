@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UpdateStatusBookingReqDTO {
+public class ApproveRejectBookRepDTO {
     private String bookingId;
     private String status;
     private String message;

@@ -51,6 +51,8 @@ cloudinary:
   cloud-name: dpquxefcn
   api-key: 212364935335864
   secret-key: zSOBcxGeVlyjZQ9R8Hlb8StPRT8
+firebase:
+  googleCredentials: rent-app-v2-firebase-adminsdk-gczhp-f60c134bc7.json
 custom:
   properties:
     province-url: https://vapi.vnappmob.com

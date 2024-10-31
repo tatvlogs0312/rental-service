@@ -17,6 +17,7 @@ public class DataService {
     private final ContractRepository contractRepository;
     private final UtilitiesRepository utilitiesRepository;
     private final PostRepository postRepository;
+    private final BookingRepository bookingRepository;
 
     //Lấy data phòng theo id
     public Room getRoom(String roomId) {
@@ -62,5 +63,14 @@ public class DataService {
             throw new ApplicationException("Bai viet không hợp lệ");
         }
         return post.get();
+    }
+
+    //Lay lich xem phong theo id
+    public Booking getBooking(String bookId) {
+        Optional<Booking> booking = bookingRepository.findById(bookId);
+        if (booking.isEmpty()) {
+            throw new ApplicationException("Lich xem phong khong hop le");
+        }
+        return booking.get();
     }
 }

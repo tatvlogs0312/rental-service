@@ -4,6 +4,7 @@ import com.example.rentalservice.common.FileUtils;
 import com.example.rentalservice.common.JwtUtils;
 import com.example.rentalservice.common.RsaUtils;
 import com.example.rentalservice.constants.Constants;
+import com.example.rentalservice.entity.UserNotification;
 import com.example.rentalservice.entity.UserProfile;
 import com.example.rentalservice.entity.UserProfileUpload;
 import com.example.rentalservice.enums.PaperEnum;
@@ -12,6 +13,7 @@ import com.example.rentalservice.model.face_matching.FaceMatchingReqDTO;
 import com.example.rentalservice.model.face_matching.FaceMatchingResDTO;
 import com.example.rentalservice.proxy.EkycServiceProxy;
 import com.example.rentalservice.proxy.StorageServiceProxy;
+import com.example.rentalservice.repository.UserNotificationRepository;
 import com.example.rentalservice.repository.UserProfileUploadRepository;
 import com.example.rentalservice.exception.ApplicationException;
 import com.example.rentalservice.model.auth.login.LoginReqDTO;
@@ -47,6 +49,7 @@ import org.springframework.util.CollectionUtils;
 @RequiredArgsConstructor
 @Slf4j
 public class UserProfileService {
+    private final UserNotificationRepository userNotificationRepository;
 
     private final UserProfileUploadRepository userProfileUploadRepository;
 
@@ -85,6 +88,16 @@ public class UserProfileService {
 
             redisService.setValue(req.getUsername() + "_role", user.getRole());
         });
+
+        Optional<UserNotification> userNotificationOtp = userNotificationRepository
+                .findFirstByUsernameAndDevice(req.getUsername(), req.getDevice());
+        if (userNotificationOtp.isEmpty()) {
+            UserNotification userNotification = new UserNotification();
+            userNotification.setId(UUID.randomUUID().toString());
+            userNotification.setUsername(req.getUsername());
+            userNotification.setDevice(req.getDevice());
+            userNotificationRepository.save(userNotification);
+        }
 
         return res;
     }
