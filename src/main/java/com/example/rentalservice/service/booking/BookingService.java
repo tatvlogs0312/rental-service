@@ -51,7 +51,7 @@ public class BookingService {
         String tenant = JwtUtils.getUsername();
         Pageable pageable = RepositoryUtils.createPageable(req.getPage(), req.getSize());
 
-        Page<Object[]> data = bookingRepository.findAllBookByUser(null, tenant, pageable);
+        Page<Object[]> data = bookingRepository.findAllBookByUser(null, tenant, req.getStatus(), pageable);
         if (data.hasContent()) {
             List<BookSearchResDTO> models = data.get().map(BookSearchResDTO::new).toList();
             return new PagingResponse<>(models, data.getTotalElements(), data.getTotalPages());
@@ -64,7 +64,7 @@ public class BookingService {
         String lessor = JwtUtils.getUsername();
         Pageable pageable = RepositoryUtils.createPageable(req.getPage(), req.getSize());
 
-        Page<Object[]> data = bookingRepository.findAllBookByUser(lessor, null, pageable);
+        Page<Object[]> data = bookingRepository.findAllBookByUser(lessor, null, req.getStatus(), pageable);
         if (data.hasContent()) {
             List<BookSearchResDTO> models = data.get().map(BookSearchResDTO::new).toList();
             return new PagingResponse<>(models, data.getTotalElements(), data.getTotalPages());

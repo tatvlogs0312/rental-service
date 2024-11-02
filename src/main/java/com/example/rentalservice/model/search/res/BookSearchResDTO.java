@@ -25,6 +25,10 @@ public class BookSearchResDTO {
     private String tenantFirstName;
     private String tenantLastName;
     private String tenantPhoneNumber;
+    private String position;
+    private String ward;
+    private String district;
+    private String province;
 
     public BookSearchResDTO(Object[] x) {
         AtomicInteger i = new AtomicInteger(0);
@@ -40,5 +44,9 @@ public class BookSearchResDTO {
         this.tenantFirstName = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);
         this.tenantLastName = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);
         this.tenantPhoneNumber = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);
+        this.position = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);
+        this.ward = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);
+        this.district = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);
+        this.province = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);
     }
 }

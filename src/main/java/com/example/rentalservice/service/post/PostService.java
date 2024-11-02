@@ -194,6 +194,7 @@ public class PostService {
             CompletableFuture.runAsync(() -> {
                 ViewHistory viewHistory = new ViewHistory();
                 viewHistory.setId(UUID.randomUUID().toString());
+                viewHistory.setRoomId(room.getId());
                 viewHistory.setTimeView(LocalDateTime.now());
                 viewHistory.setUsername(tenant);
                 viewHistory.setRoomType(room.getRoomTypeId());

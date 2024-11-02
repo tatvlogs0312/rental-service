@@ -22,7 +22,11 @@ public interface BookingRepository extends JpaRepository<Booking, String> {
                    upl.phone_number  as lessorPhoneNumber,
                    upt.first_name    as tenantFirstName,
                    upt.last_name     as tenantLastName,
-                   upt.phone_number  as tenantPhoneNumber
+                   upt.phone_number  as tenantPhoneNumber,
+                   rp.detail     as position,
+                   rp.ward       as ward,
+                   rp.district   as district,
+                   rp.province   as province
             from booking b
                      join room r on b.room_id = r.id
                      join room_position rp on r.id = rp.room_id
@@ -31,7 +35,8 @@ public interface BookingRepository extends JpaRepository<Booking, String> {
             where 1 = 1
               and (:lessor is null or r.lessor = :lessor)
               and (:tenant is null or b.tenant = :tenant)
+              and (:status is null or b.status = :status)
             order by b.date_watch desc;
         """, nativeQuery = true)
-    Page<Object[]> findAllBookByUser(String lessor, String tenant, Pageable pageable);
+    Page<Object[]> findAllBookByUser(String lessor, String tenant, String status, Pageable pageable);
 }
