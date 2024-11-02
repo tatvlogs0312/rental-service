@@ -25,10 +25,10 @@ public class InputUtils {
         }
 
         if (Objects.isNull(req.getPriceFrom())) {
-            req.setPriceTo(0L);
+            req.setPriceFrom(0L);
         }
 
-        if (Objects.isNull(req.getPriceTo())) {
+        if (Objects.isNull(req.getPriceTo()) || Objects.equals(req.getPriceTo(), 0L)) {
             req.setPriceTo(100000000L);
         }
     }

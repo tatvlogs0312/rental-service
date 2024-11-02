@@ -1,4 +1,4 @@
-package com.example.rentalservice.service;
+package com.example.rentalservice.service.common;
 
 import com.example.rentalservice.entity.*;
 import com.example.rentalservice.exception.ApplicationException;

@@ -10,14 +10,17 @@ import com.example.rentalservice.model.post.NewPostReqDTO;
 import com.example.rentalservice.model.post.detail.PostDetailDTO;
 import com.example.rentalservice.model.room.detail.PositionDTO;
 import com.example.rentalservice.model.room.detail.UtilityDTO;
+import com.example.rentalservice.model.search.KeywordDTO;
 import com.example.rentalservice.model.search.req.PostSearchReqDTO;
 import com.example.rentalservice.model.search.res.PostSearchResDTO;
 import com.example.rentalservice.model.search.PagingResponse;
 import com.example.rentalservice.repository.*;
-import com.example.rentalservice.service.DataService;
+import com.example.rentalservice.service.common.DataService;
+import com.example.rentalservice.service.common.SearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,9 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -40,6 +42,8 @@ public class PostService {
     private final RoomUtilityRepository roomUtilityRepository;
     private final RoomPositionRepository roomPositionRepository;
     private final UserProfileRepository userProfileRepository;
+    private final ViewHistoryRepository viewHistoryRepository;
+    private final SearchService searchService;
     private final DataService dataService;
 
 
@@ -82,6 +86,21 @@ public class PostService {
 
     //Tìm kiem bai dang
     public PagingResponse<PostSearchResDTO> searchPost(PostSearchReqDTO req) {
+        //Handle keyword tim kiem
+        if (StringUtils.isNotBlank(req.getKeyword())) {
+            KeywordDTO keywordDTO = searchService.handleKeyword(req.getKeyword());
+            req.setProvince(keywordDTO.getProvince());
+            req.setDistrict(keywordDTO.getDistrict());
+            req.setWard(keywordDTO.getWard());
+            if (Objects.nonNull(keywordDTO.getPriceIs())) {
+                req.setPriceFrom(keywordDTO.getPriceIs());
+                req.setPriceTo(keywordDTO.getPriceIs());
+            } else {
+                req.setPriceFrom(keywordDTO.getPriceFrom());
+                req.setPriceTo(keywordDTO.getPriceTo());
+            }
+        }
+
         InputUtils.handleInputSearchPost(req);
 
         Pageable pageable = PageRequest.of(req.getPage(), req.getSize());
@@ -168,6 +187,21 @@ public class PostService {
                                     .build())
                             .toList()
             );
+        }
+
+        String tenant = JwtUtils.getUsername();
+        if (StringUtils.isNotBlank(tenant)) {
+            CompletableFuture.runAsync(() -> {
+                ViewHistory viewHistory = new ViewHistory();
+                viewHistory.setId(UUID.randomUUID().toString());
+                viewHistory.setTimeView(LocalDateTime.now());
+                viewHistory.setUsername(tenant);
+                viewHistory.setRoomType(room.getRoomTypeId());
+                viewHistory.setPosition(postDetailDTO.getPosition().getWard());
+                viewHistory.setPrice(room.getPrice());
+
+                viewHistoryRepository.save(viewHistory);
+            });
         }
 
         return postDetailDTO;

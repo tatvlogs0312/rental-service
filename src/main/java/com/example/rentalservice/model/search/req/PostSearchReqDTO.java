@@ -15,6 +15,7 @@ public class PostSearchReqDTO {
     private String district;
     private String ward;
     private String detail;
+    private String keyword;
     private Long priceFrom;
     private Long priceTo;
     private int page = 0;
