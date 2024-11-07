@@ -8,6 +8,7 @@ import lombok.*;
 @Setter
 @Builder
 public class BookSearchReqDTO {
+    private String date;
     private String status;
     private Integer page;
     private Integer size;

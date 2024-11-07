@@ -51,10 +51,10 @@ public class PostService {
     public void createNewPost(NewPostReqDTO req) {
         Room room = dataService.getRoom(req.getRoomId());
 
-        Boolean existPost = postRepository.existsAllByRoomId(req.getRoomId());
-        if (BooleanUtils.isTrue(existPost)) {
-            throw new ApplicationException("Phòng đã tạo bài đăng");
-        }
+//        Boolean existPost = postRepository.existsAllByRoomId(req.getRoomId());
+//        if (BooleanUtils.isTrue(existPost)) {
+//            throw new ApplicationException("Phòng đã tạo bài đăng");
+//        }
 
         List<RoomImage> images = roomImageRepository.findAllByRoomId(room.getId());
         if (CollectionUtils.isEmpty(images)) {
@@ -192,15 +192,21 @@ public class PostService {
         String tenant = JwtUtils.getUsername();
         if (StringUtils.isNotBlank(tenant)) {
             CompletableFuture.runAsync(() -> {
-                ViewHistory viewHistory = new ViewHistory();
-                viewHistory.setId(UUID.randomUUID().toString());
-                viewHistory.setRoomId(room.getId());
-                viewHistory.setTimeView(LocalDateTime.now());
-                viewHistory.setUsername(tenant);
-                viewHistory.setRoomType(room.getRoomTypeId());
-                viewHistory.setPosition(postDetailDTO.getPosition().getWard());
-                viewHistory.setPrice(room.getPrice());
-
+                Optional<ViewHistory> historyOtp = viewHistoryRepository.findFirstByUsernameAndPostId(tenant, postId);
+                ViewHistory viewHistory;
+                if (historyOtp.isEmpty()) {
+                    viewHistory = new ViewHistory();
+                    viewHistory.setId(UUID.randomUUID().toString());
+                    viewHistory.setRoomId(room.getId());
+                    viewHistory.setTimeView(LocalDateTime.now());
+                    viewHistory.setUsername(tenant);
+                    viewHistory.setRoomType(room.getRoomTypeId());
+                    viewHistory.setPosition(postDetailDTO.getPosition().getWard());
+                    viewHistory.setPrice(room.getPrice());
+                } else {
+                    viewHistory = historyOtp.get();
+                    viewHistory.setTimeView(LocalDateTime.now());
+                }
                 viewHistoryRepository.save(viewHistory);
             });
         }

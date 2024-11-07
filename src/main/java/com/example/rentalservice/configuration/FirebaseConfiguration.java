@@ -10,20 +10,28 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor
 public class FirebaseConfiguration {
 
     @Bean
-    FirebaseMessaging firebaseMessaging() throws IOException {
-        GoogleCredentials googleCredentials=GoogleCredentials
+    public FirebaseMessaging firebaseMessaging() throws IOException {
+        GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new FileInputStream("src/main/resources/rent-app-v2-firebase-adminsdk-gczhp-f60c134bc7.json"));
         FirebaseOptions firebaseOptions = FirebaseOptions
                 .builder()
                 .setCredentials(googleCredentials)
                 .build();
-        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "my-app");
+
+        FirebaseApp app;
+        if (FirebaseApp.getApps().isEmpty()) {
+            app = FirebaseApp.initializeApp(firebaseOptions);
+        } else {
+            app = FirebaseApp.getInstance();
+        }
+
         return FirebaseMessaging.getInstance(app);
     }
 }

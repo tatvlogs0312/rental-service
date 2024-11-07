@@ -21,6 +21,8 @@ public class ViewHistory {
     @Id
     private String id;
 
+    private String postId;
+
     private String roomId;
 
     private String roomType;

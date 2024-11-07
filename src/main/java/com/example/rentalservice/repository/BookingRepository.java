@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, String> {
 
@@ -36,7 +39,17 @@ public interface BookingRepository extends JpaRepository<Booking, String> {
               and (:lessor is null or r.lessor = :lessor)
               and (:tenant is null or b.tenant = :tenant)
               and (:status is null or b.status = :status)
-            order by b.date_watch desc;
+              and (:dateWatch is null or cast(b.date_watch as date) = cast(:dateWatch as date))
+            order by b.date_watch desc
         """, nativeQuery = true)
-    Page<Object[]> findAllBookByUser(String lessor, String tenant, String status, Pageable pageable);
+    Page<Object[]> findAllBookByUser(String lessor, String tenant, String status, String dateWatch, Pageable pageable);
+
+    @Query(value = """
+            select *
+            from booking
+            where date_part('year', date_watch) = :year
+              and date_part('month', date_watch) = :month
+              and room_id in (select id from room where lessor = :lessor)
+            """, nativeQuery = true)
+    List<Booking> findAllByMonthAndYear(Integer month, Integer year, String lessor);
 }

@@ -18,10 +18,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +54,7 @@ public class BookingService {
         String tenant = JwtUtils.getUsername();
         Pageable pageable = RepositoryUtils.createPageable(req.getPage(), req.getSize());
 
-        Page<Object[]> data = bookingRepository.findAllBookByUser(null, tenant, req.getStatus(), pageable);
+        Page<Object[]> data = bookingRepository.findAllBookByUser(null, tenant, req.getStatus(), null, pageable);
         if (data.hasContent()) {
             List<BookSearchResDTO> models = data.get().map(BookSearchResDTO::new).toList();
             return new PagingResponse<>(models, data.getTotalElements(), data.getTotalPages());
@@ -64,7 +67,8 @@ public class BookingService {
         String lessor = JwtUtils.getUsername();
         Pageable pageable = RepositoryUtils.createPageable(req.getPage(), req.getSize());
 
-        Page<Object[]> data = bookingRepository.findAllBookByUser(lessor, null, req.getStatus(), pageable);
+        LocalDate date = Objects.nonNull(req.getDate()) ? DateUtils.convertToLocalDate(req.getDate(), DateUtils.YYYY_MM_DD) : null;
+        Page<Object[]> data = bookingRepository.findAllBookByUser(lessor, null, req.getStatus(), date.toString(), pageable);
         if (data.hasContent()) {
             List<BookSearchResDTO> models = data.get().map(BookSearchResDTO::new).toList();
             return new PagingResponse<>(models, data.getTotalElements(), data.getTotalPages());
@@ -78,5 +82,14 @@ public class BookingService {
         booking.setStatus(req.getStatus());
         booking.setBookingMessage(req.getMessage());
         bookingRepository.save(booking);
+    }
+
+    public List<String> getBookInMonth(Integer month, Integer year) {
+        List<Booking> bookings = bookingRepository.findAllByMonthAndYear(month, year, JwtUtils.getUsername());
+        if (!CollectionUtils.isEmpty(bookings)) {
+            return bookings.stream().map(b -> DateUtils.toStr(b.getDateWatch(), DateUtils.YYYY_MM_DD)).distinct().toList();
+        }
+
+        return new ArrayList<>();
     }
 }
