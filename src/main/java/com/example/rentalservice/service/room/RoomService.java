@@ -60,25 +60,15 @@ public class RoomService {
 
         Room room = new Room();
         room.setId(roomId);
+        room.setRoomTypeId(req.getId());
         room.setLessor(lessor);
         room.setRoomCode(roomType.getCode() + roomRepository.getSeqRoomCode().toString());
         room.setNumberOfRom(req.getNumberOfRoom());
         room.setAcreage(req.getAcreage());
         room.setPrice(req.getPrice());
         room.setRoomStatus(RoomStatusEnum.EMPTY.name());
-        room.setRoomTypeId(req.getRoomTypeId());
-
-        RoomPosition roomPosition = new RoomPosition();
-        roomPosition.setId(UUID.randomUUID().toString());
-        roomPosition.setRoomId(roomId);
-        roomPosition.setProvince(req.getProvince());
-        roomPosition.setDistrict(req.getDistrict());
-        roomPosition.setWard(req.getWard());
-        roomPosition.setDetail(req.getPositionDetail());
 
         roomRepository.save(room);
-        roomPositionRepository.save(roomPosition);
-
         return roomId;
     }
 
