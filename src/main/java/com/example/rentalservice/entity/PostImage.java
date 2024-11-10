@@ -12,28 +12,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity(name = "room")
-@Table(name = "room")
-public class Room {
+@Entity(name = "post_image")
+@Table(name = "post_image")
+public class PostImage {
 
     @Id
     private String id;
 
-    private String roomCode;
+    private String postId;
 
-    private String lessor;
-
-    private Long price;
-
-    private Integer acreage;
-
-    private Integer numberOfRom;
-
-    private String roomTypeId;
-
-    private String roomStatus;
-
-    private String roomName;
-
-    private String houseId;
+    private String url;
 }

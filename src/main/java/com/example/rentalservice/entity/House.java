@@ -9,32 +9,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity(name = "post")
-@Table(name = "post")
-public class Post {
+@Entity(name = "house")
+@Table(name = "house")
+public class House {
 
     @Id
     private String id;
 
-    private String lessor;
-
-    private String roomId;
-
-    private Long numberWatch;
-
     @Column(columnDefinition = "TEXT")
-    private String title;
-
-    @Column(columnDefinition = "TEXT")
-    private String content;
-
-    private LocalDateTime createTime;
+    private String houseName;
 
     @Column(columnDefinition = "TEXT")
     private String province;
@@ -48,7 +35,5 @@ public class Post {
     @Column(columnDefinition = "TEXT")
     private String positionDetail;
 
-    private Long price;
-
-    private String roomTypeId;
+    private String lessor;
 }

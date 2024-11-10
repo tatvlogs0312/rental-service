@@ -1,0 +1,368 @@
+-- create table bill
+-- (
+--     id               varchar(255) not null
+--         primary key,
+--     contract_id      varchar(255),
+--     create_date      date,
+--     is_rent_continue boolean,
+--     month            integer,
+--     payment_date     date,
+--     status           varchar(255),
+--     year             integer
+-- );
+--
+-- alter table bill
+--     owner to postgres;
+--
+-- create table bill_detail
+-- (
+--     id              varchar(255) not null
+--         primary key,
+--     bill_id         varchar(255),
+--     number_used     integer,
+--     room_utility_id varchar(255)
+-- );
+--
+-- alter table bill_detail
+--     owner to postgres;
+--
+-- create table booking
+-- (
+--     id              varchar(255) not null
+--         primary key,
+--     booking_message text,
+--     room_id         varchar(255),
+--     status          varchar(255),
+--     tenant          varchar(255),
+--     date_watch      timestamp,
+--     date_booking    timestamp
+-- );
+--
+-- alter table booking
+--     owner to postgres;
+--
+-- INSERT INTO public.booking (id, booking_message, room_id, status, tenant, date_watch, date_booking) VALUES ('4ccc9ae6-08ec-4c36-b3fc-6b7f82027da1', null, '8678d0e2-b843-47af-a6e2-74e048cb233c', 'BOOKED', 'tenant01', '2024-10-23 14:00:00.000000', '2024-10-23 22:59:20.246214');
+-- INSERT INTO public.booking (id, booking_message, room_id, status, tenant, date_watch, date_booking) VALUES ('ca52ea40-0599-4b5d-8ec6-8c8b8d6cdd77', null, 'fe8fe7e7-5206-4e2c-8a4a-ae24f27f243a', 'BOOKED', 'tenant01', '2024-02-11 14:00:00.000000', '2024-11-02 23:58:22.245179');
+-- INSERT INTO public.booking (id, booking_message, room_id, status, tenant, date_watch, date_booking) VALUES ('b127931e-bab3-465b-ac27-0f8f51e8738d', null, '941c14b9-cef3-4fc9-9a35-823b95570fa5', 'BOOKED', 'tenant01', '2024-02-11 15:00:00.000000', '2024-11-03 00:00:07.500219');
+-- INSERT INTO public.booking (id, booking_message, room_id, status, tenant, date_watch, date_booking) VALUES ('77da67a6-8537-4e36-ade2-29853e93228f', null, 'fe8fe7e7-5206-4e2c-8a4a-ae24f27f243a', 'BOOKED', 'tenant01', '2024-11-04 14:00:00.000000', '2024-11-03 20:10:05.971924');
+-- INSERT INTO public.booking (id, booking_message, room_id, status, tenant, date_watch, date_booking) VALUES ('3ca5863c-b669-4052-87fb-896ab1e38055', null, 'fe8fe7e7-5206-4e2c-8a4a-ae24f27f243a', 'BOOKED', 'tenant02', '2024-11-05 09:00:00.000000', '2024-11-03 16:51:25.781521');
+--
+-- create table contract
+-- (
+--     id            varchar(255) not null
+--         primary key,
+--     actual_price  bigint,
+--     contract_code varchar(255),
+--     effect_date   date,
+--     end_date      date,
+--     room_id       varchar(255),
+--     tenant        varchar(255)
+-- );
+--
+-- alter table contract
+--     owner to postgres;
+--
+-- create table post
+-- (
+--     id          varchar(255) not null
+--         primary key,
+--     content     text,
+--     create_time timestamp(6),
+--     lessor      varchar(255),
+--     room_id     varchar(255),
+--     title       text
+-- );
+--
+-- alter table post
+--     owner to postgres;
+--
+-- INSERT INTO public.post (id, content, create_time, lessor, room_id, title) VALUES ('9a2b8539-fb29-4673-ab51-3e9a0097d6b7', 'Cho thuê chung cư mini ở Phạm văn Đồng. Giờ giấc tự do. Gần các trường đại học như Điện Lực, Thương Mại, Quốc Gia, ...', '2024-09-16 21:51:24.859686', 'lessor01', '8678d0e2-b843-47af-a6e2-74e048cb233c', 'Cho thuê chung cư mini ở Phạm Văn Đồng');
+-- INSERT INTO public.post (id, content, create_time, lessor, room_id, title) VALUES ('4d03c428-fae6-4ec2-abc8-0ea6d484f5b6', 'Cho thuê chung cư mini ở ngõ 132 Hoa Bằng. Giờ giấc tự do', '2024-09-16 21:48:36.418856', 'lessor01', 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 'Cho thuê chung cư mini ở Hoa Bằng');
+-- INSERT INTO public.post (id, content, create_time, lessor, room_id, title) VALUES ('efaced2d-374a-43c6-b5ef-e9cde1407fbf', 'Cho thuê chung cư mini ở ngõ 132 Quan Hoa. Giờ giấc tự do, không chung chủ. Gần các trường đại học như GTVT, Ngoại thương', '2024-09-16 21:55:59.887245', 'lessor01', '6f708e38-dfaa-4f25-b559-4e65c2ccd411', 'Cho thuê phòng trọ sinh viên ở Quan Hoa');
+-- INSERT INTO public.post (id, content, create_time, lessor, room_id, title) VALUES ('28599c22-0127-424f-a5eb-ab6eb40c4f1c', 'Vị trí: 68 Cầu Giấy, gần các trường nhưng Quốc gia, Điện lực, Thương mại', '2024-09-16 22:00:10.500869', 'lessor01', '53e6e3ee-829e-44a0-b662-7882bd0a2ccd', 'Cho thuê phòng trọ sinh viên ở Cầu giấy');
+-- INSERT INTO public.post (id, content, create_time, lessor, room_id, title) VALUES ('e6857390-313b-484f-9dfb-47aa70f97a06', 'Không chung chủ, giờ giấc thoải mái', '2024-09-16 22:02:32.279527', 'lessor01', '941c14b9-cef3-4fc9-9a35-823b95570fa5', 'Cho thuê phòng trọ Hoa Bằng, Yên Hòa');
+-- INSERT INTO public.post (id, content, create_time, lessor, room_id, title) VALUES ('556785a2-97fe-4cb4-872b-20ad4f16b712', e'Cho thuê chung cư tại Hoa Bằng gần chợ, cách công viên Cầu Giấy 1km.
+-- - Phù hợp cho sinh viên, người đi làm
+-- - Để xe 🚗 tầng 1 free', '2024-10-19 21:25:56.418535', 'lessor01', 'fe8fe7e7-5206-4e2c-8a4a-ae24f27f243a', 'Cho thuê chung cư tại Hoa Bằng');
+--
+--
+-- create table room
+-- (
+--     id            varchar(255) not null
+--         primary key,
+--     acreage       integer,
+--     lessor        varchar(255),
+--     number_of_rom integer,
+--     price         bigint,
+--     room_code     varchar(255),
+--     room_status   varchar(255),
+--     room_type_id  varchar(255)
+-- );
+--
+-- alter table room
+--     owner to postgres;
+--
+-- INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('75d0b682-6c5f-4817-b25a-96f504b00379', 18, 'lessor01', 1, 3000000, 'MO3', 'EMPTY', '2a3addb6-8d91-41a4-ac39-840156f9b9ca');
+-- INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('eeaf0ac4-6646-4d00-a4a7-cc1195ae2836', 15, 'lessor01', 1, 2000000, 'MO4', 'EMPTY', '2a3addb6-8d91-41a4-ac39-840156f9b9ca');
+-- INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('941c14b9-cef3-4fc9-9a35-823b95570fa5', 35, 'lessor01', 1, 2800000, 'MO5', 'EMPTY', '2a3addb6-8d91-41a4-ac39-840156f9b9ca');
+-- INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('53e6e3ee-829e-44a0-b662-7882bd0a2ccd', 20, 'lessor01', 1, 3000000, 'MO6', 'EMPTY', '2a3addb6-8d91-41a4-ac39-840156f9b9ca');
+-- INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('8678d0e2-b843-47af-a6e2-74e048cb233c', 40, 'lessor01', 2, 6500000, 'MDP7', 'EMPTY', '052f5a0a-442a-4ce0-8058-c73db36bd639');
+-- INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('6f708e38-dfaa-4f25-b559-4e65c2ccd411', 12, 'lessor01', 1, 2000000, 'MO2', 'EMPTY', '2a3addb6-8d91-41a4-ac39-840156f9b9ca');
+-- INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('de602876-9cdf-4c58-906d-bdb477073bb6', 5000000, 'lessor01', 5000000, 5000000, 'STU9', 'EMPTY', 'ea2585f1-fc32-46d4-a9cf-83fb80e9788d');
+-- INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('fe8fe7e7-5206-4e2c-8a4a-ae24f27f243a', 50, 'lessor01', 2, 8000000, 'DP8', 'EMPTY', '451122e0-c4ef-402f-9a49-7c591104cc2d');
+-- INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 29, 'lessor01', 1, 4000000, 'MDP1', 'EMPTY', '052f5a0a-442a-4ce0-8058-c73db36bd639');
+-- INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('4ce872f2-e2bd-4912-a1a8-6b6973bf7973', 30, 'lessor01', 1, 4000000, 'MDP10', 'EMPTY', '052f5a0a-442a-4ce0-8058-c73db36bd639');
+-- INSERT INTO public.room (id, acreage, lessor, number_of_rom, price, room_code, room_status, room_type_id) VALUES ('179eae01-c452-4a5e-9ea7-508b45c99d43', 30, 'lessor01', 2, 8000000, 'STU11', 'EMPTY', 'ea2585f1-fc32-46d4-a9cf-83fb80e9788d');
+--
+--
+-- create table room_image
+-- (
+--     id      varchar(255) not null
+--         primary key,
+--     room_id varchar(255),
+--     url     varchar(255),
+--     index   integer
+-- );
+--
+-- alter table room_image
+--     owner to postgres;
+--
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('c51bd617-abb6-46ce-8218-8016c7d95e4c', 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 'f5d2cffc-fc70-4ff5-8141-1089b994676f.png', 1);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('617e932b-3a28-4ac3-8997-a911c4d942df', '6f708e38-dfaa-4f25-b559-4e65c2ccd411', 'd8696074-53c3-4570-94f5-ce589cdcaecb.png', 2);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('484d2fa3-7819-48ed-96db-d7e68d4bc77d', '53e6e3ee-829e-44a0-b662-7882bd0a2ccd', '5ddb2290-87ed-413d-ae78-e75485002ddc.png', 1);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('99fec160-5b6d-402a-8ae2-e2ef0f0e810d', '8678d0e2-b843-47af-a6e2-74e048cb233c', '0b4a3b12-bfe0-42c7-aa53-3316ae6341dd.png', 3);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('b2a99b98-ed18-4f52-9c02-3b6b5e3699fc', 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 'cff510dd-c483-4d92-b33b-73d7123b2352.png', 4);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('a910fa4b-f9ab-44c7-8014-43ccbccf41f5', '8678d0e2-b843-47af-a6e2-74e048cb233c', '59b10211-8096-476d-a203-2c69d39f23e7.png', 6);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('02ec4548-a05e-43b9-9a72-c3aa3f8eb7d3', '8678d0e2-b843-47af-a6e2-74e048cb233c', '13ea9286-5aa3-49e4-b87a-92255e94edfb.png', 1);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('b92bb892-cd95-40c4-831b-097b0ae0926e', '8678d0e2-b843-47af-a6e2-74e048cb233c', '9feaa478-714d-43b3-9875-03e7c3379f23.png', 2);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('a6c8d08b-aeaa-47f4-a4aa-e00e86eec1a2', '941c14b9-cef3-4fc9-9a35-823b95570fa5', 'e3d0eb1c-0934-4bc1-9c4e-8cbd87e52037.png', 2);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('ae575e78-7dad-4ffa-80a0-63235696debc', '8678d0e2-b843-47af-a6e2-74e048cb233c', 'd865d8d8-5581-402f-bb58-0b77d9f12848.png', 4);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('3b60024f-56c1-4d5c-bd11-5a4555c58552', 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', '9c0b95cc-a3e4-4046-8cd1-55fcf72cbe2c.png', 5);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('d44088ac-086a-40b1-ad04-b7adf86eea26', '6f708e38-dfaa-4f25-b559-4e65c2ccd411', 'c4e24cf3-9ae7-440b-a16a-ccb3a14d8220.png', 1);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('20cbb71f-3be6-4f2a-a04e-e2ad41a4a636', '53e6e3ee-829e-44a0-b662-7882bd0a2ccd', 'cdc6e150-3a5b-45b7-aa61-0d415d09afe5.png', 2);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('9f16e127-ae44-4ff9-9109-2d64813a930f', 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 'b56fdc6b-9732-4e4d-835c-cb6db869a5be.png', 2);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('5e40086a-0304-452d-a219-2511fcbf6b95', '941c14b9-cef3-4fc9-9a35-823b95570fa5', '285a199d-f4e5-4a63-b641-6c5432f909f7.png', 1);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('1898c4b3-d7bc-435b-a0ac-9209aac01b3b', '6f708e38-dfaa-4f25-b559-4e65c2ccd411', '4d6ef1d4-59d9-488f-9ca8-be118538990e.png', 3);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('834b9b49-7d17-4e40-9795-74df22771ea8', '53e6e3ee-829e-44a0-b662-7882bd0a2ccd', '1d9ae76e-96f2-4c64-9028-915518cbfb2c.png', 3);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('9151061d-45df-427e-8048-e883ec057771', 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', '59e9970f-80c4-4366-a1ba-5fbec6e9829b.png', 3);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('48c4dff4-5295-4d46-b972-ba339101efd0', '8678d0e2-b843-47af-a6e2-74e048cb233c', '3f2cb1d8-2694-4b51-91ad-a079722f626f.png', 5);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('40da37ec-25e8-472c-8fac-1bac1a7dd987', '75d0b682-6c5f-4817-b25a-96f504b00379', 'b29c1523-ace2-464f-946b-a62221c76177.png', null);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('543f7794-e9c0-4982-b3ab-8e2a83bad453', '75d0b682-6c5f-4817-b25a-96f504b00379', '5b7f06e5-d6fb-4e30-ba31-024a27cb403d.png', null);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('36e9ad0d-1949-458e-8081-671c9d227732', '75d0b682-6c5f-4817-b25a-96f504b00379', 'b0770539-7a27-4be0-8351-bf3f7d8a70d0.png', null);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('a0bf7821-2d25-4f86-8612-4ddb25fd09fd', '941c14b9-cef3-4fc9-9a35-823b95570fa5', '386d2670-d543-4081-9c81-17334351cbee.png', null);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('e999b3f7-5653-46c8-8994-1bf04ee1891f', '4ce872f2-e2bd-4912-a1a8-6b6973bf7973', '3e1fbbdb-9aa8-4289-84cf-04cf1a5e84f9.png', null);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('8ed75c95-24dc-4d73-a8ff-d4bec4aaef4e', '4ce872f2-e2bd-4912-a1a8-6b6973bf7973', '3925d88a-3cfd-420a-9433-d2bda5e5a8e0.png', null);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('103a10b5-f0d0-47d1-987b-d9dc88475e66', '4ce872f2-e2bd-4912-a1a8-6b6973bf7973', 'de28e957-4c7b-4b3c-b2f6-1b8a8ae0397a.png', null);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('44f6ded7-6d04-4b99-b9fc-0b9ec772859a', '4ce872f2-e2bd-4912-a1a8-6b6973bf7973', '971d164f-d8f3-4573-ad11-47954b330bfa.png', null);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('06d1e5af-f240-4924-b52b-890cb540bde9', 'fe8fe7e7-5206-4e2c-8a4a-ae24f27f243a', '6692ce61-3bdb-400d-9f11-d9118242a533.png', null);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('2c430ff6-4f7f-42f4-9e65-7990b10ad9e5', 'fe8fe7e7-5206-4e2c-8a4a-ae24f27f243a', '1eeb26ec-fc14-4c4d-a5e7-c54eb68bb7c4.png', null);
+-- INSERT INTO public.room_image (id, room_id, url, index) VALUES ('074623b4-b485-4f6b-9b89-33da8d61cc41', 'fe8fe7e7-5206-4e2c-8a4a-ae24f27f243a', 'e8204852-43fe-4475-b471-6c76a5ccdd91.png', null);
+--
+--
+-- create table room_position
+-- (
+--     id       varchar(255) not null
+--         primary key,
+--     detail   text,
+--     district text,
+--     province text,
+--     room_id  varchar(255),
+--     ward     text
+-- );
+--
+-- alter table room_position
+--     owner to postgres;
+--
+-- INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('f9ec9244-6eb8-45b1-a462-a07082cc7298', 'Số 7A ngõ 132 Phố Hoa Bằng', 'Cầu Giấy', 'Hà Nội', 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 'Yên Hòa');
+-- INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('8ad5dbd1-bc1d-434e-afd8-d5b411630db9', 'Số 48 ngõ 132 Đường Cầu Giấy', 'Cầu Giấy', 'Hà Nội', '6f708e38-dfaa-4f25-b559-4e65c2ccd411', 'Quan Hoa');
+-- INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('4eb94865-a9b0-4778-b2dc-e71888e290bc', 'Số 45C ngõ 85 Đường Cầu Giấy', 'Cầu Giấy', 'Hà Nội', '75d0b682-6c5f-4817-b25a-96f504b00379', 'Xuân Thủy');
+-- INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('42365f93-5d9d-419e-b246-63c2aad48cdd', 'Số 7A ngõ 132 Đường Cầu Giấy', 'Cầu Giấy', 'Hà Nội', 'eeaf0ac4-6646-4d00-a4a7-cc1195ae2836', 'Quan Hoa');
+-- INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('2bbdd400-4eb2-4144-818f-3cb25afdce96', 'Số 8 ngõ 99 Phố Hoa Bằng', 'Cầu Giấy', 'Hà Nội', '941c14b9-cef3-4fc9-9a35-823b95570fa5', 'Yên Hòa');
+-- INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('e62d2974-f8d8-4b1f-bad5-8432b535dc6b', '68 Cầu Giấy', 'Cầu Giấy', 'Hà Nội', '53e6e3ee-829e-44a0-b662-7882bd0a2ccd', 'Xuân Thủy');
+-- INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('6c0c271d-f962-43aa-988e-90cd94c868b3', '355 Phạm Văn Đồng', 'Bắc Từ Liêm', 'Hà Nội', '8678d0e2-b843-47af-a6e2-74e048cb233c', 'Cổ Nhuế');
+-- INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('c84a60d3-e0ce-42f8-a81c-d9ce3129e197', 'Số 12 ngõ 132 Phố Hoa Bằng', 'Cầu Giấy', 'Hà Nội', 'fe8fe7e7-5206-4e2c-8a4a-ae24f27f243a', 'Yên Hòa');
+-- INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('d1fa1a7f-b8d5-49df-b463-db90b7f92ce8', 'Số 12 ngõ 324 đường Kim Mã', 'Ba Đình', 'Hà Nội', 'de602876-9cdf-4c58-906d-bdb477073bb6', 'Kim Mã');
+-- INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('8482ca40-26b7-4c74-aba2-52c784b95d37', 'Ngõ 381 Nguyễn Khang', 'Cầu Giấy', 'Hà Nội', '4ce872f2-e2bd-4912-a1a8-6b6973bf7973', 'Phường Quan Hoa');
+-- INSERT INTO public.room_position (id, detail, district, province, room_id, ward) VALUES ('926b1a57-4c73-4635-9d3a-b416aadba891', '58 đường Đội Cấn', 'Quận Ba Đình', 'Thành phố Hà Nội', '179eae01-c452-4a5e-9ea7-508b45c99d43', 'Phường Đội Cấn');
+--
+-- create table room_type
+-- (
+--     id   varchar(255) not null
+--         primary key,
+--     code varchar(255),
+--     name varchar(255)
+-- );
+--
+-- alter table room_type
+--     owner to postgres;
+--
+-- INSERT INTO public.room_type (id, code, name) VALUES ('052f5a0a-442a-4ce0-8058-c73db36bd639', 'MDP', 'Chung cư mini');
+-- INSERT INTO public.room_type (id, code, name) VALUES ('ea2585f1-fc32-46d4-a9cf-83fb80e9788d', 'STU', 'Studio');
+-- INSERT INTO public.room_type (id, code, name) VALUES ('451122e0-c4ef-402f-9a49-7c591104cc2d', 'DP', 'Chung cư');
+-- INSERT INTO public.room_type (id, code, name) VALUES ('e74c4ab0-c82b-4b8e-beed-e203bc692942', 'OT', 'Khác');
+-- INSERT INTO public.room_type (id, code, name) VALUES ('2a3addb6-8d91-41a4-ac39-840156f9b9ca', 'MO', 'Phòng trọ');
+-- INSERT INTO public.room_type (id, code, name) VALUES ('32065838-d798-46bd-a26d-40a6d9d9dabf', 'DOR', 'Ký túc xá');
+--
+--
+-- create table room_utility
+-- (
+--     id         varchar(255) not null
+--         primary key,
+--     is_active  boolean,
+--     price      bigint,
+--     room_id    varchar(255),
+--     unit       varchar(255),
+--     utility_id varchar(255)
+-- );
+--
+-- alter table room_utility
+--     owner to postgres;
+--
+-- INSERT INTO public.room_utility (id, is_active, price, room_id, unit, utility_id) VALUES ('c3e5a80d-9d02-4f97-b313-2ebb405185d8', true, 4000, 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 'Số', 'd0dd23ed-ea8a-4d2a-a4a8-0acb0374d656');
+-- INSERT INTO public.room_utility (id, is_active, price, room_id, unit, utility_id) VALUES ('a63eed46-bb82-4d80-9b3e-7c69d066e557', true, 100000, 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 'Người', '3c5f7ef2-63c4-495f-a680-eac6c4365c57');
+-- INSERT INTO public.room_utility (id, is_active, price, room_id, unit, utility_id) VALUES ('8eb5a3e7-1587-4520-8ab2-26823807227f', true, 100000, 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 'Phòng', '261e8edf-5ba0-4419-93e9-7ca6d7ecf543');
+-- INSERT INTO public.room_utility (id, is_active, price, room_id, unit, utility_id) VALUES ('7b72299b-6875-4d77-a7e9-4477f2306b20', true, 50000, 'f8cde6f7-10b0-4655-a9b6-9728923aa6ea', 'Phòng', '9fa69f47-3c9c-4beb-bf10-b5c93dd2324b');
+-- INSERT INTO public.room_utility (id, is_active, price, room_id, unit, utility_id) VALUES ('924490a5-77ca-49a8-b8de-bf6b3cdb287d', true, 4000, '6f708e38-dfaa-4f25-b559-4e65c2ccd411', 'Số', '2cd3e21e-7277-48d1-9b5b-35cd35a5a7b4');
+-- INSERT INTO public.room_utility (id, is_active, price, room_id, unit, utility_id) VALUES ('7b8d6771-0e93-4207-bc72-33cfd0aa44f7', true, 3800, '8678d0e2-b843-47af-a6e2-74e048cb233c', 'Số', 'd0dd23ed-ea8a-4d2a-a4a8-0acb0374d656');
+-- INSERT INTO public.room_utility (id, is_active, price, room_id, unit, utility_id) VALUES ('e5b70fc2-dbaa-4f8e-8082-54be4dcff7e4', true, 10000, '8678d0e2-b843-47af-a6e2-74e048cb233c', 'Khối', '3c5f7ef2-63c4-495f-a680-eac6c4365c57');
+-- INSERT INTO public.room_utility (id, is_active, price, room_id, unit, utility_id) VALUES ('a3ca90c1-6cd7-4ae3-97fc-1fb6a96d165b', true, 4000, '6f708e38-dfaa-4f25-b559-4e65c2ccd411', 'Số', 'd0dd23ed-ea8a-4d2a-a4a8-0acb0374d656');
+-- INSERT INTO public.room_utility (id, is_active, price, room_id, unit, utility_id) VALUES ('74ae9dc8-bda8-4071-9bae-ab960bb8c969', true, 2800, 'fe8fe7e7-5206-4e2c-8a4a-ae24f27f243a', 'Số', 'd0dd23ed-ea8a-4d2a-a4a8-0acb0374d656');
+-- INSERT INTO public.room_utility (id, is_active, price, room_id, unit, utility_id) VALUES ('7affdf9c-b6ae-4761-88cc-2825aceea8ac', true, 4000, '941c14b9-cef3-4fc9-9a35-823b95570fa5', 'Số', 'd0dd23ed-ea8a-4d2a-a4a8-0acb0374d656');
+-- INSERT INTO public.room_utility (id, is_active, price, room_id, unit, utility_id) VALUES ('141acf80-aa41-47c8-b669-e7f77929f46b', true, 30000, '941c14b9-cef3-4fc9-9a35-823b95570fa5', 'Người', '261e8edf-5ba0-4419-93e9-7ca6d7ecf543');
+-- INSERT INTO public.room_utility (id, is_active, price, room_id, unit, utility_id) VALUES ('bda4a7f0-e739-4a6f-9897-e89894bc9198', true, 10000, '941c14b9-cef3-4fc9-9a35-823b95570fa5', 'Khối', '3c5f7ef2-63c4-495f-a680-eac6c4365c57');
+-- INSERT INTO public.room_utility (id, is_active, price, room_id, unit, utility_id) VALUES ('3f6742b4-0083-469a-bccb-2527139fb197', true, 100000, 'fe8fe7e7-5206-4e2c-8a4a-ae24f27f243a', 'Phòng', '2cd3e21e-7277-48d1-9b5b-35cd35a5a7b4');
+--
+--
+-- create table user_notification
+-- (
+--     id       varchar(255) not null
+--         primary key,
+--     username varchar(255),
+--     device   text
+-- );
+--
+-- alter table user_notification
+--     owner to postgres;
+--
+-- INSERT INTO public.user_notification (id, username, device) VALUES ('d40eb385-bae0-48f1-be92-4b9cd67669ba', 'tenant01', 'dKnisgs0SfSmxns9r726kP:APA91bHzZ7whlO_YmPOmcN6oEANuAvvacI88jr9cr84KPzOEQeF3Xv5RENvO2hCivGR_JAMRqFHBEnvzE6PjhuSZc9lFECAWBkVHV2wB5xyGxz_4_W3eICw');
+-- INSERT INTO public.user_notification (id, username, device) VALUES ('d5534554-53f4-404b-b195-2ea3a31e6b2d', 'lessor01', 'dKnisgs0SfSmxns9r726kP:APA91bHzZ7whlO_YmPOmcN6oEANuAvvacI88jr9cr84KPzOEQeF3Xv5RENvO2hCivGR_JAMRqFHBEnvzE6PjhuSZc9lFECAWBkVHV2wB5xyGxz_4_W3eICw');
+-- INSERT INTO public.user_notification (id, username, device) VALUES ('75837903-f18f-449b-a771-997e06abbe00', 'lessor02', 'dKnisgs0SfSmxns9r726kP:APA91bHzZ7whlO_YmPOmcN6oEANuAvvacI88jr9cr84KPzOEQeF3Xv5RENvO2hCivGR_JAMRqFHBEnvzE6PjhuSZc9lFECAWBkVHV2wB5xyGxz_4_W3eICw');
+-- INSERT INTO public.user_notification (id, username, device) VALUES ('dc6061a7-959b-4890-9ceb-96f85fe1f475', 'tenant02', 'dKnisgs0SfSmxns9r726kP:APA91bHzZ7whlO_YmPOmcN6oEANuAvvacI88jr9cr84KPzOEQeF3Xv5RENvO2hCivGR_JAMRqFHBEnvzE6PjhuSZc9lFECAWBkVHV2wB5xyGxz_4_W3eICw');
+-- INSERT INTO public.user_notification (id, username, device) VALUES ('c84ac9f7-e315-4f8e-92a0-e957db9ee3d7', 'lessor01', 'fDdI--hVRkeFE-AFdPX6sM:APA91bHzXCFoG7Txsr8XA9d6BM8piGrWCalpXeFFWyCxCYcUNKFokgDZpBeVZb5xbI2dJKxcFPorLsSEx1QnzjB0T9DqsCX0s1GkbHhL7psYBnxT2J-RS_Y');
+-- INSERT INTO public.user_notification (id, username, device) VALUES ('410c7f46-5b7a-406a-ae37-844d0b899055', 'tenant01', 'fDdI--hVRkeFE-AFdPX6sM:APA91bHzXCFoG7Txsr8XA9d6BM8piGrWCalpXeFFWyCxCYcUNKFokgDZpBeVZb5xbI2dJKxcFPorLsSEx1QnzjB0T9DqsCX0s1GkbHhL7psYBnxT2J-RS_Y');
+--
+-- create table user_profile
+-- (
+--     id              varchar(255) not null
+--         primary key,
+--     email           varchar(255),
+--     first_name      varchar(255),
+--     identity_number varchar(255),
+--     last_name       varchar(255),
+--     password        varchar(255),
+--     phone_number    varchar(255),
+--     role            varchar(255),
+--     status          varchar(255),
+--     username        varchar(255)
+-- );
+--
+-- alter table user_profile
+--     owner to postgres;
+--
+-- INSERT INTO public.user_profile (id, email, first_name, identity_number, last_name, password, phone_number, role, status, username) VALUES ('6b2b6e80-dd30-4cd5-951a-36e9e892241f', 'tanhtuan093@gmail.com', 'Trần Anh', '036202008596', 'Tuấn', 'k3o5KlBj6a+igfL4wu+A3Sz8lw1foll5lFKizS+ytNu2aGmOeOTM0gCMOwBk/Ec8p1qGatdoDJz7pCoPteTrIHl0+HkwEmi6UO/UZd7YoOOlFxrbJuE+0xFVCebVhuRR91ITfZc4urUF/pzdI3cAaL7KrC0hRxBIYyxoaIWKhPk=', '0384551953', 'TENANT', 'ACTIVE', 'tenant01');
+-- INSERT INTO public.user_profile (id, email, first_name, identity_number, last_name, password, phone_number, role, status, username) VALUES ('df181cb9-ab71-4c90-8461-20930b90e6df', null, null, null, null, 'gPGokzmPpcbZ+crpPSD4xkBYZGU2diH/P5oWIgjWuhcuhOB9pp9LJoWT1rfE+Kj9ZPezS4CtW4hCQvQJutKxaOqRLniLKxmNQS9qinMcoiWWz2FRvbXwm+58A6JaUtxFR2MGU6d8dhQTNN2EfTFIwMagprNTxWif1luO/MqDpIs=', null, 'ADMIN', 'PENDING', 'admin01');
+-- INSERT INTO public.user_profile (id, email, first_name, identity_number, last_name, password, phone_number, role, status, username) VALUES ('d72d5510-4af5-48a2-bde6-49fa7907df31', 'tanhtuan093@gmail.com', 'Trần Anh', '036202008596', 'Tuấn', 'dkmCwlIW+IRBOJygfUV5rOfxJnO1BPy9//2N+APOh9XCMByaer2LX9adFWIuligpV7lUkD4hyJ0Nyd3kiBE1jBayDu8kE1wWOW3SDm9fEP4rYoxbW5op+PaA2znLLJAtZWGzj03bcD+28sEw7rVmG7G2dooAzUoUp6NXHFgNJgM=', '0384551953', 'LESSOR', 'ACTIVE', 'lessor01');
+-- INSERT INTO public.user_profile (id, email, first_name, identity_number, last_name, password, phone_number, role, status, username) VALUES ('c67e9699-85a1-4ff1-9a7d-210ad5008945', null, null, null, null, 'YbrqbFdV+s7WeTH9L6LkqAuWYbG93ut+pHGrlU8DqBepek6ES9S3WQdhDuUzQpg2VGJhsbaNAZqkFbfvk2t/28n+sYeZEYy0JnVX+qRKuQYDC6lmUL76OGMkc2ATUia3/b3yC1qpJ8sXMcWelkfvcC29S3vUCkkg8/RObMCQojQ=', null, 'LESSOR', 'PENDING', 'lessor02');
+-- INSERT INTO public.user_profile (id, email, first_name, identity_number, last_name, password, phone_number, role, status, username) VALUES ('1da80bd3-f84f-4b65-826a-7bdef9bd4771', 'tuanta.tt@mcredit.com.vn', 'Phạm Thị Hồng', null, 'Ngọc', 'tIuXBhXFJw94/VcD5R17XKxEx4iWOML4WMRtKn/2++4s3nXRzDUiR/iTmekXZCpXlaCdSRFEfG5aHxTSfJBo2Wt7gEiOdsbAaEZbOnB1NmFtvGjCCuYWNQ74dn8uqnqVsaIv9wrWyxJmYiqVX8KHIL5dIzuZynUZSh40Dz49hSo=', '0359004943', 'TENANT', 'ACTIVE', 'tenant02');
+--
+--
+-- create table user_profile_upload
+-- (
+--     id       varchar(255) not null
+--         primary key,
+--     type     varchar(255),
+--     url      varchar(255),
+--     username varchar(255)
+-- );
+--
+-- alter table user_profile_upload
+--     owner to postgres;
+--
+-- INSERT INTO public.user_profile_upload (id, type, url, username) VALUES ('adb91eb6-0fde-4a49-93d5-3f78b929d07c', 'SELFIE', 'a0752a4b-5b91-4966-b9b9-233344f599d6.png', 'tenant01');
+--
+--
+-- create table utility
+-- (
+--     id   varchar(255) not null
+--         primary key,
+--     name varchar(255)
+-- );
+--
+-- alter table utility
+--     owner to postgres;
+--
+-- INSERT INTO public.utility (id, name) VALUES ('d0dd23ed-ea8a-4d2a-a4a8-0acb0374d656', 'Điện');
+-- INSERT INTO public.utility (id, name) VALUES ('3c5f7ef2-63c4-495f-a680-eac6c4365c57', 'Nước');
+-- INSERT INTO public.utility (id, name) VALUES ('261e8edf-5ba0-4419-93e9-7ca6d7ecf543', 'Mạng');
+-- INSERT INTO public.utility (id, name) VALUES ('2cd3e21e-7277-48d1-9b5b-35cd35a5a7b4', 'Gửi xe');
+-- INSERT INTO public.utility (id, name) VALUES ('4476da6f-081c-446b-b20d-575da8d62147', 'Giặt là');
+-- INSERT INTO public.utility (id, name) VALUES ('02dbdd1d-23ab-41ef-81e5-66fe220b3a3b', 'Rác');
+-- INSERT INTO public.utility (id, name) VALUES ('9fa69f47-3c9c-4beb-bf10-b5c93dd2324b', 'Vệ sinh');
+-- INSERT INTO public.utility (id, name) VALUES ('c6ee8183-5c44-4e69-aa80-b1d0292cbc74', 'Thang máy');
+-- INSERT INTO public.utility (id, name) VALUES ('cfd70b5f-cac4-4502-98bb-6e271016e7a5', 'Nóng lạnh');
+-- INSERT INTO public.utility (id, name) VALUES ('53a089b2-5d40-4735-b8ed-c8e6760ab57c', 'Khác');
+--
+--
+-- create table view_history
+-- (
+--     id        varchar(255) not null
+--         primary key,
+--     room_id   varchar(255),
+--     room_type varchar(255),
+--     position  varchar(255),
+--     price     bigint,
+--     username  varchar(255),
+--     time_view timestamp,
+--     post_id   varchar(255)
+-- );
+--
+-- alter table view_history
+--     owner to postgres;
+--
+
+
+   --new
+
+-- create table post_image (
+--                             id varchar(255) primary key,
+--                             post_id varchar(255),
+--                             url varchar(255)
+-- );
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '28599c22-0127-424f-a5eb-ab6eb40c4f1c', '5ddb2290-87ed-413d-ae78-e75485002ddc.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '28599c22-0127-424f-a5eb-ab6eb40c4f1c', 'cdc6e150-3a5b-45b7-aa61-0d415d09afe5.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '28599c22-0127-424f-a5eb-ab6eb40c4f1c', '1d9ae76e-96f2-4c64-9028-915518cbfb2c.png');
+--
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), 'e6857390-313b-484f-9dfb-47aa70f97a06', 'e3d0eb1c-0934-4bc1-9c4e-8cbd87e52037.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), 'e6857390-313b-484f-9dfb-47aa70f97a06', '285a199d-f4e5-4a63-b641-6c5432f909f7.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), 'e6857390-313b-484f-9dfb-47aa70f97a06', '386d2670-d543-4081-9c81-17334351cbee.png');
+--
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), 'efaced2d-374a-43c6-b5ef-e9cde1407fbf', 'd8696074-53c3-4570-94f5-ce589cdcaecb.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), 'efaced2d-374a-43c6-b5ef-e9cde1407fbf', 'c4e24cf3-9ae7-440b-a16a-ccb3a14d8220.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), 'efaced2d-374a-43c6-b5ef-e9cde1407fbf', '4d6ef1d4-59d9-488f-9ca8-be118538990e.png');
+--
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '556785a2-97fe-4cb4-872b-20ad4f16b712', '6692ce61-3bdb-400d-9f11-d9118242a533.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '556785a2-97fe-4cb4-872b-20ad4f16b712', '1eeb26ec-fc14-4c4d-a5e7-c54eb68bb7c4.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '556785a2-97fe-4cb4-872b-20ad4f16b712', 'e8204852-43fe-4475-b471-6c76a5ccdd91.png');
+--
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '9a2b8539-fb29-4673-ab51-3e9a0097d6b7', '0b4a3b12-bfe0-42c7-aa53-3316ae6341dd.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '9a2b8539-fb29-4673-ab51-3e9a0097d6b7', '59b10211-8096-476d-a203-2c69d39f23e7.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '9a2b8539-fb29-4673-ab51-3e9a0097d6b7', '13ea9286-5aa3-49e4-b87a-92255e94edfb.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '9a2b8539-fb29-4673-ab51-3e9a0097d6b7', '9feaa478-714d-43b3-9875-03e7c3379f23.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '9a2b8539-fb29-4673-ab51-3e9a0097d6b7', 'd865d8d8-5581-402f-bb58-0b77d9f12848.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '9a2b8539-fb29-4673-ab51-3e9a0097d6b7', '3f2cb1d8-2694-4b51-91ad-a079722f626f.png');
+--
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '4d03c428-fae6-4ec2-abc8-0ea6d484f5b6', 'f5d2cffc-fc70-4ff5-8141-1089b994676f.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '4d03c428-fae6-4ec2-abc8-0ea6d484f5b6', 'cff510dd-c483-4d92-b33b-73d7123b2352.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '4d03c428-fae6-4ec2-abc8-0ea6d484f5b6', '9c0b95cc-a3e4-4046-8cd1-55fcf72cbe2c.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '4d03c428-fae6-4ec2-abc8-0ea6d484f5b6', 'b56fdc6b-9732-4e4d-835c-cb6db869a5be.png');
+-- INSERT INTO public.post_image (id, post_id, url) VALUES (uuid_generate_v4(), '4d03c428-fae6-4ec2-abc8-0ea6d484f5b6', '59e9970f-80c4-4366-a1ba-5fbec6e9829b.png');

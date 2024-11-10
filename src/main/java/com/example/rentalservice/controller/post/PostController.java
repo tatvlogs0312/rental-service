@@ -5,6 +5,7 @@ import com.example.rentalservice.model.post.NewPostReqDTO;
 import com.example.rentalservice.model.post.PostReqDTO;
 import com.example.rentalservice.model.search.req.PostSearchReqDTO;
 import com.example.rentalservice.service.post.PostService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,8 +20,9 @@ public class PostController {
 
     private final PostService postService;
 
+    @Operation(summary = "Tao bai viet")
     @PostMapping("/create")
-    public ResponseEntity<Object> createPost(@RequestBody NewPostReqDTO req) {
+    public ResponseEntity<Object> createPost(NewPostReqDTO req) {
         log.info("/rental-service/post/create - req: {}", JsonUtils.toJson(req));
         postService.createNewPost(req);
         return ResponseEntity.ok().build();
@@ -36,6 +38,12 @@ public class PostController {
     public ResponseEntity<Object> searchPost(@RequestBody PostSearchReqDTO req) {
         log.info("/rental-service/post/search - req: {}", JsonUtils.toJson(req));
         return new ResponseEntity<>(postService.searchPost(req), HttpStatus.OK);
+    }
+
+    @PostMapping("/search-recommend")
+    public ResponseEntity<Object> searchRecommendPost(@RequestBody PostSearchReqDTO req) {
+        log.info("/rental-service/post/search-recommend - req: {}", JsonUtils.toJson(req));
+        return new ResponseEntity<>(postService.searchRecommendPost(req), HttpStatus.OK);
     }
 
     @GetMapping("/{postId}")

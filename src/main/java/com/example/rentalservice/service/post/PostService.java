@@ -14,6 +14,8 @@ import com.example.rentalservice.model.search.KeywordDTO;
 import com.example.rentalservice.model.search.req.PostSearchReqDTO;
 import com.example.rentalservice.model.search.res.PostSearchResDTO;
 import com.example.rentalservice.model.search.PagingResponse;
+import com.example.rentalservice.model.user_profile.UserPaperResDTO;
+import com.example.rentalservice.proxy.StorageServiceProxy;
 import com.example.rentalservice.repository.*;
 import com.example.rentalservice.service.common.DataService;
 import com.example.rentalservice.service.common.SearchService;
@@ -21,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +34,8 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -38,6 +44,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final PostImageRepository postImageRepository;
     private final RoomImageRepository roomImageRepository;
     private final RoomUtilityRepository roomUtilityRepository;
     private final RoomPositionRepository roomPositionRepository;
@@ -45,36 +52,52 @@ public class PostService {
     private final ViewHistoryRepository viewHistoryRepository;
     private final SearchService searchService;
     private final DataService dataService;
+    private final StorageServiceProxy storageServiceProxy;
+
+    @Qualifier("cachedThreadPool")
+    @Autowired
+    private Executor executor;
 
 
     //tạo bài đăng
     public void createNewPost(NewPostReqDTO req) {
-        Room room = dataService.getRoom(req.getRoomId());
-
-//        Boolean existPost = postRepository.existsAllByRoomId(req.getRoomId());
-//        if (BooleanUtils.isTrue(existPost)) {
-//            throw new ApplicationException("Phòng đã tạo bài đăng");
-//        }
-
-        List<RoomImage> images = roomImageRepository.findAllByRoomId(room.getId());
-        if (CollectionUtils.isEmpty(images)) {
-            throw new ApplicationException("Vui lòng upload hình ảnh phòng trước khi đăng tin");
-        }
-
-        List<Object[]> roomUtilities = roomUtilityRepository.findAllByRoomId(room.getId());
-        if (CollectionUtils.isEmpty(roomUtilities)) {
-            throw new ApplicationException("Vui lòng thêm dịch vụ trước khi đăng tin");
-        }
-
         Post post = new Post();
         post.setId(Utils.generateId());
         post.setTitle(req.getTitle());
         post.setContent(req.getContent());
         post.setLessor(JwtUtils.getUsername());
         post.setCreateTime(LocalDateTime.now());
-        post.setRoomId(req.getRoomId());
+        post.setNumberWatch(0L);
+        post.setPositionDetail(req.getPositionDetail());
+        post.setWard(req.getWard());
+        post.setDistrict(req.getDistrict());
+        post.setProvince(req.getProvince());
+        post.setPrice(req.getPrice());
+        post.setRoomTypeId(req.getRoomType());
+
+        List<PostImage> postImages = new ArrayList<>();
+        req.getFiles().forEach(file -> {
+            try {
+                var pathAsync = CompletableFuture.supplyAsync(() -> {
+                    UserPaperResDTO userPaperResDTO = storageServiceProxy.uploadFile(file);
+                    return userPaperResDTO.getFile();
+                }, executor).get();
+
+                PostImage postImage = new PostImage();
+                postImage.setId(Utils.generateId());
+                postImage.setPostId(post.getId());
+                postImage.setUrl(pathAsync);
+                postImages.add(postImage);
+
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         postRepository.save(post);
+        if (!CollectionUtils.isEmpty(postImages)) {
+            postImageRepository.saveAll(postImages);
+        }
     }
 
 
@@ -108,6 +131,60 @@ public class PostService {
         PagingResponse<PostSearchResDTO> response = new PagingResponse<>();
         Page<Object[]> data = postRepository.findAllByCondition(req.getRoomTypeId(), req.getDetail(), req.getWard(),
                 req.getDistrict(), req.getProvince(), req.getPriceFrom(), req.getPriceTo(), pageable);
+        if (data.hasContent()) {
+            List<PostSearchResDTO> models = new ArrayList<>();
+            data.getContent().forEach(post -> {
+                AtomicInteger i = new AtomicInteger(0);
+                PostSearchResDTO postSearchResDTO = PostSearchResDTO.builder()
+                        .postId(RepositoryUtils.setValueForField(String.class, post[i.getAndIncrement()]))
+                        .title(RepositoryUtils.setValueForField(String.class, post[i.getAndIncrement()]))
+                        .positionDetail(RepositoryUtils.setValueForField(String.class, post[i.getAndIncrement()]))
+                        .province(RepositoryUtils.setValueForField(String.class, post[i.getAndIncrement()]))
+                        .district(RepositoryUtils.setValueForField(String.class, post[i.getAndIncrement()]))
+                        .ward(RepositoryUtils.setValueForField(String.class, post[i.getAndIncrement()]))
+                        .typeCode(RepositoryUtils.setValueForField(String.class, post[i.getAndIncrement()]))
+                        .typeName(RepositoryUtils.setValueForField(String.class, post[i.getAndIncrement()]))
+                        .price(RepositoryUtils.setValueForField(Long.class, post[i.getAndIncrement()]))
+                        .postTime(RepositoryUtils.setValueForField(LocalDateTime.class, post[i.getAndIncrement()]))
+                        .firstImage(RepositoryUtils.setValueForField(String.class, post[i.getAndIncrement()]))
+                        .build();
+                models.add(postSearchResDTO);
+            });
+
+            response.setData(models);
+            response.setTotalData(data.getTotalElements());
+            response.setTotalPage(data.getTotalPages());
+        }
+
+        return response;
+    }
+
+    //Lay danh sach de xuat
+    public PagingResponse<PostSearchResDTO> searchRecommendPost(PostSearchReqDTO req) {
+        Pageable pageable = PageRequest.of(req.getPage(), req.getSize());
+
+        List<String> roomTypes = new ArrayList<>();
+        List<String> wards = new ArrayList<>();
+        Long priceFrom = 0L;
+        Long priceTo = 100000000L;
+        List<ViewHistory> viewHistories = viewHistoryRepository.findAllByUsername(JwtUtils.getUsername());
+        if (!CollectionUtils.isEmpty(viewHistories)) {
+            roomTypes = viewHistories.stream().map(ViewHistory::getRoomType).toList();
+            wards = viewHistories.stream().map(ViewHistory::getPosition).toList();
+
+            if (viewHistories.size() > 1) {
+                List<Long> prices = viewHistories.stream().map(ViewHistory::getPrice).sorted().toList();
+                priceFrom = prices.get(0);
+                priceTo = prices.get(viewHistories.size() - 1);
+            } else {
+                priceFrom = viewHistories.get(0).getPrice() - 1000000;
+                priceTo = viewHistories.get(0).getPrice() + 1000000;
+            }
+        }
+
+
+        PagingResponse<PostSearchResDTO> response = new PagingResponse<>();
+        Page<Object[]> data = postRepository.findAllRecommend(roomTypes, wards, priceFrom, priceTo, pageable);
         if (data.hasContent()) {
             List<PostSearchResDTO> models = new ArrayList<>();
             data.getContent().forEach(post -> {
@@ -190,14 +267,16 @@ public class PostService {
         }
 
         String tenant = JwtUtils.getUsername();
-        if (StringUtils.isNotBlank(tenant)) {
-            CompletableFuture.runAsync(() -> {
+
+        CompletableFuture.runAsync(() -> {
+            if (StringUtils.isNotBlank(tenant)) {
                 Optional<ViewHistory> historyOtp = viewHistoryRepository.findFirstByUsernameAndPostId(tenant, postId);
                 ViewHistory viewHistory;
                 if (historyOtp.isEmpty()) {
                     viewHistory = new ViewHistory();
                     viewHistory.setId(UUID.randomUUID().toString());
                     viewHistory.setRoomId(room.getId());
+                    viewHistory.setPostId(postId);
                     viewHistory.setTimeView(LocalDateTime.now());
                     viewHistory.setUsername(tenant);
                     viewHistory.setRoomType(room.getRoomTypeId());
@@ -208,8 +287,11 @@ public class PostService {
                     viewHistory.setTimeView(LocalDateTime.now());
                 }
                 viewHistoryRepository.save(viewHistory);
-            });
-        }
+            }
+
+            post.setNumberWatch(post.getNumberWatch() + 1);
+            postRepository.save(post);
+        });
 
         return postDetailDTO;
     }
