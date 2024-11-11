@@ -12,6 +12,8 @@ import java.util.List;
 @Repository
 public interface PostRepository extends JpaRepository<Post, String> {
 
+    Page<Post> findAllByLessorOrderByCreateTimeDesc(String lessor, Pageable pageable);
+
     @Query(nativeQuery = true, value = """
                 select p.id              as postId,
                        p.title           as tilte,
@@ -26,7 +28,7 @@ public interface PostRepository extends JpaRepository<Post, String> {
                        rit.url           as firstImage
                 from post p
                          join room_type rt on rt.id = p.room_type_id
-                         join (select id, post_id, url, row_number() over (PARTITION BY id order by id) as num from post_image) rit
+                         join (select id, post_id, url, row_number() over (PARTITION BY post_id order by id) as num from post_image) rit
                               on rit.post_id = p.id and rit.num = 1
                 where 1 = 1
                   and (rt.id = :roomTypeId or :roomTypeId is null)
@@ -44,7 +46,7 @@ public interface PostRepository extends JpaRepository<Post, String> {
                     select count(*)
                     from post p
                          join room_type rt on rt.id = p.room_type_id
-                         join (select id, post_id, url, row_number() over (PARTITION BY id order by id) as num from post_image) rit
+                         join (select id, post_id, url, row_number() over (PARTITION BY post_id order by id) as num from post_image) rit
                               on rit.post_id = p.id and rit.num = 1
                     where 1 = 1
                       and (rt.id = :roomTypeId or :roomTypeId is null)

@@ -1,27 +1,25 @@
 package com.example.rentalservice.service.post;
 
-import com.example.rentalservice.common.InputUtils;
-import com.example.rentalservice.common.JwtUtils;
-import com.example.rentalservice.common.RepositoryUtils;
-import com.example.rentalservice.common.Utils;
+import com.example.rentalservice.common.*;
 import com.example.rentalservice.entity.*;
-import com.example.rentalservice.exception.ApplicationException;
 import com.example.rentalservice.model.post.NewPostReqDTO;
 import com.example.rentalservice.model.post.detail.PostDetailDTO;
 import com.example.rentalservice.model.room.detail.PositionDTO;
-import com.example.rentalservice.model.room.detail.UtilityDTO;
 import com.example.rentalservice.model.search.KeywordDTO;
-import com.example.rentalservice.model.search.req.PostSearchReqDTO;
-import com.example.rentalservice.model.search.res.PostSearchResDTO;
 import com.example.rentalservice.model.search.PagingResponse;
+import com.example.rentalservice.model.search.req.PostSearchReqDTO;
+import com.example.rentalservice.model.search.res.LessorPostResDTO;
+import com.example.rentalservice.model.search.res.PostSearchResDTO;
 import com.example.rentalservice.model.user_profile.UserPaperResDTO;
 import com.example.rentalservice.proxy.StorageServiceProxy;
-import com.example.rentalservice.repository.*;
+import com.example.rentalservice.repository.PostImageRepository;
+import com.example.rentalservice.repository.PostRepository;
+import com.example.rentalservice.repository.UserProfileRepository;
+import com.example.rentalservice.repository.ViewHistoryRepository;
 import com.example.rentalservice.service.common.DataService;
 import com.example.rentalservice.service.common.SearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -45,9 +43,6 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
-    private final RoomImageRepository roomImageRepository;
-    private final RoomUtilityRepository roomUtilityRepository;
-    private final RoomPositionRepository roomPositionRepository;
     private final UserProfileRepository userProfileRepository;
     private final ViewHistoryRepository viewHistoryRepository;
     private final SearchService searchService;
@@ -213,6 +208,31 @@ public class PostService {
         return response;
     }
 
+    public PagingResponse<LessorPostResDTO> searchForLessor(PostSearchReqDTO req) {
+        String username = JwtUtils.getUsername();
+        Pageable pageable = PageRequest.of(req.getPage(), req.getSize());
+
+        PagingResponse<LessorPostResDTO> response = new PagingResponse<>();
+        Page<Post> postPage = postRepository.findAllByLessorOrderByCreateTimeDesc(username, pageable);
+        if (postPage.hasContent()) {
+            List<LessorPostResDTO> data = postPage.getContent().stream().map(p -> LessorPostResDTO.builder()
+                            .id(p.getId())
+                            .title(p.getTitle())
+                            .numberWatch(p.getNumberWatch())
+                            .createTime(DateUtils.toStr(p.getCreateTime(), DateUtils.F_HHMMSSDDMMYYYY))
+                            .build())
+                    .toList();
+            response.setData(data);
+        } else {
+            response.setData(new ArrayList<>());
+        }
+
+        response.setTotalData(postPage.getTotalElements());
+        response.setTotalPage(postPage.getTotalPages());
+
+        return response;
+    }
+
 
     //Xem chi tiet bai viet
     public PostDetailDTO getPostById(String postId) {
@@ -223,6 +243,17 @@ public class PostService {
         postDetailDTO.setTitle(post.getTitle());
         postDetailDTO.setContent(post.getContent());
 
+        postDetailDTO.setAcreage(post.getAcreage());
+        postDetailDTO.setNumberOfRoom(post.getNumberOfRoom());
+        postDetailDTO.setPrice(post.getPrice());
+
+        postDetailDTO.setPosition(PositionDTO.builder()
+                .detail(post.getPositionDetail())
+                .ward(post.getWard())
+                .district(post.getDistrict())
+                .province(post.getDistrict())
+                .build());
+
         Optional<UserProfile> userProfileOtp = userProfileRepository.findFirstByUsername(post.getLessor());
         if (userProfileOtp.isPresent()) {
             UserProfile userProfile = userProfileOtp.get();
@@ -230,40 +261,9 @@ public class PostService {
             postDetailDTO.setLessorNumber(userProfile.getPhoneNumber());
         }
 
-        Room room = dataService.getRoom(post.getRoomId());
-        postDetailDTO.setRoomId(room.getId());
-        postDetailDTO.setAcreage(room.getAcreage());
-        postDetailDTO.setNumberOfRoom(room.getNumberOfRom());
-        postDetailDTO.setPrice(room.getPrice());
-
-        Optional<RoomPosition> roomPositionOpt = roomPositionRepository.findFirstByRoomId(room.getId());
-        if (roomPositionOpt.isPresent()) {
-            RoomPosition roomPosition = roomPositionOpt.get();
-            postDetailDTO.setPosition(PositionDTO.builder()
-                    .detail(roomPosition.getDetail())
-                    .ward(roomPosition.getWard())
-                    .district(roomPosition.getDistrict())
-                    .province(roomPosition.getDistrict())
-                    .build());
-        }
-
-        List<RoomImage> roomImages = roomImageRepository.findAllByRoomId(room.getId());
+        List<PostImage> roomImages = postImageRepository.findAllByPostId(post.getId());
         if (!CollectionUtils.isEmpty(roomImages)) {
-            postDetailDTO.setImage(roomImages.stream().map(RoomImage::getUrl).toList());
-        }
-
-        List<Object[]> roomUtility = roomUtilityRepository.findAllByRoomId(room.getId());
-        if (!CollectionUtils.isEmpty(roomUtility)) {
-            postDetailDTO.setUtility(
-                    roomUtility.stream()
-                            .map(x -> UtilityDTO.builder()
-                                    .utilityId(RepositoryUtils.setValueForField(String.class, x[0]))
-                                    .utilityName(RepositoryUtils.setValueForField(String.class, x[1]))
-                                    .utilityPrice(RepositoryUtils.setValueForField(Long.class, x[2]))
-                                    .utilityUnit(RepositoryUtils.setValueForField(String.class, x[3]))
-                                    .build())
-                            .toList()
-            );
+            postDetailDTO.setImage(roomImages.stream().map(PostImage::getUrl).toList());
         }
 
         String tenant = JwtUtils.getUsername();
@@ -275,13 +275,12 @@ public class PostService {
                 if (historyOtp.isEmpty()) {
                     viewHistory = new ViewHistory();
                     viewHistory.setId(UUID.randomUUID().toString());
-                    viewHistory.setRoomId(room.getId());
                     viewHistory.setPostId(postId);
                     viewHistory.setTimeView(LocalDateTime.now());
                     viewHistory.setUsername(tenant);
-                    viewHistory.setRoomType(room.getRoomTypeId());
+                    viewHistory.setRoomType(post.getRoomTypeId());
                     viewHistory.setPosition(postDetailDTO.getPosition().getWard());
-                    viewHistory.setPrice(room.getPrice());
+                    viewHistory.setPrice(post.getPrice());
                 } else {
                     viewHistory = historyOtp.get();
                     viewHistory.setTimeView(LocalDateTime.now());

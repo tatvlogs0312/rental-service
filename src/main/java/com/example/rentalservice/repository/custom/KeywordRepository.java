@@ -1,10 +1,8 @@
 package com.example.rentalservice.repository.custom;
 
-import com.example.rentalservice.common.JsonUtils;
-import com.example.rentalservice.entity.RoomPosition;
+import com.example.rentalservice.entity.Post;
 import com.example.rentalservice.entity.RoomType;
-import com.example.rentalservice.redis.RedisService;
-import com.example.rentalservice.repository.RoomPositionRepository;
+import com.example.rentalservice.repository.PostRepository;
 import com.example.rentalservice.repository.RoomTypeRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +16,7 @@ import java.util.List;
 public class KeywordRepository {
 
     private final RoomTypeRepository roomTypeRepository;
-    private final RoomPositionRepository roomPositionRepository;
+    private final PostRepository postRepository;
 
     public List<String> roomTypes = new ArrayList<>();
     public List<String> provinces = new ArrayList<>();
@@ -28,8 +26,8 @@ public class KeywordRepository {
     @PostConstruct
     private void init() {
         roomTypes = roomTypeRepository.findAll().stream().map(RoomType::getName).toList();
-        provinces = roomPositionRepository.findAll().stream().map(RoomPosition::getProvince).distinct().toList();
-        districts = roomPositionRepository.findAll().stream().map(RoomPosition::getDistrict).distinct().toList();
-        wards = roomPositionRepository.findAll().stream().map(RoomPosition::getWard).distinct().toList();
+        provinces = postRepository.findAll().stream().map(Post::getProvince).distinct().toList();
+        districts = postRepository.findAll().stream().map(Post::getDistrict).distinct().toList();
+        wards = postRepository.findAll().stream().map(Post::getWard).distinct().toList();
     }
 }

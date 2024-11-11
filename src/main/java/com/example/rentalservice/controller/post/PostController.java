@@ -1,6 +1,7 @@
 package com.example.rentalservice.controller.post;
 
 import com.example.rentalservice.common.JsonUtils;
+import com.example.rentalservice.common.JwtUtils;
 import com.example.rentalservice.model.post.NewPostReqDTO;
 import com.example.rentalservice.model.post.PostReqDTO;
 import com.example.rentalservice.model.search.req.PostSearchReqDTO;
@@ -44,6 +45,12 @@ public class PostController {
     public ResponseEntity<Object> searchRecommendPost(@RequestBody PostSearchReqDTO req) {
         log.info("/rental-service/post/search-recommend - req: {}", JsonUtils.toJson(req));
         return new ResponseEntity<>(postService.searchRecommendPost(req), HttpStatus.OK);
+    }
+
+    @PostMapping("/search-for-lessor")
+    public ResponseEntity<Object> searchForLessor(@RequestBody PostSearchReqDTO req) {
+        log.info("/rental-service/post/search-for-lessor - user: {} - req: {}", JwtUtils.getUsername(), JsonUtils.toJson(req));
+        return new ResponseEntity<>(postService.searchForLessor(req), HttpStatus.OK);
     }
 
     @GetMapping("/{postId}")

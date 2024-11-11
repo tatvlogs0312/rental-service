@@ -50,5 +50,9 @@ public class Post {
 
     private Long price;
 
+    private Integer acreage;
+
+    private Integer numberOfRoom;
+
     private String roomTypeId;
 }
