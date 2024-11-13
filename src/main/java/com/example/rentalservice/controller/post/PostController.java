@@ -24,7 +24,8 @@ public class PostController {
     @Operation(summary = "Tao bai viet")
     @PostMapping("/create")
     public ResponseEntity<Object> createPost(NewPostReqDTO req) {
-        log.info("/rental-service/post/create - req: {}", JsonUtils.toJson(req));
+//        log.info("/rental-service/post/create - req: {}", JsonUtils.toJson(req));
+        log.info("/rental-service/post/create");
         postService.createNewPost(req);
         return ResponseEntity.ok().build();
     }

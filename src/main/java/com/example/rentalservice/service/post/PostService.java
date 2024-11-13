@@ -99,6 +99,7 @@ public class PostService {
     //Xóa bài đăng
     public void deletePost(String postId) {
         postRepository.deleteById(postId);
+        postImageRepository.deleteAllByPostId(postId);
     }
 
 
