@@ -27,6 +27,12 @@ public class RoomController {
     }
 
     @Secured(roles = {RoleEnum.LESSOR})
+    @PostMapping("/create/v2")
+    public ResponseEntity<Object> createRoomV2(@RequestBody RoomReqDTO req) {
+        return new ResponseEntity<>(roomService.createRoomV2(req), HttpStatus.OK);
+    }
+
+    @Secured(roles = {RoleEnum.LESSOR})
     @PostMapping("/update")
     public ResponseEntity<Object> updateRoom(@RequestBody RoomReqDTO req) {
         roomService.updateRoomInfo(req);
@@ -38,6 +44,13 @@ public class RoomController {
     public ResponseEntity<Object> searchRoom(@RequestBody RoomSearchReqDTO req) {
         log.info("call /rental-service/room/search - req: {}", JsonUtils.toJson(req));
         return new ResponseEntity<>(roomService.searchRoom(req), HttpStatus.OK);
+    }
+
+    @Secured(roles = {RoleEnum.LESSOR})
+    @GetMapping("/search/v2")
+    public ResponseEntity<Object> searchRoomV2(@RequestParam String houseId, @RequestParam Integer page, @RequestParam Integer size) {
+        log.info("call /rental-service/room/search/v2");
+        return new ResponseEntity<>(roomService.search(houseId, page, size), HttpStatus.OK);
     }
 
     @Secured(roles = {RoleEnum.LESSOR})

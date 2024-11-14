@@ -61,6 +61,25 @@ public class RoomService {
         return roomId;
     }
 
+    public String createRoomV2(RoomReqDTO req) {
+
+        String lessor = JwtUtils.getUsername();
+
+        String roomId = UUID.randomUUID().toString();
+
+        Room room = new Room();
+        room.setId(roomId);
+        room.setRoomTypeId(req.getId());
+        room.setLessor(lessor);
+        room.setNumberOfRom(req.getNumberOfRoom());
+        room.setAcreage(req.getAcreage());
+        room.setPrice(req.getPrice());
+        room.setRoomStatus(RoomStatusEnum.EMPTY.name());
+
+        roomRepository.save(room);
+        return roomId;
+    }
+
 
     //Cập nhật thông tin phòng
     public void updateRoomInfo(RoomReqDTO req) {
@@ -107,6 +126,11 @@ public class RoomService {
         response.setTotalPage(iRoomData.getTotalPages());
 
         return response;
+    }
+
+    public PagingResponse<Room> search(String houseId, Integer page, Integer size) {
+        Page<Room> roomPage = roomRepository.findAllByHouseId(houseId, PageRequest.of(page, size));
+        return new PagingResponse<>(roomPage);
     }
 
 

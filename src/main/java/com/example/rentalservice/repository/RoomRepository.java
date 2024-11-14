@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, String> {
 
+    Page<Room> findAllByHouseId(String id, Pageable pageable);
+
     @Query(value = "select nextval('seq_room')", nativeQuery = true)
     Long getSeqRoomCode();
 
