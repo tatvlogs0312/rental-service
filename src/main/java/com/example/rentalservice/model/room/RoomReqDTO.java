@@ -13,6 +13,7 @@ public class RoomReqDTO {
     private String id;
     private String houseId;
     private String roomTypeId;
+    private String roomName;
     private Long price;
     private Integer acreage;
     private Integer numberOfRoom;

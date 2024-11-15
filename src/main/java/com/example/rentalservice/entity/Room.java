@@ -1,5 +1,6 @@
 package com.example.rentalservice.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -33,6 +34,7 @@ public class Room {
 
     private String roomStatus;
 
+    @Column(columnDefinition = "TEXT")
     private String roomName;
 
     private String houseId;

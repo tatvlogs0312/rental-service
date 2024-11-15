@@ -69,11 +69,11 @@ public class RoomService {
 
         Room room = new Room();
         room.setId(roomId);
-        room.setRoomTypeId(req.getId());
+        room.setHouseId(req.getHouseId());
         room.setLessor(lessor);
+        room.setRoomName(req.getRoomName());
         room.setNumberOfRom(req.getNumberOfRoom());
         room.setAcreage(req.getAcreage());
-        room.setPrice(req.getPrice());
         room.setRoomStatus(RoomStatusEnum.EMPTY.name());
 
         roomRepository.save(room);
