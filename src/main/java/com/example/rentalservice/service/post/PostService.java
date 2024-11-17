@@ -12,10 +12,7 @@ import com.example.rentalservice.model.search.res.LessorPostResDTO;
 import com.example.rentalservice.model.search.res.PostSearchResDTO;
 import com.example.rentalservice.model.user_profile.UserPaperResDTO;
 import com.example.rentalservice.proxy.StorageServiceProxy;
-import com.example.rentalservice.repository.PostImageRepository;
-import com.example.rentalservice.repository.PostRepository;
-import com.example.rentalservice.repository.UserProfileRepository;
-import com.example.rentalservice.repository.ViewHistoryRepository;
+import com.example.rentalservice.repository.*;
 import com.example.rentalservice.service.common.DataService;
 import com.example.rentalservice.service.common.SearchService;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 @Slf4j
 public class PostService {
+    private final RoomTypeRepository roomTypeRepository;
 
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
@@ -69,6 +67,8 @@ public class PostService {
         post.setProvince(req.getProvince());
         post.setPrice(req.getPrice());
         post.setRoomTypeId(req.getRoomType());
+        post.setAcreage(req.getAcreage());
+        post.setNumberOfRoom(req.getNumberOfRoom());
 
         List<PostImage> postImages = new ArrayList<>();
         req.getFiles().forEach(file -> {
@@ -262,6 +262,12 @@ public class PostService {
             postDetailDTO.setLessorNumber(userProfile.getPhoneNumber());
         }
 
+        Optional<RoomType> roomType = roomTypeRepository.findById(post.getRoomTypeId());
+        roomType.ifPresent(t -> {
+            postDetailDTO.setRoomId(t.getId());
+            postDetailDTO.setRoomTypeName(t.getName());
+        });
+
         List<PostImage> roomImages = postImageRepository.findAllByPostId(post.getId());
         if (!CollectionUtils.isEmpty(roomImages)) {
             postDetailDTO.setImage(roomImages.stream().map(PostImage::getUrl).toList());
@@ -270,7 +276,7 @@ public class PostService {
         String tenant = JwtUtils.getUsername();
 
         CompletableFuture.runAsync(() -> {
-            if (StringUtils.isNotBlank(tenant)) {
+            if (StringUtils.isNotBlank(tenant) && !Objects.equals(tenant, post.getLessor())) {
                 Optional<ViewHistory> historyOtp = viewHistoryRepository.findFirstByUsernameAndPostId(tenant, postId);
                 ViewHistory viewHistory;
                 if (historyOtp.isEmpty()) {

@@ -21,5 +21,7 @@ public class NewPostReqDTO {
     private String province;
     private Long price;
     private String roomType;
+    private Integer numberOfRoom;
+    private Integer acreage;
     private List<MultipartFile> files;
 }

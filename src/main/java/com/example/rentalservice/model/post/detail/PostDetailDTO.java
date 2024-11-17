@@ -39,4 +39,8 @@ public class PostDetailDTO {
     private List<String> image = new ArrayList<>();
 
     private PositionDTO position;
+
+    private String roomTypeId;
+
+    private String roomTypeName;
 }
