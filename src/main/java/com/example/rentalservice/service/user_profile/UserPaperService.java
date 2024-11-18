@@ -15,6 +15,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -49,5 +50,25 @@ public class UserPaperService {
                 .url(userPaperResDTO.getFile())
                 .build();
         userProfileUploadRepository.save(userProfileUpload);
+    }
+
+    public String uploadAvatar(MultipartFile file) {
+        String username = JwtUtils.getUsername();
+
+        UserPaperResDTO userPaperResDTO = storageServiceProxy.uploadFile(file);
+
+        Optional<UserProfileUpload> avatarOtp = userProfileUploadRepository.findFirstByUsernameAndType(username, "AVATAR");
+        if (avatarOtp.isPresent()) {
+            UserProfileUpload userProfileUpload = avatarOtp.get();
+            userProfileUpload.setUrl(userPaperResDTO.getFile());
+        } else {
+            UserProfileUpload userProfileUpload = new UserProfileUpload();
+            userProfileUpload.setId(UUID.randomUUID().toString());
+            userProfileUpload.setUsername(username);
+            userProfileUpload.setType("AVATAR");
+            userProfileUpload.setUrl(userPaperResDTO.getFile());
+        }
+
+        return userPaperResDTO.getFile();
     }
 }

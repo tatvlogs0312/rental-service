@@ -78,9 +78,10 @@ public interface PostRepository extends JpaRepository<Post, String> {
                              join (select id, post_id, url, row_number() over (PARTITION BY post_id order by id) as num from post_image) rit
                                   on rit.post_id = p.id and rit.num = 1
                     where 1 = 1
-                      and (:roomTypeIds is null or p.room_type_id in (:roomTypeIds))
-                      and (:positions is null or p.ward in (:positions))
-                      and (p.price between :priceFrom and :priceTo)
+                      and ((:roomTypeIds is null or p.room_type_id in (:roomTypeIds))
+                      or (:positions is null or p.ward in (:positions))
+                      or (p.price between :priceFrom and :priceTo))
+                      and (:ignore is null or p.id <> :ignore)
                     order by p.number_watch desc;
             """, countQuery = """
             select count(*)
@@ -89,9 +90,10 @@ public interface PostRepository extends JpaRepository<Post, String> {
                      join (select id, post_id, url, row_number() over (PARTITION BY post_id order by id) as num from post_image) rit
                           on rit.post_id = p.id and rit.num = 1
             where 1 = 1
-              and (:roomTypeIds is null or p.room_type_id in (:roomTypeIds))
-              and (:positions is null or p.ward in (:positions))
-              and (p.price between :priceFrom and :priceTo);
+                      and ((:roomTypeIds is null or p.room_type_id in (:roomTypeIds))
+                      or (:positions is null or p.ward in (:positions))
+                      or (p.price between :priceFrom and :priceTo))
+                      and (:ignore is null or p.id <> :ignore)
             """, nativeQuery = true)
-    Page<Object[]> findAllRecommend(List<String> roomTypeIds, List<String> positions, Long priceFrom, Long priceTo, Pageable pageable);
+    Page<Object[]> findAllRecommend(String ignore, List<String> roomTypeIds, List<String> positions, Long priceFrom, Long priceTo, Pageable pageable);
 }

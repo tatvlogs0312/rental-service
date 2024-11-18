@@ -256,6 +256,13 @@ public class UserProfileService {
                     .toList());
         }
 
+        Optional<UserProfileUpload> avatarOtp = userProfileUploadRepository.findFirstByUsernameAndType(username, "AVATAR");
+        if (avatarOtp.isPresent()) {
+            userProfileDTO.setAvatar(avatarOtp.get().getUrl());
+        } else {
+            userProfileDTO.setAvatar("edf593c8-9666-4a55-b25e-5fa833bb10d2.png");
+        }
+
         return userProfileDTO;
     }
 

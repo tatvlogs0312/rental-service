@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PostSearchReqDTO {
+    private String ignore;
     private String roomTypeId;
     private String province;
     private String district;

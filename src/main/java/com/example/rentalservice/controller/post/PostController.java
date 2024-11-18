@@ -56,6 +56,7 @@ public class PostController {
 
     @GetMapping("/{postId}")
     public ResponseEntity<Object> getById(@PathVariable String postId) {
+        log.info("/rental-service/post/{}", JsonUtils.toJson(postId));
         return new ResponseEntity<>(postService.getPostById(postId), HttpStatus.OK);
     }
 }

@@ -20,4 +20,5 @@ public class UserProfileDTO {
     private String role;
     private String status;
     private List<UserIdentityDTO> identities;
+    private String avatar;
 }

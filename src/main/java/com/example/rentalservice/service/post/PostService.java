@@ -180,7 +180,7 @@ public class PostService {
 
 
         PagingResponse<PostSearchResDTO> response = new PagingResponse<>();
-        Page<Object[]> data = postRepository.findAllRecommend(roomTypes, wards, priceFrom, priceTo, pageable);
+        Page<Object[]> data = postRepository.findAllRecommend(req.getIgnore(), roomTypes, wards, priceFrom, priceTo, pageable);
         if (data.hasContent()) {
             List<PostSearchResDTO> models = new ArrayList<>();
             data.getContent().forEach(post -> {
