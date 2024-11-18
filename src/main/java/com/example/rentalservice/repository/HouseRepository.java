@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HouseRepository extends JpaRepository<House, String> {
 
-    Page<House> findAllByLessor(String lessor, Pageable pageable);
+    Page<House> findAllByLessorAndDeleted(String lessor, Boolean deleted, Pageable pageable);
 }

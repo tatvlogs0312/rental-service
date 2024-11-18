@@ -25,6 +25,8 @@ public class Contract {
 
     private String tenant;
 
+    private String houseId;
+
     private String roomId;
 
     private LocalDate effectDate;
@@ -32,4 +34,8 @@ public class Contract {
     private LocalDate endDate;
 
     private Long actualPrice;
+
+    private String step;
+
+    private String status;
 }

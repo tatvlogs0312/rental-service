@@ -8,11 +8,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public interface RoomRepository extends JpaRepository<Room, String> {
 
-    Page<Room> findAllByHouseId(String id, Pageable pageable);
+    Long countAllByHouseIdAndRoomStatusAndDeleted(String houseId, String roomStatus, Boolean deleted);
+
+    List<Room> findAllByHouseIdIn(List<String> houseId);
+    List<Room> findAllByHouseIdInAndDeleted(List<String> houseId, Boolean deleted);
+
+    Page<Room> findAllByHouseIdAndDeleted(String id, Boolean deleted,Pageable pageable);
 
     @Query(value = "select nextval('seq_room')", nativeQuery = true)
     Long getSeqRoomCode();

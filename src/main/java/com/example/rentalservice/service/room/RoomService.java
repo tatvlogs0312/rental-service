@@ -1,9 +1,11 @@
 package com.example.rentalservice.service.room;
 
+import com.example.rentalservice.common.JsonUtils;
 import com.example.rentalservice.common.JwtUtils;
 import com.example.rentalservice.entity.Room;
 import com.example.rentalservice.entity.RoomType;
 import com.example.rentalservice.enums.RoomStatusEnum;
+import com.example.rentalservice.exception.ApplicationException;
 import com.example.rentalservice.mapper.Mapper;
 import com.example.rentalservice.model.room.IRoomData;
 import com.example.rentalservice.model.room.RoomReqDTO;
@@ -26,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -56,6 +59,7 @@ public class RoomService {
         room.setAcreage(req.getAcreage());
         room.setPrice(req.getPrice());
         room.setRoomStatus(RoomStatusEnum.EMPTY.name());
+        room.setDeleted(false);
 
         roomRepository.save(room);
         return roomId;
@@ -75,7 +79,9 @@ public class RoomService {
         room.setNumberOfRom(req.getNumberOfRoom());
         room.setAcreage(req.getAcreage());
         room.setRoomStatus(RoomStatusEnum.EMPTY.name());
+        room.setDeleted(false);
 
+        log.info("insert room: {}", JsonUtils.toJson(room));
         roomRepository.save(room);
         return roomId;
     }
@@ -129,7 +135,7 @@ public class RoomService {
     }
 
     public PagingResponse<Room> search(String houseId, Integer page, Integer size) {
-        Page<Room> roomPage = roomRepository.findAllByHouseId(houseId, PageRequest.of(page, size));
+        Page<Room> roomPage = roomRepository.findAllByHouseIdAndDeleted(houseId, false, PageRequest.of(page, size));
         return new PagingResponse<>(roomPage);
     }
 
@@ -239,36 +245,16 @@ public class RoomService {
         roomDetailDTO.setPrice(room.getPrice());
         roomDetailDTO.setStatus(room.getRoomStatus());
 
-//        Optional<RoomPosition> roomPositionOpt = roomPositionRepository.findFirstByRoomId(roomId);
-//        if (roomPositionOpt.isPresent()) {
-//            RoomPosition roomPosition = roomPositionOpt.get();
-//            roomDetailDTO.setPosition(PositionDTO.builder()
-//                    .detail(roomPosition.getDetail())
-//                    .ward(roomPosition.getWard())
-//                    .district(roomPosition.getDistrict())
-//                    .province(roomPosition.getDistrict())
-//                    .build());
-//        }
-//
-//        List<RoomImage> roomImages = roomImageRepository.findAllByRoomId(roomId);
-//        if (!CollectionUtils.isEmpty(roomImages)) {
-//            roomDetailDTO.setImage(roomImages.stream().map(RoomImage::getUrl).toList());
-//        }
-//
-//        List<Object[]> roomUtility = roomUtilityRepository.findAllByRoomId(roomId);
-//        if (!CollectionUtils.isEmpty(roomUtility)) {
-//            roomDetailDTO.setUtility(
-//                    roomUtility.stream()
-//                            .map(x -> UtilityDTO.builder()
-//                                    .utilityId(RepositoryUtils.setValueForField(String.class, x[0]))
-//                                    .utilityName(RepositoryUtils.setValueForField(String.class, x[1]))
-//                                    .utilityPrice(RepositoryUtils.setValueForField(Long.class, x[2]))
-//                                    .utilityUnit(RepositoryUtils.setValueForField(String.class, x[3]))
-//                                    .build())
-//                            .toList()
-//            );
-//        }
-
         return roomDetailDTO;
+    }
+
+    public void deleteRoom(String roomId) {
+        Room room = dataService.getRoom(roomId);
+        if (Objects.equals(room.getRoomStatus(), "EMPTY")) {
+            room.setDeleted(true);
+            roomRepository.save(room);
+        } else {
+            throw new ApplicationException("Phòng đang cho thuê, không thể xóa phòng");
+        }
     }
 }

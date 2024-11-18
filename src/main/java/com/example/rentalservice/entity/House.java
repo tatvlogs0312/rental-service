@@ -36,4 +36,6 @@ public class House {
     private String positionDetail;
 
     private String lessor;
+
+    private Boolean deleted;
 }

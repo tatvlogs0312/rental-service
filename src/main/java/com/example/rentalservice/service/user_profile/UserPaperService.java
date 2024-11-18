@@ -58,16 +58,16 @@ public class UserPaperService {
         UserPaperResDTO userPaperResDTO = storageServiceProxy.uploadFile(file);
 
         Optional<UserProfileUpload> avatarOtp = userProfileUploadRepository.findFirstByUsernameAndType(username, "AVATAR");
+        UserProfileUpload userProfileUpload;
         if (avatarOtp.isPresent()) {
-            UserProfileUpload userProfileUpload = avatarOtp.get();
-            userProfileUpload.setUrl(userPaperResDTO.getFile());
+            userProfileUpload = avatarOtp.get();
         } else {
-            UserProfileUpload userProfileUpload = new UserProfileUpload();
+            userProfileUpload = new UserProfileUpload();
             userProfileUpload.setId(UUID.randomUUID().toString());
             userProfileUpload.setUsername(username);
             userProfileUpload.setType("AVATAR");
-            userProfileUpload.setUrl(userPaperResDTO.getFile());
         }
+        userProfileUpload.setUrl(userPaperResDTO.getFile());
 
         return userPaperResDTO.getFile();
     }

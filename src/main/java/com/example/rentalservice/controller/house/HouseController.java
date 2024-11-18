@@ -31,4 +31,12 @@ public class HouseController {
     public ResponseEntity<Object> search(@RequestParam Integer page, @RequestParam Integer size) {
         return new ResponseEntity<>(houseService.search(PageRequest.of(page, size)), HttpStatus.OK);
     }
+
+    @Secured(roles = {RoleEnum.LESSOR})
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<Object> delete(@PathVariable String id) {
+        log.info("call house delete");
+        houseService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

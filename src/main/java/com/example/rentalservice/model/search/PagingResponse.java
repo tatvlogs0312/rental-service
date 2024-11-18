@@ -26,4 +26,10 @@ public class PagingResponse<T> {
         this.totalData = page.getTotalElements();
         this.data = page.getContent();
     }
+
+//    public PagingResponse(List<T> data, long totalPage, long totalData) {
+//        this.data = data;
+//        this.totalPage = totalPage;
+//        this.totalData = totalData;
+//    }
 }

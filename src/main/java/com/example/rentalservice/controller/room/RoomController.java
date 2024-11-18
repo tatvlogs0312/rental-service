@@ -59,4 +59,12 @@ public class RoomController {
         log.info("call");
         return new ResponseEntity<>(roomService.getDetailById(id), HttpStatus.OK);
     }
+
+    @Secured(roles = {RoleEnum.LESSOR})
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<Object> delete(@PathVariable String id) {
+        log.info("call delete");
+        roomService.deleteRoom(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
