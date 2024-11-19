@@ -12,12 +12,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DataService {
 
+    private final HouseRepository houseRepository;
     private final RoomRepository roomRepository;
     private final RoomTypeRepository roomTypeRepository;
     private final ContractRepository contractRepository;
     private final UtilitiesRepository utilitiesRepository;
     private final PostRepository postRepository;
     private final BookingRepository bookingRepository;
+    private final UserProfileRepository userProfileRepository;
 
     //Lấy data phòng theo id
     public Room getRoom(String roomId) {
@@ -26,6 +28,14 @@ public class DataService {
             throw new ApplicationException("Phòng không hợp lệ");
         }
         return room.get();
+    }
+
+    public House getHouse(String houseId) {
+        Optional<House> house = houseRepository.findById(houseId);
+        if (house.isEmpty()) {
+            throw new ApplicationException("Nhà không hợp lệ");
+        }
+        return house.get();
     }
 
     //Lấy data hợp đồng theo id
@@ -72,5 +82,14 @@ public class DataService {
             throw new ApplicationException("Lich xem phong khong hop le");
         }
         return booking.get();
+    }
+
+    public UserProfile getUserByUsername(String username) {
+        Optional<UserProfile> userProfile = userProfileRepository.findFirstByUsername(username);
+        if (userProfile.isEmpty()) {
+            throw new ApplicationException("Người dùng không tồn tại");
+        }
+
+        return userProfile.get();
     }
 }

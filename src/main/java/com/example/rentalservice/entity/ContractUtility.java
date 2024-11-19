@@ -21,7 +21,7 @@ public class ContractUtility {
 
     private String contractId;
 
-    private String utility_id;
+    private String utilityId;
 
     private Long price;
 

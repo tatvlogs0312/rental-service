@@ -23,6 +23,8 @@ public class Contract {
 
     private String contractCode;
 
+    private String lessor;
+
     private String tenant;
 
     private String houseId;
