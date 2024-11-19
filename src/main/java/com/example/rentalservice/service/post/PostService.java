@@ -2,6 +2,7 @@ package com.example.rentalservice.service.post;
 
 import com.example.rentalservice.common.*;
 import com.example.rentalservice.entity.*;
+import com.example.rentalservice.exception.ApplicationException;
 import com.example.rentalservice.model.post.NewPostReqDTO;
 import com.example.rentalservice.model.post.detail.PostDetailDTO;
 import com.example.rentalservice.model.room.detail.PositionDTO;
@@ -54,6 +55,10 @@ public class PostService {
 
     //tạo bài đăng
     public void createNewPost(NewPostReqDTO req) {
+        if (CollectionUtils.isEmpty(req.getFiles())) {
+            throw new ApplicationException("vui lòng đăng ít nhất 1 ảnh");
+        }
+
         Post post = new Post();
         post.setId(Utils.generateId());
         post.setTitle(req.getTitle());
@@ -90,6 +95,54 @@ public class PostService {
         });
 
         postRepository.save(post);
+        if (!CollectionUtils.isEmpty(postImages)) {
+            postImageRepository.saveAll(postImages);
+        }
+    }
+
+    //update post
+    public void updatePost(String postId, NewPostReqDTO req) {
+        Post post = dataService.getPost(postId);
+
+        Post newPost = new Post();
+        newPost.setId(post.getId());
+        newPost.setTitle(req.getTitle());
+        newPost.setContent(req.getContent());
+        newPost.setLessor(post.getLessor());
+        newPost.setCreateTime(post.getCreateTime());
+        newPost.setNumberWatch(post.getNumberWatch());
+        newPost.setPositionDetail(req.getPositionDetail());
+        newPost.setWard(req.getWard());
+        newPost.setDistrict(req.getDistrict());
+        newPost.setProvince(req.getProvince());
+        newPost.setPrice(req.getPrice());
+        newPost.setRoomTypeId(req.getRoomType());
+        newPost.setAcreage(req.getAcreage());
+        newPost.setNumberOfRoom(req.getNumberOfRoom());
+
+        List<PostImage> postImages = new ArrayList<>();
+        req.getFiles().forEach(file -> {
+            try {
+                var pathAsync = CompletableFuture.supplyAsync(() -> {
+                    UserPaperResDTO userPaperResDTO = storageServiceProxy.uploadFile(file);
+                    return userPaperResDTO.getFile();
+                }, executor).get();
+
+                PostImage postImage = new PostImage();
+                postImage.setId(Utils.generateId());
+                postImage.setPostId(post.getId());
+                postImage.setUrl(pathAsync);
+                postImages.add(postImage);
+
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        //delete before delete
+        postImageRepository.deleteAllByPostId(postId);
+
+        postRepository.save(newPost);
         if (!CollectionUtils.isEmpty(postImages)) {
             postImageRepository.saveAll(postImages);
         }
@@ -276,7 +329,8 @@ public class PostService {
         String tenant = JwtUtils.getUsername();
 
         CompletableFuture.runAsync(() -> {
-            if (StringUtils.isNotBlank(tenant) && !Objects.equals(tenant, post.getLessor())) {
+            log.info("post lessor: {} - user: {}", tenant, post.getLessor());
+            if (StringUtils.isNotBlank(tenant) && !StringUtils.equals(tenant, post.getLessor())) {
                 Optional<ViewHistory> historyOtp = viewHistoryRepository.findFirstByUsernameAndPostId(tenant, postId);
                 ViewHistory viewHistory;
                 if (historyOtp.isEmpty()) {
@@ -293,10 +347,10 @@ public class PostService {
                     viewHistory.setTimeView(LocalDateTime.now());
                 }
                 viewHistoryRepository.save(viewHistory);
-            }
 
-            post.setNumberWatch(post.getNumberWatch() + 1);
-            postRepository.save(post);
+                post.setNumberWatch(post.getNumberWatch() + 1);
+                postRepository.save(post);
+            }
         });
 
         return postDetailDTO;

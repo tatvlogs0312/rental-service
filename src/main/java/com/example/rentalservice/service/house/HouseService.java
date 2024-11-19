@@ -63,7 +63,7 @@ public class HouseService {
             throw new ApplicationException("Nhà không tồn tại");
         }
 
-        Long roomNotEmpty = roomRepository.countAllByHouseIdAndRoomStatusAndDeleted(houseId, "EMPTY", false);
+        Long roomNotEmpty = roomRepository.countAllByHouseIdAndRoomStatusAndDeleted(houseId, "RENTED", false);
         if (roomNotEmpty > 0L) {
             throw new ApplicationException("Còn phòng đang cho thuê, không thể xóa");
         }
