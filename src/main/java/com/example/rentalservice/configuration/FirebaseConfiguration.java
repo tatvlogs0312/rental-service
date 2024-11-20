@@ -7,9 +7,11 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 
 @Configuration
@@ -17,21 +19,10 @@ import java.util.Arrays;
 public class FirebaseConfiguration {
 
     @Bean
-    public FirebaseMessaging firebaseMessaging() throws IOException {
-        GoogleCredentials googleCredentials = GoogleCredentials
-                .fromStream(new FileInputStream("src/main/resources/rent-app-v2-firebase-adminsdk-gczhp-f60c134bc7.json"));
-        FirebaseOptions firebaseOptions = FirebaseOptions
-                .builder()
-                .setCredentials(googleCredentials)
-                .build();
-
-        FirebaseApp app;
-        if (FirebaseApp.getApps().isEmpty()) {
-            app = FirebaseApp.initializeApp(firebaseOptions);
-        } else {
-            app = FirebaseApp.getInstance();
-        }
-
+    FirebaseMessaging firebaseMessaging() throws IOException {
+        GoogleCredentials googleCredentials = GoogleCredentials.fromStream(new ClassPathResource("rent-app-v2-firebase-adminsdk-gczhp-f60c134bc7.json").getInputStream());
+        FirebaseOptions firebaseOptions = FirebaseOptions.builder().setCredentials(googleCredentials).build();
+        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "my-app");
         return FirebaseMessaging.getInstance(app);
     }
 }

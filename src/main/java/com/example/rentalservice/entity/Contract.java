@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,7 +38,11 @@ public class Contract {
 
     private Long actualPrice;
 
-    private String step;
-
     private String status;
+
+    private String otp;
+
+    private Integer numberOtp;
+
+    private LocalDateTime otpExpiredTime;
 }

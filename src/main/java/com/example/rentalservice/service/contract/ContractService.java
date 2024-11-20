@@ -1,30 +1,43 @@
 package com.example.rentalservice.service.contract;
 
 import com.example.rentalservice.common.JwtUtils;
+import com.example.rentalservice.common.Utils;
 import com.example.rentalservice.entity.*;
 import com.example.rentalservice.enums.ContractStatusEnum;
 import com.example.rentalservice.enums.RoomStatusEnum;
 import com.example.rentalservice.exception.ApplicationException;
+import com.example.rentalservice.model.MailDTO;
+import com.example.rentalservice.model.contract.ContractSignReqDTO;
 import com.example.rentalservice.model.contract.CreateContractReqDTO;
+import com.example.rentalservice.redis.RedisService;
 import com.example.rentalservice.repository.ContractRepository;
 import com.example.rentalservice.repository.ContractUtilityRepository;
+import com.example.rentalservice.repository.RoomRepository;
 import com.example.rentalservice.service.common.DataService;
+import com.example.rentalservice.service.common.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class ContractService {
 
     private final ContractRepository contractRepository;
     private final ContractUtilityRepository contractUtilityRepository;
+    private final RoomRepository roomRepository;
     private final DataService dataService;
+    private final RedisService redisService;
+    private final MailService mailService;
 
     public void createContract(CreateContractReqDTO req) {
         UserProfile tenant = dataService.getUserByUsername(req.getTenant());
@@ -44,7 +57,7 @@ public class ContractService {
         contract.setTenant(tenant.getUsername());
         contract.setHouseId(house.getId());
         contract.setRoomId(room.getId());
-        String contractCode = "HD-" + contractRepository.getSeqContract().toString();
+        String contractCode = "HD-" + contractRepository.getSeqContract().toString() + "-" + req.getStartDate();
         contract.setContractCode(contractCode);
         contract.setStatus(ContractStatusEnum.DRAFT.name());
         contract.setEffectDate(LocalDate.parse(req.getStartDate()));
@@ -65,5 +78,72 @@ public class ContractService {
         if (!contractUtilities.isEmpty()) {
             contractUtilityRepository.saveAll(contractUtilities);
         }
+
+        room.setRoomStatus(RoomStatusEnum.RENTED.name());
+        roomRepository.save(room);
+    }
+
+    public void sendUser(String contractId) {
+        Contract contract = dataService.getContract(contractId);
+        contract.setStatus(ContractStatusEnum.PENDING_SIGNED.name());
+        contractRepository.save(contract);
+    }
+
+    public void getContractOtp(String contractId) {
+        String otp = Utils.generateOTP(6);
+
+        Contract contract = dataService.getContract(contractId);
+        UserProfile userProfile = dataService.getUserByUsername(contract.getTenant());
+
+        contract.setOtp(otp);
+        contract.setNumberOtp(0);
+        contract.setOtpExpiredTime(LocalDateTime.now().plusMinutes(5));
+
+        contractRepository.save(contract);
+
+        String keyOTPCache = "OTP-" + contractId;
+        redisService.setValue(keyOTPCache, otp, 300L);
+
+        MailDTO mailDTO = new MailDTO();
+        mailDTO.setMailTo(List.of(userProfile.getEmail()));
+        mailDTO.setMailCc(new ArrayList<>());
+        mailDTO.setSubject("Mã OTP ký hợp đồng " + contract.getContractCode());
+        mailDTO.setContent(String.format("""
+                    <p>Mã OTP của bạn là <b style="color: blue">%s</b></p>
+                    <p>Mã OTP này có hiệu lực trong vòng 5 phút.</p>
+                    <p>Vui lòng không tiết lộ cho người lạ.</p>
+                """, otp));
+        mailService.sendMailHtml(mailDTO);
+    }
+
+    public void signContract(ContractSignReqDTO req) {
+        Contract contract = dataService.getContract(req.getContractId());
+        if (contract.getNumberOtp() >= 5) {
+            throw new ApplicationException("Đã nhập sai 5 lần vui lòng lấy mã otp mới");
+        }
+
+        String keyOTPCache = "OTP-" + req.getContractId();
+        String otpCache = redisService.getValue(keyOTPCache);
+        if (StringUtils.isNotBlank(otpCache)) {
+            throw new ApplicationException("OTP đã hết hạn vui lòng lấy mã OTP mới");
+        }
+
+        if (!StringUtils.equals(otpCache, req.getOtp())) {
+            contract.setNumberOtp(contract.getNumberOtp() + 1);
+            contractRepository.save(contract);
+            throw new ApplicationException("OTP không chính xác vui lòng nhập lại");
+        }
+
+        contract.setStatus(ContractStatusEnum.SIGNED.name());
+        contractRepository.save(contract);
+    }
+
+    public void deleteContract(String contractId) {
+        Contract contract = dataService.getContract(contractId);
+        if (Objects.equals(contract.getStatus(), ContractStatusEnum.PENDING_SIGNED.name())) {
+            throw new ApplicationException("Không thể xóa hợp đồng đã gửi khách thuê ký");
+        }
+
+        contractRepository.deleteById(contract.getId());
     }
 }
