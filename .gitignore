@@ -18,6 +18,7 @@ target/
 *.iws
 *.iml
 *.ipr
+!**/src/main/resources/rent-app-v2-firebase-adminsdk-gczhp-f60c134bc7.json
 
 ### NetBeans ###
 /nbproject/private/
