@@ -1,22 +1,29 @@
 package com.example.rentalservice.service.fcm;
 
-import com.example.rentalservice.model.FCMReq;
-import com.google.firebase.FirebaseApp;
+import com.example.rentalservice.entity.UserDevice;
+import com.example.rentalservice.entity.UserNotification;
+import com.example.rentalservice.model.fcm.FCMReq;
+import com.example.rentalservice.model.fcm.NotificationReqDTO;
+import com.example.rentalservice.repository.UserDeviceRepository;
+import com.example.rentalservice.repository.UserNotificationRepository;
 import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class FcmService {
 
-    @Autowired
-    private FirebaseMessaging firebaseMessaging;
+    private final FirebaseMessaging firebaseMessaging;
+    private final UserDeviceRepository userDeviceRepository;
+    private final UserNotificationRepository userNotificationRepository;
 
     public void send(FCMReq req) throws FirebaseMessagingException {
         Message message = Message.builder()
@@ -27,5 +34,35 @@ public class FcmService {
                         .build())
                 .build();
         firebaseMessaging.send(message);
+    }
+
+    public void sendNotificationToUser(NotificationReqDTO req) {
+        try {
+            List<UserDevice> userDevices = userDeviceRepository.findAllByUsername(req.getUserReceive());
+            if (!CollectionUtils.isEmpty(userDevices)) {
+                List<String> tokenDevices = userDevices.stream().map(UserDevice::getDevice).toList();
+                MulticastMessage multicastMessage = MulticastMessage.builder()
+                        .addAllTokens(tokenDevices)
+                        .setNotification(Notification.builder()
+                                .setTitle(req.getTitle())
+                                .setBody(req.getContent())
+                                .build())
+                        .build();
+
+                firebaseMessaging.sendEachForMulticast(multicastMessage);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
+        UserNotification userNotification = new UserNotification();
+        userNotification.setId(UUID.randomUUID().toString());
+        userNotification.setUsername(req.getUserReceive());
+        userNotification.setTitle(req.getTitle());
+        userNotification.setContent(req.getContent());
+        userNotification.setData(req.getData());
+        userNotification.setIsRead(false);
+        userNotification.setTimeSend(LocalDateTime.now());
+        userNotificationRepository.save(userNotification);
     }
 }

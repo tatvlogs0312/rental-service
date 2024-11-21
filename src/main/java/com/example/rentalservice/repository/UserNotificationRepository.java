@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface UserNotificationRepository extends JpaRepository<UserNotification, String> {
-    Optional<UserNotification> findFirstByUsernameAndDevice(String username, String device);
+
 }

@@ -1,23 +1,34 @@
 package com.example.rentalservice.service.contract;
 
+import com.example.rentalservice.common.JsonUtils;
 import com.example.rentalservice.common.JwtUtils;
 import com.example.rentalservice.common.Utils;
 import com.example.rentalservice.entity.*;
 import com.example.rentalservice.enums.ContractStatusEnum;
+import com.example.rentalservice.enums.NotificationTypeEnum;
 import com.example.rentalservice.enums.RoomStatusEnum;
 import com.example.rentalservice.exception.ApplicationException;
 import com.example.rentalservice.model.MailDTO;
+import com.example.rentalservice.model.fcm.NotificationReqDTO;
 import com.example.rentalservice.model.contract.ContractSignReqDTO;
 import com.example.rentalservice.model.contract.CreateContractReqDTO;
+import com.example.rentalservice.model.fcm.NotificationType;
+import com.example.rentalservice.model.search.PagingResponse;
+import com.example.rentalservice.model.search.res.ContractSearchResDTO;
 import com.example.rentalservice.redis.RedisService;
 import com.example.rentalservice.repository.ContractRepository;
 import com.example.rentalservice.repository.ContractUtilityRepository;
 import com.example.rentalservice.repository.RoomRepository;
 import com.example.rentalservice.service.common.DataService;
 import com.example.rentalservice.service.common.MailService;
+import com.example.rentalservice.service.fcm.FcmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -38,6 +49,7 @@ public class ContractService {
     private final DataService dataService;
     private final RedisService redisService;
     private final MailService mailService;
+    private final FcmService fcmService;
 
     public void createContract(CreateContractReqDTO req) {
         UserProfile tenant = dataService.getUserByUsername(req.getTenant());
@@ -62,6 +74,8 @@ public class ContractService {
         contract.setStatus(ContractStatusEnum.DRAFT.name());
         contract.setEffectDate(LocalDate.parse(req.getStartDate()));
         contract.setActualPrice(req.getPrice());
+        contract.setCreatedDate(LocalDate.now());
+        contract.setCreatedTime(LocalDateTime.now());
 
         List<ContractUtility> contractUtilities = new ArrayList<>();
         req.getUtilities().forEach(u -> {
@@ -87,6 +101,17 @@ public class ContractService {
         Contract contract = dataService.getContract(contractId);
         contract.setStatus(ContractStatusEnum.PENDING_SIGNED.name());
         contractRepository.save(contract);
+
+        NotificationReqDTO notificationReqDTO = NotificationReqDTO.builder()
+                .title("Yêu cầu ký hợp đồng " + contract.getContractCode())
+                .content("""
+                        Bạn đã được gửi một bản hợp đồng thuê trọ
+                        Bấm để xem chi tiết
+                        """)
+                .data(JsonUtils.toJson(new NotificationType(NotificationTypeEnum.CONTRACT.name(), contractId)))
+                .userReceive(contract.getTenant())
+                .build();
+        fcmService.sendNotificationToUser(notificationReqDTO);
     }
 
     public void getContractOtp(String contractId) {
@@ -124,7 +149,7 @@ public class ContractService {
 
         String keyOTPCache = "OTP-" + req.getContractId();
         String otpCache = redisService.getValue(keyOTPCache);
-        if (StringUtils.isNotBlank(otpCache)) {
+        if (StringUtils.isBlank(otpCache)) {
             throw new ApplicationException("OTP đã hết hạn vui lòng lấy mã OTP mới");
         }
 
@@ -135,6 +160,7 @@ public class ContractService {
         }
 
         contract.setStatus(ContractStatusEnum.SIGNED.name());
+        contract.setSignedTime(LocalDateTime.now());
         contractRepository.save(contract);
     }
 
@@ -145,5 +171,31 @@ public class ContractService {
         }
 
         contractRepository.deleteById(contract.getId());
+    }
+
+    public PagingResponse<ContractSearchResDTO> searchForLessor(String status, int page, int size) {
+        String lessor = JwtUtils.getUsername();
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+
+        Page<Object[]> data = contractRepository.searchContract(status, lessor, null, pageable);
+        List<ContractSearchResDTO> models = new ArrayList<>();
+        if (data.hasContent()) {
+            models = data.getContent().stream().map(ContractSearchResDTO::new).toList();
+        }
+
+        return new PagingResponse<>(models, data.getTotalElements(), data.getTotalPages());
+    }
+
+    public PagingResponse<ContractSearchResDTO> searchForTenant(String status, int page, int size) {
+        String tenant = JwtUtils.getUsername();
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+
+        Page<Object[]> data = contractRepository.searchContract(status, null, tenant, pageable);
+        List<ContractSearchResDTO> models = new ArrayList<>();
+        if (data.hasContent()) {
+            models = data.getContent().stream().map(ContractSearchResDTO::new).toList();
+        }
+
+        return new PagingResponse<>(models, data.getTotalElements(), data.getTotalPages());
     }
 }

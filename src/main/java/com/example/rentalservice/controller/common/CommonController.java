@@ -1,6 +1,6 @@
 package com.example.rentalservice.controller.common;
 
-import com.example.rentalservice.model.FCMReq;
+import com.example.rentalservice.model.fcm.FCMReq;
 import com.example.rentalservice.service.fcm.FcmService;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.RequiredArgsConstructor;

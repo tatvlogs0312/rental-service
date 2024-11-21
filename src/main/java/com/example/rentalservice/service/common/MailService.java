@@ -49,7 +49,7 @@ public class MailService {
             helper.setTo(mail.getMailTo().toArray(new String[0]));
             helper.setCc(mail.getMailCc().toArray(new String[0]));
             helper.setSubject(mail.getSubject());
-            helper.setText(mail.getContent());
+            helper.setText(mail.getContent(), true);
 
             mailSender.send(mimeMessage);
         } catch (Exception e) {

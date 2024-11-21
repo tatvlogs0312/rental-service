@@ -1,6 +1,7 @@
 package com.example.rentalservice.controller.contract;
 
 import com.example.rentalservice.aop.Secured;
+import com.example.rentalservice.enums.RoleEnum;
 import com.example.rentalservice.model.contract.ContractSignReqDTO;
 import com.example.rentalservice.model.contract.CreateContractReqDTO;
 import com.example.rentalservice.service.contract.ContractService;
@@ -40,9 +41,25 @@ public class ContractController {
     }
 
     @Secured
-    @GetMapping("/sign")
+    @PostMapping("/sign")
     public ResponseEntity<Object> signContractOtp(@RequestBody ContractSignReqDTO req) {
         contractService.signContract(req);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Secured(roles = {RoleEnum.LESSOR})
+    @GetMapping("/search-for-lessor")
+    public ResponseEntity<Object> searchForLessor(@RequestParam(required = false) String status,
+                                                  @RequestParam int page,
+                                                  @RequestParam int size) {
+        return new ResponseEntity<>(contractService.searchForLessor(status, page, size), HttpStatus.OK);
+    }
+
+    @Secured(roles = {RoleEnum.TENANT})
+    @GetMapping("/search-for-tenant")
+    public ResponseEntity<Object> searchForTenant(@RequestParam(required = false) String status,
+                                                  @RequestParam int page,
+                                                  @RequestParam int size) {
+        return new ResponseEntity<>(contractService.searchForTenant(status, page, size), HttpStatus.OK);
     }
 }

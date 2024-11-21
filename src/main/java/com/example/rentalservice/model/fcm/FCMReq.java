@@ -1,4 +1,4 @@
-package com.example.rentalservice.model;
+package com.example.rentalservice.model.fcm;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

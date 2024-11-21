@@ -9,28 +9,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity(name = "user_notification")
-@Table(name = "user_notification")
-public class UserNotification {
+@Table(name = "user_device")
+@Entity(name = "user_device")
+public class UserDevice {
+
     @Id
     private String id;
 
     private String username;
 
     @Column(columnDefinition = "TEXT")
-    private String data;
-
-    private String title;
-
-    private String content;
-
-    private Boolean isRead;
-
-    private LocalDateTime timeSend;
+    private String device;
 }

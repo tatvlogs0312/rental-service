@@ -4,6 +4,7 @@ import com.example.rentalservice.common.FileUtils;
 import com.example.rentalservice.common.JwtUtils;
 import com.example.rentalservice.common.RsaUtils;
 import com.example.rentalservice.constants.Constants;
+import com.example.rentalservice.entity.UserDevice;
 import com.example.rentalservice.entity.UserNotification;
 import com.example.rentalservice.entity.UserProfile;
 import com.example.rentalservice.entity.UserProfileUpload;
@@ -13,6 +14,7 @@ import com.example.rentalservice.model.face_matching.FaceMatchingReqDTO;
 import com.example.rentalservice.model.face_matching.FaceMatchingResDTO;
 import com.example.rentalservice.proxy.EkycServiceProxy;
 import com.example.rentalservice.proxy.StorageServiceProxy;
+import com.example.rentalservice.repository.UserDeviceRepository;
 import com.example.rentalservice.repository.UserNotificationRepository;
 import com.example.rentalservice.repository.UserProfileUploadRepository;
 import com.example.rentalservice.exception.ApplicationException;
@@ -49,18 +51,14 @@ import org.springframework.util.CollectionUtils;
 @RequiredArgsConstructor
 @Slf4j
 public class UserProfileService {
+
+    private final UserDeviceRepository userDeviceRepository;
     private final UserNotificationRepository userNotificationRepository;
-
     private final UserProfileUploadRepository userProfileUploadRepository;
-
     private final UserProfileRepository userProfileRepository;
-
     private final KeyCloakProxy keyCloakProxy;
-
     private final KeycloakCacheService keycloakCacheService;
-
     private final RedisService redisService;
-
     private final RsaUtils rsaUtils;
     private final StorageServiceProxy storageServiceProxy;
     private final EkycServiceProxy ekycServiceProxy;
@@ -89,14 +87,14 @@ public class UserProfileService {
             redisService.setValue(req.getUsername() + "_role", user.getRole());
         });
 
-        Optional<UserNotification> userNotificationOtp = userNotificationRepository
+        Optional<UserDevice> userDeviceOtp = userDeviceRepository
                 .findFirstByUsernameAndDevice(req.getUsername(), req.getDevice());
-        if (userNotificationOtp.isEmpty()) {
-            UserNotification userNotification = new UserNotification();
-            userNotification.setId(UUID.randomUUID().toString());
-            userNotification.setUsername(req.getUsername());
-            userNotification.setDevice(req.getDevice());
-            userNotificationRepository.save(userNotification);
+        if (userDeviceOtp.isEmpty()) {
+            UserDevice userDevice = new UserDevice();
+            userDevice.setId(UUID.randomUUID().toString());
+            userDevice.setUsername(req.getUsername());
+            userDevice.setDevice(req.getDevice());
+            userDeviceRepository.save(userDevice);
         }
 
         return res;

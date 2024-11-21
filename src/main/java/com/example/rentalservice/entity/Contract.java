@@ -32,9 +32,15 @@ public class Contract {
 
     private String roomId;
 
+    private LocalDate createdDate;
+
+    private LocalDateTime createdTime;
+
     private LocalDate effectDate;
 
     private LocalDate endDate;
+
+    private LocalDateTime signedTime;
 
     private Long actualPrice;
 
