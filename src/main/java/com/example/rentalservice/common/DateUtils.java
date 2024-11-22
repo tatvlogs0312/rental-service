@@ -60,9 +60,9 @@ public class DateUtils {
                 return date.format(formatters);
             }
         } catch (Exception e) {
-            return null;
+            return "";
         }
-        return null;
+        return "";
     }
 
     public static String toStr(LocalDateTime date, String format) {
@@ -72,9 +72,9 @@ public class DateUtils {
                 return date.format(formatters);
             }
         } catch (Exception e) {
-            return null;
+            return "";
         }
-        return null;
+        return "";
     }
 
     public static String toStr(LocalTime time, String format) {

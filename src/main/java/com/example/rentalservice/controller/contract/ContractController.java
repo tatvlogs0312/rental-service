@@ -62,4 +62,10 @@ public class ContractController {
                                                   @RequestParam int size) {
         return new ResponseEntity<>(contractService.searchForTenant(status, page, size), HttpStatus.OK);
     }
+
+    @Secured
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<Object> getContractDetail(@PathVariable String id) {
+        return new ResponseEntity<>(contractService.getContractDetail(id), HttpStatus.OK);
+    }
 }

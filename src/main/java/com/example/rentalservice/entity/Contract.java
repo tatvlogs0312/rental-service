@@ -1,5 +1,6 @@
 package com.example.rentalservice.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -45,6 +46,9 @@ public class Contract {
     private Long actualPrice;
 
     private String status;
+
+    @Column(columnDefinition = "TEXT")
+    private String statusMessage;
 
     private String otp;
 
