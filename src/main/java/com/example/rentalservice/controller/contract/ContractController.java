@@ -2,6 +2,7 @@ package com.example.rentalservice.controller.contract;
 
 import com.example.rentalservice.aop.Secured;
 import com.example.rentalservice.enums.RoleEnum;
+import com.example.rentalservice.model.contract.ContractReqDTO;
 import com.example.rentalservice.model.contract.ContractSignReqDTO;
 import com.example.rentalservice.model.contract.CreateContractReqDTO;
 import com.example.rentalservice.service.contract.ContractService;
@@ -44,6 +45,20 @@ public class ContractController {
     @PostMapping("/sign")
     public ResponseEntity<Object> signContractOtp(@RequestBody ContractSignReqDTO req) {
         contractService.signContract(req);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Secured
+    @PostMapping("/cancel")
+    public ResponseEntity<Object> cancelContract(@RequestBody ContractReqDTO req) {
+        contractService.cancelContract(req);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Secured
+    @PostMapping("/reject")
+    public ResponseEntity<Object> rejectContract(@RequestBody ContractReqDTO req) {
+        contractService.rejectContract(req);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, String> {
     Optional<UserProfile> findFirstByUsername(String username);
+    Optional<UserProfile> findFirstByUsernameAndRole(String username, String role);
 }

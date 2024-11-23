@@ -54,6 +54,16 @@ public class RoomController {
     }
 
     @Secured(roles = {RoleEnum.LESSOR})
+    @GetMapping("/search/v3")
+    public ResponseEntity<Object> searchRoomV3(@RequestParam (required = false) String houseId,
+                                               @RequestParam (required = false) String roomStatus,
+                                               @RequestParam Integer page,
+                                               @RequestParam Integer size) {
+        log.info("call /rental-service/room/search/v3");
+        return new ResponseEntity<>(roomService.search(houseId, roomStatus, page, size), HttpStatus.OK);
+    }
+
+    @Secured(roles = {RoleEnum.LESSOR})
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable String id) {
         log.info("call");

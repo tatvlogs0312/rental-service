@@ -139,6 +139,12 @@ public class RoomService {
         return new PagingResponse<>(roomPage);
     }
 
+    public PagingResponse<Room> search(String houseId, String roomStatus, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Room> roomPage = roomRepository.findAllByHouseIdAndRoomStatus(houseId, roomStatus,false, pageable);
+        return new PagingResponse<>(roomPage);
+    }
+
 
     //Upload hình ảnh phòng trọ
     public String uploadRoomImage(RoomUploadReqDTO req) {

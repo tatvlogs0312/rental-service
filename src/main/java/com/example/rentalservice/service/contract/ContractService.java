@@ -10,11 +10,8 @@ import com.example.rentalservice.enums.NotificationTypeEnum;
 import com.example.rentalservice.enums.RoomStatusEnum;
 import com.example.rentalservice.exception.ApplicationException;
 import com.example.rentalservice.model.MailDTO;
-import com.example.rentalservice.model.contract.ContractDetailDTO;
-import com.example.rentalservice.model.contract.ContractUtilityDTO;
+import com.example.rentalservice.model.contract.*;
 import com.example.rentalservice.model.fcm.NotificationReqDTO;
-import com.example.rentalservice.model.contract.ContractSignReqDTO;
-import com.example.rentalservice.model.contract.CreateContractReqDTO;
 import com.example.rentalservice.model.fcm.NotificationType;
 import com.example.rentalservice.model.room.detail.PositionDTO;
 import com.example.rentalservice.model.search.PagingResponse;
@@ -169,13 +166,35 @@ public class ContractService {
         contractRepository.save(contract);
     }
 
-    public void deleteContract(String contractId) {
-        Contract contract = dataService.getContract(contractId);
+    public void cancelContract(ContractReqDTO req) {
+        Contract contract = dataService.getContract(req.getId());
         if (Objects.equals(contract.getStatus(), ContractStatusEnum.PENDING_SIGNED.name())) {
-            throw new ApplicationException("Không thể xóa hợp đồng đã gửi khách thuê ký");
+            throw new ApplicationException("Không thể hủy hợp đồng đã gửi khách thuê ký");
         }
+        contract.setStatus(ContractStatusEnum.CANCEL.name());
+        contract.setStatusMessage(req.getMessage());
+        contractRepository.save(contract);
 
-        contractRepository.deleteById(contract.getId());
+        Room room = dataService.getRoom(contract.getRoomId());
+        room.setRoomStatus(RoomStatusEnum.EMPTY.name());
+        roomRepository.save(room);
+    }
+
+    public void rejectContract(ContractReqDTO req) {
+        if (StringUtils.isBlank(req.getMessage())) {
+            throw new ApplicationException("Vui lòng nhập lý do từ chối");
+        }
+        Contract contract = dataService.getContract(req.getId());
+        if (Objects.equals(contract.getStatus(), ContractStatusEnum.PENDING_SIGNED.name())) {
+            throw new ApplicationException("Không thể hủy hợp đồng đã gửi khách thuê ký");
+        }
+        contract.setStatus(ContractStatusEnum.REJECT.name());
+        contract.setStatusMessage(req.getMessage());
+        contractRepository.save(contract);
+
+        Room room = dataService.getRoom(contract.getRoomId());
+        room.setRoomStatus(RoomStatusEnum.EMPTY.name());
+        roomRepository.save(room);
     }
 
     public PagingResponse<ContractSearchResDTO> searchForLessor(String status, int page, int size) {
@@ -195,7 +214,12 @@ public class ContractService {
         String tenant = JwtUtils.getUsername();
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<Object[]> data = contractRepository.searchContract(status, null, tenant, pageable);
+        List<String> contractStatus = List.of(ContractStatusEnum.PENDING_SIGNED.name(), ContractStatusEnum.SIGNED.name());
+        if (StringUtils.isNotBlank(status)) {
+            contractStatus = List.of(status);
+        }
+
+        Page<Object[]> data = contractRepository.searchContractV2(contractStatus, null, tenant, pageable);
         List<ContractSearchResDTO> models = new ArrayList<>();
         if (data.hasContent()) {
             models = data.getContent().stream().map(ContractSearchResDTO::new).toList();

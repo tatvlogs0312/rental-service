@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.example.rentalservice.service.common.DataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -62,6 +64,7 @@ public class UserProfileService {
     private final RsaUtils rsaUtils;
     private final StorageServiceProxy storageServiceProxy;
     private final EkycServiceProxy ekycServiceProxy;
+    private final DataService dataService;
 
     //Đăng nhập hệ thống
     public LoginResDTO login(LoginReqDTO req) {
@@ -272,5 +275,18 @@ public class UserProfileService {
         } else {
             throw new ApplicationException("Mật khẩu không chính xác");
         }
+    }
+
+    public UserProfile getUser(String user) {
+        return dataService.getUserByUsername(user);
+    }
+
+    public UserProfile getUser(String user, String role) {
+        Optional<UserProfile> userProfileOTP = userProfileRepository.findFirstByUsernameAndRole(user, role);
+        if (userProfileOTP.isEmpty()) {
+            throw new ApplicationException("Người dùng không tồn tại");
+        }
+
+        return userProfileOTP.get();
     }
 }

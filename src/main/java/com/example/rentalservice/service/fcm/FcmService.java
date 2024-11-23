@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Component
@@ -38,18 +39,21 @@ public class FcmService {
 
     public void sendNotificationToUser(NotificationReqDTO req) {
         try {
+            log.info("Send notification");
             List<UserDevice> userDevices = userDeviceRepository.findAllByUsername(req.getUserReceive());
             if (!CollectionUtils.isEmpty(userDevices)) {
-                List<String> tokenDevices = userDevices.stream().map(UserDevice::getDevice).toList();
-                MulticastMessage multicastMessage = MulticastMessage.builder()
-                        .addAllTokens(tokenDevices)
-                        .setNotification(Notification.builder()
-                                .setTitle(req.getTitle())
-                                .setBody(req.getContent())
-                                .build())
-                        .build();
+                List<String> tokenDevices = userDevices.stream().map(UserDevice::getDevice).filter(Objects::nonNull).distinct().toList();
+                if (!CollectionUtils.isEmpty(tokenDevices)) {
+                    MulticastMessage multicastMessage = MulticastMessage.builder()
+                            .addAllTokens(tokenDevices)
+                            .setNotification(Notification.builder()
+                                    .setTitle(req.getTitle())
+                                    .setBody(req.getContent())
+                                    .build())
+                            .build();
 
-                firebaseMessaging.sendEachForMulticast(multicastMessage);
+                    firebaseMessaging.sendEachForMulticast(multicastMessage);
+                }
             }
         } catch (Exception e) {
             log.error(e.getMessage());

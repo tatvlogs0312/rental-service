@@ -17,9 +17,18 @@ public interface RoomRepository extends JpaRepository<Room, String> {
     Long countAllByHouseIdAndRoomStatusAndDeleted(String houseId, String roomStatus, Boolean deleted);
 
     List<Room> findAllByHouseIdIn(List<String> houseId);
+
     List<Room> findAllByHouseIdInAndDeleted(List<String> houseId, Boolean deleted);
 
-    Page<Room> findAllByHouseIdAndDeleted(String id, Boolean deleted,Pageable pageable);
+    Page<Room> findAllByHouseIdAndDeleted(String id, Boolean deleted, Pageable pageable);
+
+    @Query(value = """
+            select * from room
+            where deleted = :deleted
+            and (room_status is null or room_status = :roomStatus)
+            and (house_id is null or house_id = :houseId)
+            """, nativeQuery = true)
+    Page<Room> findAllByHouseIdAndRoomStatus(String houseId, String roomStatus, Boolean deleted, Pageable pageable);
 
     @Query(value = "select nextval('seq_room')", nativeQuery = true)
     Long getSeqRoomCode();
