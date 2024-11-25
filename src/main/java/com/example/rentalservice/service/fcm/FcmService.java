@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -68,5 +69,23 @@ public class FcmService {
         userNotification.setIsRead(false);
         userNotification.setTimeSend(LocalDateTime.now());
         userNotificationRepository.save(userNotification);
+    }
+
+    public void subscribe(String user, String token) {
+        Optional<UserDevice> userDeviceOtp = userDeviceRepository
+                .findFirstByUsernameAndDevice(user, token);
+        if (userDeviceOtp.isEmpty()) {
+            UserDevice userDevice = new UserDevice();
+            userDevice.setId(UUID.randomUUID().toString());
+            userDevice.setUsername(user);
+            userDevice.setDevice(token);
+            userDeviceRepository.save(userDevice);
+        }
+    }
+
+    public void unSubscribe(String user, String token) {
+        Optional<UserDevice> userDeviceOtp = userDeviceRepository
+                .findFirstByUsernameAndDevice(user, token);
+        userDeviceOtp.ifPresent(userDevice -> userDeviceRepository.deleteById(userDevice.getId()));
     }
 }

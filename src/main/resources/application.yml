@@ -58,6 +58,10 @@ cloudinary:
   secret-key: zSOBcxGeVlyjZQ9R8Hlb8StPRT8
 firebase:
   googleCredentials: rent-app-v2-firebase-adminsdk-gczhp-f60c134bc7.json
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://localhost:8761/eureka
 custom:
   properties:
     province-url: https://vapi.vnappmob.com

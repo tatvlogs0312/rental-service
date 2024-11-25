@@ -164,6 +164,16 @@ public class ContractService {
         contract.setStatus(ContractStatusEnum.SIGNED.name());
         contract.setSignedTime(LocalDateTime.now());
         contractRepository.save(contract);
+
+        NotificationReqDTO notificationReqDTO = NotificationReqDTO.builder()
+                .title("Hợp đồng " + contract.getContractCode() + "đã được ký thành công")
+                .content("""
+                        Bấm để xem thông tin hợp đồng
+                        """)
+                .data(JsonUtils.toJson(new NotificationType(NotificationTypeEnum.CONTRACT.name(), req.getContractId())))
+                .userReceive(contract.getLessor())
+                .build();
+        fcmService.sendNotificationToUser(notificationReqDTO);
     }
 
     public void cancelContract(ContractReqDTO req) {
@@ -195,6 +205,17 @@ public class ContractService {
         Room room = dataService.getRoom(contract.getRoomId());
         room.setRoomStatus(RoomStatusEnum.EMPTY.name());
         roomRepository.save(room);
+
+        NotificationReqDTO notificationReqDTO = NotificationReqDTO.builder()
+                .title("Yêu cầu ký hợp đồng " + contract.getContractCode() + "đã bị từ chối")
+                .content("""
+                        Hợp đồng đã bị từ chối bởi khách thuê
+                        Bấm để xem chi tiết lý do
+                        """)
+                .data(JsonUtils.toJson(new NotificationType(NotificationTypeEnum.CONTRACT.name(), req.getId())))
+                .userReceive(contract.getLessor())
+                .build();
+        fcmService.sendNotificationToUser(notificationReqDTO);
     }
 
     public PagingResponse<ContractSearchResDTO> searchForLessor(String status, int page, int size) {
