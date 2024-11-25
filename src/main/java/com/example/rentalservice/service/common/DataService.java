@@ -20,6 +20,7 @@ public class DataService {
     private final PostRepository postRepository;
     private final BookingRepository bookingRepository;
     private final UserProfileRepository userProfileRepository;
+    private final BillRepository billRepository;
 
     //Lấy data phòng theo id
     public Room getRoom(String roomId) {
@@ -91,5 +92,14 @@ public class DataService {
         }
 
         return userProfile.get();
+    }
+
+    public Bill getBill(String billId) {
+        Optional<Bill> bill = billRepository.findById(billId);
+        if (bill.isEmpty()) {
+            throw new ApplicationException("");
+        }
+
+        return bill.get();
     }
 }

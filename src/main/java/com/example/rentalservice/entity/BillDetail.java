@@ -19,7 +19,7 @@ public class BillDetail {
 
     private String billId;
 
-    private String roomUtilityId;
+    private String utilityId;
 
     private Integer numberUsed;
 }

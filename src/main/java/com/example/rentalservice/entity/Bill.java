@@ -3,21 +3,22 @@ package com.example.rentalservice.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity(name = "bill")
 @Table(name = "bill")
 public class Bill {
 
     @Id
     private String id;
+
+    private String billCode;
 
     private String contractId;
 
@@ -32,4 +33,10 @@ public class Bill {
     private String status;
 
     private Boolean isRentContinue;
+
+    private Long numberPayed;
+
+    private String lessor;
+
+    private String tenant;
 }
