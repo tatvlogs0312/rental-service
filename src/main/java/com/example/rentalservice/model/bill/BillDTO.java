@@ -23,7 +23,7 @@ public class BillDTO {
     private String contractCode;
     private String houseId;
     private String houseName;
-    private String roomCode;
+    private String roomId;
     private String roomName;
     List<BillDetailDTO> details;
 }

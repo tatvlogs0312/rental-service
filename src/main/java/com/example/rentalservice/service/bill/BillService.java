@@ -1,30 +1,35 @@
 package com.example.rentalservice.service.bill;
 
+import com.example.rentalservice.common.DateUtils;
 import com.example.rentalservice.common.JsonUtils;
+import com.example.rentalservice.common.JwtUtils;
 import com.example.rentalservice.common.RepositoryUtils;
 import com.example.rentalservice.entity.*;
 import com.example.rentalservice.enums.BillStatusEnum;
 import com.example.rentalservice.enums.ContractStatusEnum;
 import com.example.rentalservice.enums.NotificationTypeEnum;
 import com.example.rentalservice.exception.ApplicationException;
-import com.example.rentalservice.model.bill.BillDTO;
-import com.example.rentalservice.model.bill.CreateBillDetailReqDTO;
-import com.example.rentalservice.model.bill.CreateBillReqDTO;
+import com.example.rentalservice.model.bill.*;
 import com.example.rentalservice.model.fcm.NotificationReqDTO;
 import com.example.rentalservice.model.fcm.NotificationType;
+import com.example.rentalservice.model.search.PagingResponse;
+import com.example.rentalservice.model.search.req.BillSearchReqDTO;
+import com.example.rentalservice.model.search.res.BillSearchResDTO;
 import com.example.rentalservice.repository.*;
 import com.example.rentalservice.service.common.DataService;
 import com.example.rentalservice.service.fcm.FcmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -152,20 +157,72 @@ public class BillService {
         fcmService.sendNotificationToUser(notificationReqDTO);
     }
 
-    public BillDTO viewDetail (String billId) {
-        Optional<Objects[]> billOtp = billRepository.findBillById(billId);
+    public BillDTO viewDetail(String billId) {
+        List<Object[]> billOtp = billRepository.findBillById(billId);
         if (billOtp.isEmpty()) {
             throw new ApplicationException("");
         }
 
-        Objects[] bill = billOtp.get();
+        Object[] bill = billOtp.get(0);
 
         AtomicInteger i = new AtomicInteger();
         BillDTO billDTO = new BillDTO();
         billDTO.setBillId(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
         billDTO.setBillCode(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
-        
+        billDTO.setMonth(RepositoryUtils.setValueForField(Integer.class, bill[i.getAndIncrement()]));
+        billDTO.setYear(RepositoryUtils.setValueForField(Integer.class, bill[i.getAndIncrement()]));
+        billDTO.setStatus(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
+        billDTO.setMoneyPayment(RepositoryUtils.setValueForField(Long.class, bill[i.getAndIncrement()]));
+        billDTO.setCreateDate(DateUtils.toStr(RepositoryUtils.setValueForField(LocalDate.class, bill[i.getAndIncrement()]), DateUtils.F_DDMMYYYY));
+        billDTO.setPaymentDate(DateUtils.toStr(RepositoryUtils.setValueForField(LocalDate.class, bill[i.getAndIncrement()]), DateUtils.F_DDMMYYYY));
+        billDTO.setContractId(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
+        billDTO.setContractCode(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
+        billDTO.setHouseId(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
+        billDTO.setHouseName(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
+        billDTO.setRoomId(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
+        billDTO.setRoomName(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
+
+        List<IBillDetail> billDetails = billDetailRepository.findAllByBillId(billId);
+        if (!CollectionUtils.isEmpty(billDetails)) {
+            billDTO.setDetails(billDetails.stream().map(BillDetailDTO::new).toList());
+        }
 
         return billDTO;
+    }
+
+    public PagingResponse<BillSearchResDTO> searchForLessor(BillSearchReqDTO req) {
+        String lessor = JwtUtils.getUsername();
+        Pageable pageable = PageRequest.of(req.getPage(), req.getSize());
+
+        PagingResponse<BillSearchResDTO> res = new PagingResponse<>();
+        Page<Object[]> page = billRepository.findAllByMonthAndYear(req.getMonth(), req.getYear(), req.getStatus(), lessor, null, pageable);
+        if (page.hasContent()) {
+            List<BillSearchResDTO> models = page.getContent().stream().map(BillSearchResDTO::new).toList();
+            res.setData(models);
+        } else {
+            res.setData(new ArrayList<>());
+        }
+
+        res.setTotalPage(page.getTotalPages());
+        res.setTotalData(page.getTotalElements());
+        return res;
+    }
+
+    public PagingResponse<BillSearchResDTO> searchForTenant(BillSearchReqDTO req) {
+        String tenant = JwtUtils.getUsername();
+        Pageable pageable = PageRequest.of(req.getPage(), req.getSize());
+
+        PagingResponse<BillSearchResDTO> res = new PagingResponse<>();
+        Page<Object[]> page = billRepository.findAllByMonthAndYear(req.getMonth(), req.getYear(), req.getStatus(), null, tenant, pageable);
+        if (page.hasContent()) {
+            List<BillSearchResDTO> models = page.getContent().stream().map(BillSearchResDTO::new).toList();
+            res.setData(models);
+        } else {
+            res.setData(new ArrayList<>());
+        }
+
+        res.setTotalPage(page.getTotalPages());
+        res.setTotalData(page.getTotalElements());
+        return res;
     }
 }

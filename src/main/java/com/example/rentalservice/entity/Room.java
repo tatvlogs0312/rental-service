@@ -30,8 +30,6 @@ public class Room {
 
     private Integer numberOfRom;
 
-    private String roomTypeId;
-
     private String roomStatus;
 
     @Column(columnDefinition = "TEXT")

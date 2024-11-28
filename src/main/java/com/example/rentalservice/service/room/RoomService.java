@@ -52,7 +52,6 @@ public class RoomService {
 
         Room room = new Room();
         room.setId(roomId);
-        room.setRoomTypeId(req.getId());
         room.setLessor(lessor);
         room.setRoomCode(roomType.getCode() + roomRepository.getSeqRoomCode().toString());
         room.setNumberOfRom(req.getNumberOfRoom());
