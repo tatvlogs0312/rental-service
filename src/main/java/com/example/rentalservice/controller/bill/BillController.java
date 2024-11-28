@@ -57,4 +57,11 @@ public class BillController {
     public ResponseEntity<Object> searchForTenant(@RequestBody BillSearchReqDTO req) {
         return new ResponseEntity<>(billService.searchForTenant(req), HttpStatus.OK);
     }
+
+    @Secured
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<Object> deleteBill(@PathVariable String id) {
+        billService.deleteBill(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

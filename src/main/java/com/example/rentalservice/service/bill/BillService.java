@@ -225,4 +225,11 @@ public class BillService {
         res.setTotalData(page.getTotalElements());
         return res;
     }
+
+    public void deleteBill(String billId) {
+        Bill bill = dataService.getBill(billId);
+        if (Objects.equals(bill.getStatus(), BillStatusEnum.DRAFT.name())) {
+            billRepository.deleteById(bill.getId());
+        }
+    }
 }
