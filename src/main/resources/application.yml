@@ -65,5 +65,5 @@ firebase:
 custom:
   properties:
     province-url: https://vapi.vnappmob.com
-    storage-service-url: https://tuan.phimhay247.online
+    storage-service-url: http://localhost:3333/storage-service
     ekyc-service-url: http://127.0.0.1:8000

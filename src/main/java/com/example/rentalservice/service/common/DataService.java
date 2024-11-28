@@ -21,6 +21,7 @@ public class DataService {
     private final BookingRepository bookingRepository;
     private final UserProfileRepository userProfileRepository;
     private final BillRepository billRepository;
+    private final UserNotificationRepository userNotificationRepository;
 
     //Lấy data phòng theo id
     public Room getRoom(String roomId) {
@@ -101,5 +102,14 @@ public class DataService {
         }
 
         return bill.get();
+    }
+
+    public UserNotification getUserNotification(String id) {
+        Optional<UserNotification> userNotification = userNotificationRepository.findById(id);
+        if (userNotification.isEmpty()) {
+            throw new ApplicationException("");
+        }
+
+        return userNotification.get();
     }
 }

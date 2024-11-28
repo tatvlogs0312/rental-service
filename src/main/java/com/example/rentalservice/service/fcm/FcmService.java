@@ -1,22 +1,25 @@
 package com.example.rentalservice.service.fcm;
 
+import com.example.rentalservice.common.JwtUtils;
 import com.example.rentalservice.entity.UserDevice;
 import com.example.rentalservice.entity.UserNotification;
 import com.example.rentalservice.model.fcm.FCMReq;
 import com.example.rentalservice.model.fcm.NotificationReqDTO;
+import com.example.rentalservice.model.search.PagingResponse;
 import com.example.rentalservice.repository.UserDeviceRepository;
 import com.example.rentalservice.repository.UserNotificationRepository;
+import com.example.rentalservice.service.common.DataService;
 import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -26,6 +29,7 @@ public class FcmService {
     private final FirebaseMessaging firebaseMessaging;
     private final UserDeviceRepository userDeviceRepository;
     private final UserNotificationRepository userNotificationRepository;
+    private final DataService dataService;
 
     public void send(FCMReq req) throws FirebaseMessagingException {
         Message message = Message.builder()
@@ -71,7 +75,7 @@ public class FcmService {
         userNotificationRepository.save(userNotification);
     }
 
-    public void subscribe(String user, String token) {
+    public Long subscribe(String user, String token) {
         Optional<UserDevice> userDeviceOtp = userDeviceRepository
                 .findFirstByUsernameAndDevice(user, token);
         if (userDeviceOtp.isEmpty()) {
@@ -81,11 +85,35 @@ public class FcmService {
             userDevice.setDevice(token);
             userDeviceRepository.save(userDevice);
         }
+
+        return userNotificationRepository.countAllByUsernameAndIsRead(user, false);
     }
 
     public void unSubscribe(String user, String token) {
         Optional<UserDevice> userDeviceOtp = userDeviceRepository
                 .findFirstByUsernameAndDevice(user, token);
         userDeviceOtp.ifPresent(userDevice -> userDeviceRepository.deleteById(userDevice.getId()));
+    }
+
+    public PagingResponse<UserNotification> getNotifications(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        PagingResponse<UserNotification> res = new PagingResponse<>();
+        Page<UserNotification> userNotifications = userNotificationRepository.findAllByUsernameOrderByTimeSendDesc(
+                JwtUtils.getUsername(), pageable);
+        if (userNotifications.hasContent()) {
+            res.setData(userNotifications.getContent());
+        } else {
+            res.setData(new ArrayList<>());
+        }
+        res.setTotalPage(userNotifications.getTotalPages());
+        res.setTotalData(userNotifications.getTotalElements());
+        return res;
+    }
+
+    public void read(String id) {
+        UserNotification userNotification = dataService.getUserNotification(id);
+        userNotification.setIsRead(true);
+        userNotificationRepository.save(userNotification);
     }
 }

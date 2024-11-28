@@ -1,22 +1,18 @@
 package com.example.rentalservice.service.bill;
 
 import com.example.rentalservice.common.JsonUtils;
-import com.example.rentalservice.entity.Bill;
-import com.example.rentalservice.entity.BillDetail;
-import com.example.rentalservice.entity.Contract;
-import com.example.rentalservice.entity.ContractUtility;
+import com.example.rentalservice.common.RepositoryUtils;
+import com.example.rentalservice.entity.*;
 import com.example.rentalservice.enums.BillStatusEnum;
 import com.example.rentalservice.enums.ContractStatusEnum;
 import com.example.rentalservice.enums.NotificationTypeEnum;
 import com.example.rentalservice.exception.ApplicationException;
+import com.example.rentalservice.model.bill.BillDTO;
 import com.example.rentalservice.model.bill.CreateBillDetailReqDTO;
 import com.example.rentalservice.model.bill.CreateBillReqDTO;
 import com.example.rentalservice.model.fcm.NotificationReqDTO;
 import com.example.rentalservice.model.fcm.NotificationType;
-import com.example.rentalservice.repository.BillDetailRepository;
-import com.example.rentalservice.repository.BillRepository;
-import com.example.rentalservice.repository.ContractRepository;
-import com.example.rentalservice.repository.ContractUtilityRepository;
+import com.example.rentalservice.repository.*;
 import com.example.rentalservice.service.common.DataService;
 import com.example.rentalservice.service.fcm.FcmService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +23,8 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +36,7 @@ public class BillService {
     private final BillDetailRepository billDetailRepository;
     private final ContractRepository contractRepository;
     private final ContractUtilityRepository contractUtilityRepository;
+    private final UtilitiesRepository utilitiesRepository;
     private final FcmService fcmService;
 
     public void createContract(CreateBillReqDTO req) {
@@ -151,5 +150,22 @@ public class BillService {
                 .userReceive(contract.getTenant())
                 .build();
         fcmService.sendNotificationToUser(notificationReqDTO);
+    }
+
+    public BillDTO viewDetail (String billId) {
+        Optional<Objects[]> billOtp = billRepository.findBillById(billId);
+        if (billOtp.isEmpty()) {
+            throw new ApplicationException("");
+        }
+
+        Objects[] bill = billOtp.get();
+
+        AtomicInteger i = new AtomicInteger();
+        BillDTO billDTO = new BillDTO();
+        billDTO.setBillId(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
+        billDTO.setBillCode(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
+        
+
+        return billDTO;
     }
 }

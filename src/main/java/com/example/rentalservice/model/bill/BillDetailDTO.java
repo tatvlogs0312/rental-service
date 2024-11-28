@@ -8,6 +8,9 @@ import lombok.*;
 @Setter
 @Builder
 public class BillDetailDTO {
-    private String billId;
-    private String billCode;
+    private String detailId;
+    private String utilityId;
+    private String utilityName;
+    private Integer numberUsed;
+    private Long utilityPayment;
 }
