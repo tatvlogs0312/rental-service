@@ -86,6 +86,7 @@ public class UserProfileService {
         userOptional.ifPresent(user -> {
             res.setRole(user.getRole());
             res.setStatus(user.getStatus());
+            res.setName(user.getFirstName() + " " + user.getLastName());
 
             redisService.setValue(req.getUsername() + "_role", user.getRole());
         });

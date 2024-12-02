@@ -195,7 +195,7 @@ public class ContractService {
             throw new ApplicationException("Vui lòng nhập lý do từ chối");
         }
         Contract contract = dataService.getContract(req.getId());
-        if (Objects.equals(contract.getStatus(), ContractStatusEnum.PENDING_SIGNED.name())) {
+        if (Objects.equals(contract.getStatus(), ContractStatusEnum.SIGNED.name())) {
             throw new ApplicationException("Không thể hủy hợp đồng đã gửi khách thuê ký");
         }
         contract.setStatus(ContractStatusEnum.REJECT.name());
@@ -306,5 +306,25 @@ public class ContractService {
         contractDetailDTO.setUtilities(contractUtilityDTOS);
 
         return contractDetailDTO;
+    }
+
+    public List<ContractUtilityDTO> getContractUtility(String contractId) {
+        List<ContractUtilityDTO> contractUtilityDTOS = new ArrayList<>();
+        List<ContractUtility> contractUtilities = contractUtilityRepository.findAllByContractId(contractId);
+        if (!CollectionUtils.isEmpty(contractUtilities)) {
+            List<Utilities> utilities = utilitiesRepository.findAll();
+            Map<String, String> utilityMap = utilities.stream().collect(Collectors.toMap(Utilities::getId, Utilities::getName));
+            contractUtilityDTOS = contractUtilities.stream()
+                    .map(u -> ContractUtilityDTO.builder()
+                            .utilityId(u.getUtilityId())
+                            .utilityName(utilityMap.get(u.getUtilityId()))
+                            .utilityPrice(u.getPrice())
+                            .utilityUnit(u.getUnit())
+                            .numberUsed(0)
+                            .build())
+                    .toList();
+        }
+
+        return contractUtilityDTOS;
     }
 }

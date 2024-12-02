@@ -26,14 +26,16 @@ public interface BillRepository extends JpaRepository<Bill, String> {
                    b.year       as year,
                    b.status     as status,
                    h.house_name as houseName,
-                   r.room_name  as roomName
+                   r.room_name  as roomName,
+                   b.number_payed as price,
+                   b.create_date  as createDate
             from bill b
                      join contract c on b.contract_id = c.id
                      join house h on c.house_id = h.id
                      join room r on c.room_id = r.id
             where 1 = 1
-              and b.month = :month
-              and b.year = :year
+              and (:year is null or b.year = :year)
+              and (:month is null or b.month = :month)
               and (:status is null or b.status = :status)
               and (:lessor is null or b.lessor = :lessor)
               and (:tenant is null or b.tenant = :tenant)
@@ -54,7 +56,8 @@ public interface BillRepository extends JpaRepository<Bill, String> {
                    h.id            as houseId,
                    h.house_name    as houseName,
                    r.id            as roomId,
-                   r.room_name     as roomName
+                   r.room_name     as roomName,
+                   b.is_rent_continue as isRentContinue
             from bill b
                      join contract c on b.contract_id = c.id
                      join house h on c.house_id = h.id

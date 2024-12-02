@@ -181,10 +181,16 @@ public class BillService {
         billDTO.setHouseName(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
         billDTO.setRoomId(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
         billDTO.setRoomName(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
+        billDTO.setIsRentContinue(RepositoryUtils.setValueForField(Boolean.class, bill[i.getAndIncrement()]));
 
         List<IBillDetail> billDetails = billDetailRepository.findAllByBillId(billId);
         if (!CollectionUtils.isEmpty(billDetails)) {
             billDTO.setDetails(billDetails.stream().map(BillDetailDTO::new).toList());
+        }
+
+        if (BooleanUtils.isTrue(billDTO.getIsRentContinue())) {
+            Contract contract = dataService.getContract(billDTO.getContractId());
+            billDTO.setRentPriceNextMonth(contract.getActualPrice());
         }
 
         return billDTO;

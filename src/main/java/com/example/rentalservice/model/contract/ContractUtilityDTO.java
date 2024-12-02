@@ -12,4 +12,5 @@ public class ContractUtilityDTO {
     private String utilityName;
     private Long utilityPrice;
     private String utilityUnit;
+    private Integer numberUsed;
 }

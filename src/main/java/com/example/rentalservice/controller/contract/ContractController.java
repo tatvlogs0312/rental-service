@@ -1,6 +1,7 @@
 package com.example.rentalservice.controller.contract;
 
 import com.example.rentalservice.aop.Secured;
+import com.example.rentalservice.common.JsonUtils;
 import com.example.rentalservice.enums.RoleEnum;
 import com.example.rentalservice.model.contract.ContractReqDTO;
 import com.example.rentalservice.model.contract.ContractSignReqDTO;
@@ -58,6 +59,7 @@ public class ContractController {
     @Secured
     @PostMapping("/reject")
     public ResponseEntity<Object> rejectContract(@RequestBody ContractReqDTO req) {
+        log.info("Start api /rental-service/contract/reject - req: {}", JsonUtils.toJson(req));
         contractService.rejectContract(req);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -82,5 +84,11 @@ public class ContractController {
     @GetMapping("/detail/{id}")
     public ResponseEntity<Object> getContractDetail(@PathVariable String id) {
         return new ResponseEntity<>(contractService.getContractDetail(id), HttpStatus.OK);
+    }
+
+    @Secured
+    @GetMapping("/utility/{id}")
+    public ResponseEntity<Object> getContractUtility(@PathVariable String id) {
+        return new ResponseEntity<>(contractService.getContractUtility(id), HttpStatus.OK);
     }
 }
