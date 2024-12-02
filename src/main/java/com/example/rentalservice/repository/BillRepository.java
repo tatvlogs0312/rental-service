@@ -43,25 +43,28 @@ public interface BillRepository extends JpaRepository<Bill, String> {
     Page<Object[]> findAllByMonthAndYear(Integer month, Integer year, String status, String lessor, String tenant, Pageable pageable);
 
     @Query(value = """
-            select b.id            as billId,
-                   b.bill_code     as billCode,
-                   b.month         as month,
-                   b.year          as year,
-                   b.status        as billStatus,
-                   b.number_payed  as moneyPayment,
-                   b.create_date   as createDate,
-                   b.payment_date  as paymentDate,
-                   c.id            as contractId,
-                   c.contract_code as contractCode,
-                   h.id            as houseId,
-                   h.house_name    as houseName,
-                   r.id            as roomId,
-                   r.room_name     as roomName,
-                   b.is_rent_continue as isRentContinue
+            select b.id                                 as billId,
+                   b.bill_code                          as billCode,
+                   b.month                              as month,
+                   b.year                               as year,
+                   b.status                             as billStatus,
+                   b.number_payed                       as moneyPayment,
+                   b.create_date                        as createDate,
+                   b.payment_date                       as paymentDate,
+                   c.id                                 as contractId,
+                   c.contract_code                      as contractCode,
+                   h.id                                 as houseId,
+                   h.house_name                         as houseName,
+                   r.id                                 as roomId,
+                   r.room_name                          as roomName,
+                   b.is_rent_continue                   as isRentContinue,
+                   up.first_name || ' ' || up.last_name as tenantFullName,
+                   up.phone_number                      as tenantPhoneNumber
             from bill b
                      join contract c on b.contract_id = c.id
                      join house h on c.house_id = h.id
                      join room r on c.room_id = r.id
+                     join user_profile up on c.tenant = up.username
             where b.id = :id
             """, nativeQuery = true)
     List<Object[]> findBillById(String id);

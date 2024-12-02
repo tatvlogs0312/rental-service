@@ -20,7 +20,7 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, String> 
                    cu.unit        as utilityUnit
             from bill_detail bd
                      join bill b on bd.bill_id = b.id
-                     join contract_utility cu on cu.contract_id = b.contract_id
+                     join contract_utility cu on cu.contract_id = b.contract_id and cu.utility_id = bd.utility_id
                      join utility u on u.id = bd.utility_id
             where bd.bill_id = :billId
             """, nativeQuery = true)

@@ -29,7 +29,8 @@ public interface ContractRepository extends JpaRepository<Contract, String> {
                 h.id            as houseId,
                 h.house_name    as houseName,
                 r.id            as roomId,
-                r.room_name     as roomName
+                r.room_name     as roomName,
+                c.actual_price  as contractPrice
          from contract c
                   join user_profile ul on c.lessor = ul.username
                   join user_profile ut on c.tenant = ut.username
@@ -57,7 +58,8 @@ public interface ContractRepository extends JpaRepository<Contract, String> {
                 h.id            as houseId,
                 h.house_name    as houseName,
                 r.id            as roomId,
-                r.room_name     as roomName
+                r.room_name     as roomName,
+                c.actual_price  as contractPrice
          from contract c
                   join user_profile ul on c.lessor = ul.username
                   join user_profile ut on c.tenant = ut.username

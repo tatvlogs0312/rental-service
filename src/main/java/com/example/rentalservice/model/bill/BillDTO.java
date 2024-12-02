@@ -25,6 +25,8 @@ public class BillDTO {
     private String houseName;
     private String roomId;
     private String roomName;
+    private String tenantFullName;
+    private String tenantPhoneNumber;
     private Boolean isRentContinue;
     private Long rentPriceNextMonth;
     List<BillDetailDTO> details;

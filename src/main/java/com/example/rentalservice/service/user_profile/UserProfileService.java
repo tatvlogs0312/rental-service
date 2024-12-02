@@ -39,6 +39,7 @@ import com.example.rentalservice.repository.UserProfileRepository;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -208,6 +209,16 @@ public class UserProfileService {
             throw new ApplicationException("Người dùng không tồn tại");
         }
 
+        UserProfile userProfile = userOptional.get();
+        String oldPass = rsaUtils.decryptData(userProfile.getPassword());
+        if (!Objects.equals(req.getOldPassword(), oldPass)) {
+            throw new ApplicationException("Mật khẩu cũ không chính xác");
+        }
+
+        if (Objects.equals(req.getNewPassword(), oldPass)) {
+            throw new ApplicationException("Trùng với mật khẩu cũ");
+        }
+
         KeyCloakUserResDTO keyCloakUserResDTO = keyCloakUserResDTOs.get(0);
         KeycloakUpdatePasswordReqDTO keycloakUpdatePasswordReqDTO = KeycloakUpdatePasswordReqDTO.builder()
                 .temporary(false)
@@ -216,6 +227,9 @@ public class UserProfileService {
                 .build();
         keyCloakProxy.updatePassword(keycloakUpdatePasswordReqDTO, keyCloakUserResDTO.getId(),
                 keycloakCacheService.getToken());
+
+        userProfile.setPassword(rsaUtils.encryptData(req.getNewPassword()));
+        userProfileRepository.save(userProfile);
     }
 
     //Hoàn thiện thông tin cá nhân

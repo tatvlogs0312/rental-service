@@ -1,6 +1,7 @@
 package com.example.rentalservice.controller.bill;
 
 import com.example.rentalservice.aop.Secured;
+import com.example.rentalservice.common.JsonUtils;
 import com.example.rentalservice.enums.RoleEnum;
 import com.example.rentalservice.model.bill.CreateBillReqDTO;
 import com.example.rentalservice.model.search.req.BillSearchReqDTO;
@@ -22,6 +23,7 @@ public class BillController {
     @Secured
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody CreateBillReqDTO req) {
+        log.info("start api /rental-service/bill/create - req: {}", JsonUtils.toJson(req));
         billService.createContract(req);
         return new ResponseEntity<>(HttpStatus.OK);
     }

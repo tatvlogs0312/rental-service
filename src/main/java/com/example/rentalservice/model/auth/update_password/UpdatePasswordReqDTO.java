@@ -10,5 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdatePasswordReqDTO {
+    private String oldPassword;
     private String newPassword;
 }

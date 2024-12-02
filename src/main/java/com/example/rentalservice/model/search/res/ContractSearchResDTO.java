@@ -29,6 +29,7 @@ public class ContractSearchResDTO {
     private String houseName;
     private String roomId;
     private String roomName;
+    private Long contractPrice;
 
     public ContractSearchResDTO(Object[] x) {
         AtomicInteger i = new AtomicInteger(0);
@@ -47,5 +48,6 @@ public class ContractSearchResDTO {
         this.houseName = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);
         this.roomId = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);
         this.roomName = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);
+        this.contractPrice = RepositoryUtils.setValueForField(Long.class, x[i.getAndIncrement()]);
     }
 }

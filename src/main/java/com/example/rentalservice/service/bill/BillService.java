@@ -55,8 +55,7 @@ public class BillService {
         }
 
         LocalDate startDate = contract.getEffectDate();
-        LocalDate billDate = LocalDate.of(req.getYear(), req.getMonth(), 1);
-        if (billDate.isBefore(startDate)) {
+        if (req.getMonth() < startDate.getMonthValue()) {
             throw new ApplicationException("Không thể tạo hóa đơn trước tháng hợp đồng có hiệu lực");
         }
 
@@ -141,6 +140,7 @@ public class BillService {
     public void updatePayment(String billId) {
         Bill bill = dataService.getBill(billId);
         bill.setStatus(BillStatusEnum.PAYED.name());
+        bill.setPaymentDate(LocalDate.now());
         billRepository.save(bill);
 
         Contract contract = dataService.getContract(bill.getContractId());
@@ -160,7 +160,7 @@ public class BillService {
     public BillDTO viewDetail(String billId) {
         List<Object[]> billOtp = billRepository.findBillById(billId);
         if (billOtp.isEmpty()) {
-            throw new ApplicationException("");
+            throw new ApplicationException("Hóa đơn không hợp lệ");
         }
 
         Object[] bill = billOtp.get(0);
@@ -182,6 +182,8 @@ public class BillService {
         billDTO.setRoomId(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
         billDTO.setRoomName(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
         billDTO.setIsRentContinue(RepositoryUtils.setValueForField(Boolean.class, bill[i.getAndIncrement()]));
+        billDTO.setTenantFullName(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
+        billDTO.setTenantPhoneNumber(RepositoryUtils.setValueForField(String.class, bill[i.getAndIncrement()]));
 
         List<IBillDetail> billDetails = billDetailRepository.findAllByBillId(billId);
         if (!CollectionUtils.isEmpty(billDetails)) {
