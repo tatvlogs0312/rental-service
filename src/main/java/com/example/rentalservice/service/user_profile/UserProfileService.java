@@ -1,17 +1,19 @@
 package com.example.rentalservice.service.user_profile;
 
-import com.example.rentalservice.common.FileUtils;
-import com.example.rentalservice.common.JwtUtils;
-import com.example.rentalservice.common.RsaUtils;
+import com.example.rentalservice.common.*;
 import com.example.rentalservice.constants.Constants;
 import com.example.rentalservice.entity.UserDevice;
 import com.example.rentalservice.entity.UserNotification;
 import com.example.rentalservice.entity.UserProfile;
 import com.example.rentalservice.entity.UserProfileUpload;
 import com.example.rentalservice.enums.PaperEnum;
+import com.example.rentalservice.model.MailDTO;
+import com.example.rentalservice.model.auth.forgot_password.ForgotOtpReqDTO;
+import com.example.rentalservice.model.auth.forgot_password.ForgotPasswordReqDTO;
 import com.example.rentalservice.model.auth.login.LoginFaceReqDTO;
 import com.example.rentalservice.model.face_matching.FaceMatchingReqDTO;
 import com.example.rentalservice.model.face_matching.FaceMatchingResDTO;
+import com.example.rentalservice.model.otp.OtpDTO;
 import com.example.rentalservice.proxy.EkycServiceProxy;
 import com.example.rentalservice.proxy.StorageServiceProxy;
 import com.example.rentalservice.repository.UserDeviceRepository;
@@ -38,14 +40,13 @@ import com.example.rentalservice.repository.UserProfileRepository;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import com.example.rentalservice.service.common.DataService;
+import com.example.rentalservice.service.common.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -62,6 +63,7 @@ public class UserProfileService {
     private final KeyCloakProxy keyCloakProxy;
     private final KeycloakCacheService keycloakCacheService;
     private final RedisService redisService;
+    private final MailService mailService;
     private final RsaUtils rsaUtils;
     private final StorageServiceProxy storageServiceProxy;
     private final EkycServiceProxy ekycServiceProxy;
@@ -303,5 +305,79 @@ public class UserProfileService {
         }
 
         return userProfileOTP.get();
+    }
+
+    public void forgotPassword(ForgotPasswordReqDTO req) {
+        String username = req.getUsername();
+        Optional<UserProfile> userOptional = userProfileRepository.findFirstByUsername(username);
+        if (userOptional.isEmpty()) {
+            throw new ApplicationException("Người dùng không tồn tại");
+        }
+
+        List<KeyCloakUserResDTO> keyCloakUserResDTOs = keyCloakProxy.searchByUsername(username,
+                keycloakCacheService.getToken());
+        if (CollectionUtils.isEmpty(keyCloakUserResDTOs)) {
+            throw new ApplicationException("Người dùng không tồn tại");
+        }
+
+        UserProfile userProfile = userOptional.get();
+        KeyCloakUserResDTO keyCloakUserResDTO = keyCloakUserResDTOs.get(0);
+        KeycloakUpdatePasswordReqDTO keycloakUpdatePasswordReqDTO = KeycloakUpdatePasswordReqDTO.builder()
+                .temporary(false)
+                .type(Constants.PASSWORD)
+                .value(req.getNewPassword())
+                .build();
+        keyCloakProxy.updatePassword(keycloakUpdatePasswordReqDTO, keyCloakUserResDTO.getId(),
+                keycloakCacheService.getToken());
+
+        userProfile.setPassword(rsaUtils.encryptData(req.getNewPassword()));
+        userProfileRepository.save(userProfile);
+    }
+
+    public void requestOTP(ForgotOtpReqDTO req) {
+        String username = req.getUsername();
+        UserProfile userProfile = dataService.getUserByUsername(username);
+
+        String otp = Utils.generateOTP(6);
+
+        OtpDTO otpDTO = OtpDTO.builder()
+                .username(username)
+                .otp(otp)
+                .numberOtp(0)
+                .build();
+        String keyOTPCache = "CHANGE-PASSWORD-OTP-" + username;
+        redisService.setValue(keyOTPCache, JsonUtils.toJson(otpDTO), 300L);
+
+        MailDTO mailDTO = new MailDTO();
+        mailDTO.setMailTo(List.of(userProfile.getEmail()));
+        mailDTO.setMailCc(new ArrayList<>());
+        mailDTO.setSubject("Mã OTP xác nhận tài khoản");
+        mailDTO.setContent(String.format("""
+                    <p>Mã OTP của bạn là <b style="color: blue">%s</b></p>
+                    <p>Mã OTP này có hiệu lực trong vòng 5 phút.</p>
+                    <p>Vui lòng không tiết lộ cho người lạ.</p>
+                """, otp));
+        mailService.sendMailHtml(mailDTO);
+    }
+
+    public void verifyOtp(ForgotOtpReqDTO req) {
+        String username = req.getUsername();
+        String otpCache = redisService.getValue("CHANGE-PASSWORD-OTP-" + username);
+        if (StringUtils.isNotBlank(otpCache)) {
+            OtpDTO otpDTO = JsonUtils.fromJson(otpCache, OtpDTO.class);
+            assert otpDTO != null;
+            if (otpDTO.getNumberOtp() >= 5) {
+                throw new ApplicationException("Đã nhập sai 5 lần vui lòng lấy mã otp mới");
+            }
+
+            if (!StringUtils.equals(otpDTO.getOtp(), req.getOtp())) {
+                otpDTO.setNumberOtp(otpDTO.getNumberOtp() + 1);
+                String keyOTPCache = "CHANGE-PASSWORD-OTP-" + username;
+                redisService.setValue(keyOTPCache, JsonUtils.toJson(otpDTO), 300L);
+                throw new ApplicationException("OTP không chính xác vui lòng nhập lại");
+            }
+        } else {
+            throw new ApplicationException("OTP đã hết hạn vui lòng lấy mã OTP mới");
+        }
     }
 }

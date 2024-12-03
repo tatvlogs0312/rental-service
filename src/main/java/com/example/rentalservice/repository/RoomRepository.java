@@ -61,4 +61,29 @@ public interface RoomRepository extends JpaRepository<Room, String> {
             """)
     Page<IRoomData> findAllByCondition(String lessor, String status, String roomTypeId, String position, String ward,
                                        String district, String province, Pageable pageable);
+
+    @Query(value = """
+            select h.id                                 as houseId,
+                   h.house_name                         as houseName,
+                   r.id                                 as roomId,
+                   r.room_name                          as roomName,
+                   h.position_detail                    as housePositionDetail,
+                   h.ward                               as houseWard,
+                   h.district                           as houseDistrict,
+                   h.province                           as houseProvince,
+                   ul.first_name || ' ' || ul.last_name as lessorFullName,
+                   ul.phone_number                      as lessorPhoneNumber,
+                   ut.first_name || ' ' || ut.last_name as tenantFullName,
+                   ut.phone_number                      as tenantPhoneNumber
+            from contract c
+                     join house h on c.house_id = h.id
+                     join room r on c.room_id = r.id
+                     join user_profile ul on c.lessor = ul.username
+                     join user_profile ut on ut.username = c.tenant
+            where 1 = 1
+              and (:tenant is null or c.tenant = :tenant)
+              and (:lessor is null or c.lessor = :lessor)
+              and c.status = 'SIGNED';
+            """, nativeQuery = true)
+    List<Object[]> getRoomRented(String tenant, String lessor);
 }

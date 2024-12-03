@@ -166,7 +166,7 @@ public class ContractService {
         contractRepository.save(contract);
 
         NotificationReqDTO notificationReqDTO = NotificationReqDTO.builder()
-                .title("Hợp đồng " + contract.getContractCode() + "đã được ký thành công")
+                .title("Hợp đồng " + contract.getContractCode() + " đã được ký thành công")
                 .content("""
                         Bấm để xem thông tin hợp đồng
                         """)
@@ -207,7 +207,7 @@ public class ContractService {
         roomRepository.save(room);
 
         NotificationReqDTO notificationReqDTO = NotificationReqDTO.builder()
-                .title("Yêu cầu ký hợp đồng " + contract.getContractCode() + "đã bị từ chối")
+                .title("Yêu cầu ký hợp đồng " + contract.getContractCode() + " đã bị từ chối")
                 .content("""
                         Hợp đồng đã bị từ chối bởi khách thuê
                         Bấm để xem chi tiết lý do

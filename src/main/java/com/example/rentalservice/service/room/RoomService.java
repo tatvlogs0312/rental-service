@@ -16,6 +16,7 @@ import com.example.rentalservice.model.room.detail.UtilityDTO;
 import com.example.rentalservice.model.search.PagingResponse;
 import com.example.rentalservice.model.search.req.RoomSearchReqDTO;
 import com.example.rentalservice.model.search.res.RoomDataDTO;
+import com.example.rentalservice.model.search.res.RoomRentedResDTO;
 import com.example.rentalservice.proxy.StorageServiceProxy;
 import com.example.rentalservice.repository.RoomRepository;
 import com.example.rentalservice.service.common.DataService;
@@ -26,7 +27,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -140,101 +143,38 @@ public class RoomService {
 
     public PagingResponse<Room> search(String houseId, String roomStatus, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Room> roomPage = roomRepository.findAllByHouseIdAndRoomStatus(houseId, roomStatus,false, pageable);
+        Page<Room> roomPage = roomRepository.findAllByHouseIdAndRoomStatus(houseId, roomStatus, false, pageable);
         return new PagingResponse<>(roomPage);
     }
 
 
     //Upload hình ảnh phòng trọ
     public String uploadRoomImage(RoomUploadReqDTO req) {
-//        Room room = dataService.getRoom(req.getRoomId());
-//
-//        //Upload image to storage-service
-//        UserPaperResDTO uploadFile = storageServiceProxy.uploadFile(req.getImage());
-//
-//        RoomImage roomImage = new RoomImage();
-//        roomImage.setId(UUID.randomUUID().toString());
-//        roomImage.setRoomId(room.getId());
-//        roomImage.setUrl(uploadFile.getFile());
-//
-//        roomImageRepository.save(roomImage);
-//
-//        return uploadFile.getFile();
         return null;
     }
 
 
     //Xóa hình ảnh phòng trọ
     public void deleteRoomImage(RoomUploadReqDTO req) {
-//        Optional<RoomImage> roomImageOptional = roomImageRepository.findFirstByUrl(req.getFileName());
-//        if (roomImageOptional.isEmpty()) {
-//            throw new ApplicationException("File không tồn tại");
-//        }
-//
-//        roomImageRepository.deleteById(roomImageOptional.get().getId());
+
     }
 
 
     //Thêm tiện ích cho phòng trọ
     public UtilityDTO addUtilityForRoom(RoomUtilityReqDTO req) {
-//        Utilities utility = dataService.getUtility(req.getUtilityId());
-//
-//        Optional<RoomUtility> roomUtilityOptional = roomUtilityRepository
-//                .findFirstByRoomIdAndUtilityIdAndIsActive(req.getRoomId(), req.getUtilityId(), true);
-//        if (roomUtilityOptional.isPresent()) {
-//            throw new ApplicationException("Loại dịch vụ đã được thêm");
-//        }
-//
-//        RoomUtility roomUtility = new RoomUtility();
-//        roomUtility.setId(UUID.randomUUID().toString());
-//        roomUtility.setUtilityId(utility.getId());
-//        roomUtility.setRoomId(req.getRoomId());
-//        roomUtility.setPrice(req.getPrice());
-//        roomUtility.setUnit(req.getUnit());
-//        roomUtility.setIsActive(true);
-//
-//        roomUtilityRepository.save(roomUtility);
-//
-//        return UtilityDTO.builder().utilityId(roomUtility.getId())
-//                .utilityName(utility.getName())
-//                .utilityUnit(roomUtility.getUnit())
-//                .utilityPrice(roomUtility.getPrice())
-//                .build();
         return new UtilityDTO();
     }
 
 
     //Cập nhật tiện ích cho phòng trọ
     public void updateUtilityForRoom(RoomUtilityReqDTO req) {
-//        Utilities utility = dataService.getUtility(req.getUtilityId());
-//
-//        Optional<RoomUtility> roomUtilityOptional = roomUtilityRepository
-//                .findFirstByRoomIdAndUtilityIdAndIsActive(req.getRoomId(), req.getUtilityId(), true);
-//        if (roomUtilityOptional.isEmpty()) {
-//            throw new ApplicationException("Loại dịch vụ chưa được thêm");
-//        }
-//
-//        RoomUtility roomUtility = new RoomUtility();
-//        roomUtility.setId(UUID.randomUUID().toString());
-//        roomUtility.setUtilityId(utility.getId());
-//        roomUtility.setRoomId(req.getRoomId());
-//        roomUtility.setPrice(req.getPrice());
-//        roomUtility.setUnit(req.getUnit());
-//        roomUtility.setIsActive(true);
-//        roomUtilityRepository.save(roomUtility);
-//
-//        roomUtilityRepository.updateInactiveByRoomId(req.getRoomId());
+
     }
 
 
     //Xóa dịch vụ
     public void inactivateUtilityForRoom(RoomUtilityReqDTO req) {
-//        Optional<RoomUtility> roomUtilityOptional = roomUtilityRepository.findById(req.getId());
-//        if (roomUtilityOptional.isEmpty()) {
-//            throw new ApplicationException("Loại dịch vụ không hợp lệ");
-//        }
-//
-//        roomUtilityRepository.updateIsActiveById(req.getId(), false);
+
     }
 
 
@@ -261,5 +201,23 @@ public class RoomService {
         } else {
             throw new ApplicationException("Phòng đang cho thuê, không thể xóa phòng");
         }
+    }
+
+    public List<RoomRentedResDTO> getRoomRented() {
+        String tenant = JwtUtils.getUsername();
+        List<Object[]> roomsRented = roomRepository.getRoomRented(tenant, null);
+        if (!CollectionUtils.isEmpty(roomsRented)) {
+            return roomsRented.stream().map(RoomRentedResDTO::new).toList();
+        }
+        return new ArrayList<>();
+    }
+
+    public List<RoomRentedResDTO> getTenantRented() {
+        String lessor = JwtUtils.getUsername();
+        List<Object[]> roomsRented = roomRepository.getRoomRented(null, lessor);
+        if (!CollectionUtils.isEmpty(roomsRented)) {
+            return roomsRented.stream().map(RoomRentedResDTO::new).toList();
+        }
+        return new ArrayList<>();
     }
 }

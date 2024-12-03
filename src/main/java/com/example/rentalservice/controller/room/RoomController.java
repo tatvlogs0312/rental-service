@@ -77,4 +77,16 @@ public class RoomController {
         roomService.deleteRoom(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Secured(roles = {RoleEnum.TENANT})
+    @GetMapping("/get-room-rented")
+    public ResponseEntity<Object> getRented() {
+        return new ResponseEntity<>(roomService.getRoomRented(), HttpStatus.OK);
+    }
+
+    @Secured(roles = {RoleEnum.LESSOR})
+    @GetMapping("/get-tenant-rented")
+    public ResponseEntity<Object> getTenantRented() {
+        return new ResponseEntity<>(roomService.getTenantRented(), HttpStatus.OK);
+    }
 }
