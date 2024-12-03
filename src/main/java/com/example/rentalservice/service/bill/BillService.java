@@ -129,7 +129,7 @@ public class BillService {
                 .title(String.format("Hoá đơn tháng %s năm %s", bill.getMonth(), bill.getYear()))
                 .content("""
                         Bạn có hóa đơn cần thanh toán.
-                        Bấm để xem chi tiết lý do.
+                        Bấm để xem chi tiết.
                         """)
                 .data(JsonUtils.toJson(new NotificationType(NotificationTypeEnum.BILL.name(), billId)))
                 .userReceive(contract.getTenant())
