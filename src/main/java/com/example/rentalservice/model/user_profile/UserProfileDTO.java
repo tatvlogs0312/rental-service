@@ -1,5 +1,6 @@
 package com.example.rentalservice.model.user_profile;
 
+import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,4 +22,7 @@ public class UserProfileDTO {
     private String status;
     private List<UserIdentityDTO> identities;
     private String avatar;
+    private String birthdate;
+    private String gender;
+    private String identityNumber;
 }

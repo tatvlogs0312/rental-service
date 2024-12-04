@@ -2,6 +2,7 @@ package com.example.rentalservice.controller.user_profile;
 
 import com.example.rentalservice.aop.Secured;
 import com.example.rentalservice.model.user_profile.CompleteInformationReqDTO;
+import com.example.rentalservice.model.user_profile.UpdateInformationReqDTO;
 import com.example.rentalservice.model.user_profile.UserPaperReqDTO;
 import com.example.rentalservice.service.user_profile.UserPaperService;
 import com.example.rentalservice.service.user_profile.UserProfileService;
@@ -36,6 +37,13 @@ public class UserProfileController {
     }
 
     @Secured
+    @PostMapping("/update-information")
+    public ResponseEntity<Object> updateInformation(@RequestBody UpdateInformationReqDTO req) {
+        userProfileService.updateInformation(req);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Secured
     @GetMapping("/get-paper/{id}")
     public ResponseEntity<Object> getPaper(@PathVariable String id) {
         return new ResponseEntity<>(userPaperService.getPaperById(id), HttpStatus.OK);
@@ -52,7 +60,7 @@ public class UserProfileController {
     @PostMapping("/upload-avatar")
     public ResponseEntity<Object> uploadPaper(@RequestParam MultipartFile file) {
         log.info("/user-profile/upload-avatar");
-        return new ResponseEntity<>(userPaperService.uploadAvatar(file), HttpStatus.OK);
+        return new ResponseEntity<>(userProfileService.uploadAvatar(file), HttpStatus.OK);
     }
 
     @Secured

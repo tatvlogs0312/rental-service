@@ -16,4 +16,5 @@ public class LoginResDTO {
     private String role;
     private String status;
     private String name;
+    private String avatar;
 }

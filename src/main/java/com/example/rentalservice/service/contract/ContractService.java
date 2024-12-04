@@ -24,6 +24,7 @@ import com.example.rentalservice.repository.UtilitiesRepository;
 import com.example.rentalservice.service.common.DataService;
 import com.example.rentalservice.service.common.MailService;
 import com.example.rentalservice.service.fcm.FcmService;
+import io.jsonwebtoken.lang.Strings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -326,5 +327,20 @@ public class ContractService {
         }
 
         return contractUtilityDTOS;
+    }
+
+    public void requestEndContract(ContractEndReqDTO req) {
+        Contract contract = dataService.getContract(req.getContractId());
+        NotificationReqDTO notificationReqDTO = NotificationReqDTO.builder()
+                .title("Yêu cầu kết thúc hợp đồng " + contract.getContractCode())
+                .content(String.format("""
+                        Bạn đã được yêu cầu kết thúc hợp đồng vào ngày %s
+                        Lý do: %s
+                        Bấm để xem chi tiết hợp đồng
+                        """, req.getDateEnd(), req.getReason()))
+                .data(JsonUtils.toJson(new NotificationType(NotificationTypeEnum.CONTRACT.name(), contract.getId())))
+                .userReceive(contract.getLessor())
+                .build();
+        fcmService.sendNotificationToUser(notificationReqDTO);
     }
 }

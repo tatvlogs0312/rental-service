@@ -3,6 +3,7 @@ package com.example.rentalservice.controller.contract;
 import com.example.rentalservice.aop.Secured;
 import com.example.rentalservice.common.JsonUtils;
 import com.example.rentalservice.enums.RoleEnum;
+import com.example.rentalservice.model.contract.ContractEndReqDTO;
 import com.example.rentalservice.model.contract.ContractReqDTO;
 import com.example.rentalservice.model.contract.ContractSignReqDTO;
 import com.example.rentalservice.model.contract.CreateContractReqDTO;
@@ -90,5 +91,12 @@ public class ContractController {
     @GetMapping("/utility/{id}")
     public ResponseEntity<Object> getContractUtility(@PathVariable String id) {
         return new ResponseEntity<>(contractService.getContractUtility(id), HttpStatus.OK);
+    }
+
+    @Secured(roles = {RoleEnum.TENANT})
+    @PostMapping("/request-end-contract")
+    public ResponseEntity<Object> requestEndContract(@RequestBody ContractEndReqDTO req) {
+        contractService.requestEndContract(req);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

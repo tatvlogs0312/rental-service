@@ -13,6 +13,5 @@ public class CompleteInformationReqDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private String identityNumber;
     private String phoneNumber;
 }

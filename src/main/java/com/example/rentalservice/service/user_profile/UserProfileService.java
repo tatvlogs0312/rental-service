@@ -14,6 +14,7 @@ import com.example.rentalservice.model.auth.login.LoginFaceReqDTO;
 import com.example.rentalservice.model.face_matching.FaceMatchingReqDTO;
 import com.example.rentalservice.model.face_matching.FaceMatchingResDTO;
 import com.example.rentalservice.model.otp.OtpDTO;
+import com.example.rentalservice.model.user_profile.*;
 import com.example.rentalservice.proxy.EkycServiceProxy;
 import com.example.rentalservice.proxy.StorageServiceProxy;
 import com.example.rentalservice.repository.UserDeviceRepository;
@@ -30,9 +31,6 @@ import com.example.rentalservice.model.key_cloak.KeyCloakTokenReqDTO;
 import com.example.rentalservice.model.key_cloak.KeyCloakTokenResDTO;
 import com.example.rentalservice.model.key_cloak.KeyCloakUserResDTO;
 import com.example.rentalservice.model.key_cloak.KeycloakUpdatePasswordReqDTO;
-import com.example.rentalservice.model.user_profile.CompleteInformationReqDTO;
-import com.example.rentalservice.model.user_profile.UserIdentityDTO;
-import com.example.rentalservice.model.user_profile.UserProfileDTO;
 import com.example.rentalservice.proxy.KeyCloakProxy;
 import com.example.rentalservice.redis.KeycloakCacheService;
 import com.example.rentalservice.redis.RedisService;
@@ -40,16 +38,19 @@ import com.example.rentalservice.repository.UserProfileRepository;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 
 import com.example.rentalservice.service.common.DataService;
 import com.example.rentalservice.service.common.MailService;
+import com.example.rentalservice.validator.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -90,6 +91,11 @@ public class UserProfileService {
             res.setRole(user.getRole());
             res.setStatus(user.getStatus());
             res.setName(user.getFirstName() + " " + user.getLastName());
+            if (StringUtils.isNotBlank(user.getAvatar())) {
+                res.setAvatar(user.getAvatar());
+            } else {
+                res.setAvatar("edf593c8-9666-4a55-b25e-5fa833bb10d2.png");
+            }
 
             redisService.setValue(req.getUsername() + "_role", user.getRole());
         });
@@ -246,7 +252,6 @@ public class UserProfileService {
         userProfile.setFirstName(req.getFirstName());
         userProfile.setLastName(req.getLastName());
         userProfile.setEmail(req.getEmail());
-        userProfile.setIdentityNumber(req.getIdentityNumber());
         userProfile.setPhoneNumber(req.getPhoneNumber());
         userProfile.setStatus("ACTIVE");
         userProfileRepository.save(userProfile);
@@ -274,14 +279,43 @@ public class UserProfileService {
                     .toList());
         }
 
-        Optional<UserProfileUpload> avatarOtp = userProfileUploadRepository.findFirstByUsernameAndType(username, "AVATAR");
-        if (avatarOtp.isPresent()) {
-            userProfileDTO.setAvatar(avatarOtp.get().getUrl());
+        if (StringUtils.isNotBlank(userOptional.get().getAvatar())) {
+            userProfileDTO.setAvatar(userOptional.get().getAvatar());
         } else {
             userProfileDTO.setAvatar("edf593c8-9666-4a55-b25e-5fa833bb10d2.png");
         }
 
         return userProfileDTO;
+    }
+
+    public void updateInformation(UpdateInformationReqDTO req) {
+        UserProfile userProfile = dataService.getUserByUsername(JwtUtils.getUsername());
+
+        if (StringUtils.isNotBlank(req.getEmail())) {
+            Validator.emailValidator(req.getEmail());
+            userProfile.setEmail(req.getEmail());
+        }
+
+        if (StringUtils.isNotBlank(req.getPhoneNumber())) {
+            Validator.phoneNumberValidator(req.getPhoneNumber());
+            userProfile.setPhoneNumber(req.getPhoneNumber());
+        }
+
+        if (StringUtils.isNotBlank(req.getIdentityNumber())) {
+            Validator.identityNumberValidator(req.getIdentityNumber());
+            userProfile.setIdentityNumber(req.getIdentityNumber());
+        }
+
+        if (StringUtils.isNotBlank(req.getBirthDate())) {
+            userProfile.setBirthdate(LocalDate.parse(req.getBirthDate()));
+        }
+
+        if (StringUtils.isNotBlank(req.getGender())) {
+            Validator.genderValidator(req.getGender());
+            userProfile.setGender(req.getGender());
+        }
+
+        userProfileRepository.save(userProfile);
     }
 
     private void handleLoginError(LoginReqDTO req) {
@@ -379,5 +413,15 @@ public class UserProfileService {
         } else {
             throw new ApplicationException("OTP đã hết hạn vui lòng lấy mã OTP mới");
         }
+    }
+
+    public String uploadAvatar(MultipartFile file) {
+        String username = JwtUtils.getUsername();
+        UserProfile userProfile = dataService.getUserByUsername(username);
+
+        UserPaperResDTO userPaperResDTO = storageServiceProxy.uploadFile(file);
+        userProfile.setAvatar(userPaperResDTO.getFile());
+
+        return userPaperResDTO.getFile();
     }
 }

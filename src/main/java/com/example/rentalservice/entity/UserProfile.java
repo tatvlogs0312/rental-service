@@ -1,5 +1,6 @@
 package com.example.rentalservice.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -23,6 +24,7 @@ public class UserProfile {
 
     private String username;
 
+    @Column(columnDefinition = "TEXT")
     private String password;
 
     private String firstName;
@@ -42,4 +44,6 @@ public class UserProfile {
     private String gender;
 
     private LocalDate birthdate;
+
+    private String avatar;
 }

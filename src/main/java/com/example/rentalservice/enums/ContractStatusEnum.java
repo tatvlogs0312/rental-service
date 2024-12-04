@@ -8,6 +8,7 @@ public enum ContractStatusEnum {
     DRAFT("Nháp"),
     PENDING_SIGNED("Chờ ký"),
     SIGNED("Đã ký"),
+    END("Kết thúc hợp đồng"),
     CANCEL("Hủy"),
     REJECT("Từ chối");
 
