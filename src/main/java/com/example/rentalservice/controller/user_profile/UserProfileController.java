@@ -63,7 +63,6 @@ public class UserProfileController {
         return new ResponseEntity<>(userProfileService.uploadAvatar(file), HttpStatus.OK);
     }
 
-    @Secured
     @GetMapping("/get/{username}")
     public ResponseEntity<Object> getUser(@PathVariable String username) {
         return new ResponseEntity<>(userProfileService.getUser(username), HttpStatus.OK);

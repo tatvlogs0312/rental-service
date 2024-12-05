@@ -329,7 +329,11 @@ public class UserProfileService {
     }
 
     public UserProfile getUser(String user) {
-        return dataService.getUserByUsername(user);
+        UserProfile userProfile = dataService.getUserByUsername(user);
+        if (StringUtils.isBlank(userProfile.getEmail())) {
+            throw new ApplicationException("Người dùng chưa đăng ký email");
+        }
+        return userProfile;
     }
 
     public UserProfile getUser(String user, String role) {
