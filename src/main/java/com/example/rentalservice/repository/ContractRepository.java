@@ -8,12 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ContractRepository extends JpaRepository<Contract, String> {
 
     @Query(value = "select nextval('seq_contract')", nativeQuery = true)
     Long getSeqContract();
+
+    Optional<Contract> findFirstByRoomIdAndTenantAndStatus(String roomId, String tenant, String status);
 
     @Query(value = """
          select c.id            as contractId,

@@ -33,9 +33,9 @@ public class ExceptionHandling {
 
     @ExceptionHandler(Exception.class)
     ResponseEntity<Object> handlerRuntimeException(Exception e) {
-        log.error("ExceptionHandling RuntimeException - Message: {}", ExceptionEnums.EX_INTERNAL_SERVER);
+        log.error("ExceptionHandling RuntimeException - Message: {}", e.getMessage());
         e.printStackTrace();
-        return new ResponseEntity<>(new ErrorResponse(LocalDateTime.now().toString(), e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ErrorResponse(LocalDateTime.now().toString(), ExceptionEnums.EX_INTERNAL_SERVER.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
 

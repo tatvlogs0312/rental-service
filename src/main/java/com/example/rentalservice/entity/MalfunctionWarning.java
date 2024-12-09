@@ -33,4 +33,6 @@ public class MalfunctionWarning {
     private String houseId;
 
     private String roomId;
+
+    private String status;
 }
