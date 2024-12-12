@@ -13,6 +13,7 @@ import com.example.rentalservice.model.search.PagingResponse;
 import com.example.rentalservice.model.search.res.WarningSearchResDTO;
 import com.example.rentalservice.model.user_profile.UserPaperResDTO;
 import com.example.rentalservice.model.warning.WarningCreateReqDTO;
+import com.example.rentalservice.model.warning.WarningDetailDTO;
 import com.example.rentalservice.proxy.StorageServiceProxy;
 import com.example.rentalservice.repository.ContractRepository;
 import com.example.rentalservice.repository.MalfunctionWarningImageRepository;
@@ -151,5 +152,20 @@ public class MalfunctionWarningService {
         res.setTotalData(data.getTotalElements());
         res.setTotalPage(data.getTotalPages());
         return res;
+    }
+
+    public WarningDetailDTO viewDetail(String id) {
+        List<Object[]> warnings = malfunctionWarningRepository.findWarningById(id);
+        if (CollectionUtils.isEmpty(warnings)) {
+            throw new ApplicationException("Cảnh báo không hợp lệ");
+        }
+
+        WarningDetailDTO detailDTO = new WarningDetailDTO(warnings.get(0));
+
+        List<MalfunctionWarningImage> warningImages = malfunctionWarningImageRepository.findAllByMalfunctionWarningId(id);
+        List<String> images = warningImages.stream().map(MalfunctionWarningImage::getUrl).toList();
+        detailDTO.setImages(images);
+
+        return detailDTO;
     }
 }

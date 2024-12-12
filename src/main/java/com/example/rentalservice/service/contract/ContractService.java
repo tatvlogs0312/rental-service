@@ -343,4 +343,22 @@ public class ContractService {
                 .build();
         fcmService.sendNotificationToUser(notificationReqDTO);
     }
+
+    public void endContract(ContractEndReqDTO req) {
+        Contract contract = dataService.getContract(req.getContractId());
+        contract.setStatus(ContractStatusEnum.END.name());
+        contract.setEndDate(req.getEndDate());
+        contractRepository.save(contract);
+
+        NotificationReqDTO notificationReqDTO = NotificationReqDTO.builder()
+                .title("Hợp đồng " + contract.getContractCode() + " đã được kết thúc")
+                .content(String.format("""
+                        Hợp đồng %s của bạn đã được chủ trọ kết thúc vào ngày %s .
+                        Bấm để xem chi tiết hợp đồng
+                        """, contract.getContractCode(), req.getDateEnd()))
+                .data(JsonUtils.toJson(new NotificationType(NotificationTypeEnum.CONTRACT.name(), contract.getId())))
+                .userReceive(contract.getTenant())
+                .build();
+        fcmService.sendNotificationToUser(notificationReqDTO);
+    }
 }

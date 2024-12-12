@@ -99,4 +99,11 @@ public class ContractController {
         contractService.requestEndContract(req);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Secured(roles = {RoleEnum.LESSOR})
+    @PostMapping("/end-contract")
+    public ResponseEntity<Object> endContract(@RequestBody ContractEndReqDTO req) {
+        contractService.endContract(req);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

@@ -55,7 +55,7 @@ public class BillService {
         }
 
         LocalDate startDate = contract.getEffectDate();
-        if (req.getMonth() < startDate.getMonthValue()) {
+        if (req.getMonth() < startDate.getMonthValue() && req.getYear() <= startDate.getYear()) {
             throw new ApplicationException("Không thể tạo hóa đơn trước tháng hợp đồng có hiệu lực");
         }
 

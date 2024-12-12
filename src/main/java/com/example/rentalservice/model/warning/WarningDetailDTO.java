@@ -1,10 +1,11 @@
-package com.example.rentalservice.model.search.res;
+package com.example.rentalservice.model.warning;
 
 import com.example.rentalservice.common.DateUtils;
 import com.example.rentalservice.common.RepositoryUtils;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @AllArgsConstructor
@@ -12,12 +13,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Getter
 @Setter
 @Builder
-public class WarningSearchResDTO {
+public class WarningDetailDTO {
     private String id;
     private String title;
     private String content;
     private String createTime;
-    private LocalDateTime createTimeV2;
     private String status;
     private String houseId;
     private String houseName;
@@ -27,14 +27,14 @@ public class WarningSearchResDTO {
     private String lessorPhoneNumber;
     private String tenantFullName;
     private String tenantPhoneNumber;
+    private List<String> images;
 
-    public WarningSearchResDTO(Object[] x) {
+    public WarningDetailDTO(Object[] x) {
         AtomicInteger i = new AtomicInteger(0);
         this.id = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);
         this.title = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);
         this.content = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);
-        this.createTimeV2 = RepositoryUtils.setValueForField(LocalDateTime.class, x[i.getAndIncrement()]);
-        this.createTime = DateUtils.toStr(createTimeV2, DateUtils.F_HHMMSSDDMMYYYY);
+        this.createTime = DateUtils.toStr(RepositoryUtils.setValueForField(LocalDateTime.class, x[i.getAndIncrement()]), DateUtils.F_HHMMSSDDMMYYYY);
         this.status = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);
         this.houseId = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);
         this.houseName = RepositoryUtils.setValueForField(String.class, x[i.getAndIncrement()]);

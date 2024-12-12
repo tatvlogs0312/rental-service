@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface MalfunctionWarningRepository extends JpaRepository<MalfunctionWarning, String> {
 
@@ -36,4 +38,27 @@ public interface MalfunctionWarningRepository extends JpaRepository<MalfunctionW
             order by mw.create_time desc;
             """, nativeQuery = true)
     Page<Object[]> search(String status, String tenant, String lessor, Pageable pageable);
+
+    @Query(value = """
+            select mw.id                                as id,
+                   mw.title                             as title,
+                   mw.content                           as content,
+                   mw.create_time                       as createTime,
+                   mw.status                            as status,
+                   h.id                                 as houseId,
+                   h.house_name                         as houseName,
+                   r.id                                 as roomId,
+                   r.room_name                          as roomName,
+                   ul.first_name || ' ' || ul.last_name as lessorFullName,
+                   ul.phone_number                      as lessorPhoneNumber,
+                   ut.first_name || ' ' || ut.last_name as tenantFullName,
+                   ut.phone_number                      as tenantPhoneNumber
+            from malfunction_warning mw
+                     join house h on mw.house_id = h.id
+                     join room r on mw.room_id = r.id
+                     join user_profile ul on mw.lessor = ul.username
+                     join user_profile ut on mw.tenant = ut.username
+            where mw.id = :id
+            """, nativeQuery = true)
+    List<Object[]> findWarningById(String id);
 }

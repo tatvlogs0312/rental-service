@@ -40,4 +40,10 @@ public class MalfunctionWarningController {
                                                   @RequestParam(required = false, defaultValue = "10") Integer size) {
         return new ResponseEntity<>(service.searchForTenant(status, page, size), HttpStatus.OK);
     }
+
+    @Secured
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<Object> viewDetail(@PathVariable String id) {
+        return new ResponseEntity<>(service.viewDetail(id), HttpStatus.OK);
+    }
 }

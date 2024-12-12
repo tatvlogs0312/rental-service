@@ -2,6 +2,8 @@ package com.example.rentalservice.model.contract;
 
 import lombok.*;
 
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -10,5 +12,6 @@ import lombok.*;
 public class ContractEndReqDTO {
     private String contractId;
     private String dateEnd;
+    private LocalDate endDate;
     private String reason;
 }
