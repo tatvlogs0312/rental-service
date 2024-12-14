@@ -170,13 +170,40 @@ public class MalfunctionWarningService {
 
     public void cancel(String id) {
         MalfunctionWarning malfunctionWarning = dataService.getMalfunctionWarning(id);
+        Room room = dataService.getRoom(malfunctionWarning.getRoomId());
+        House house = dataService.getHouse(room.getHouseId());
+
         malfunctionWarning.setStatus(MalfunctionWarningEnum.CANCEL.name());
         malfunctionWarningRepository.save(malfunctionWarning);
+
+        NotificationReqDTO notificationReqDTO = NotificationReqDTO.builder()
+                .title("Thông báo sự cố")
+                .content(String.format("""
+                        Sự cố %s phòng %s - nhà %s đã được khách thuê hủy bỏ.
+                        """, malfunctionWarning.getTitle(), room.getRoomName(), house.getHouseName()))
+                .data(JsonUtils.toJson(new NotificationType(NotificationTypeEnum.WARNING.name(), id)))
+                .userReceive(malfunctionWarning.getLessor())
+                .build();
+        fcmService.sendNotificationToUser(notificationReqDTO);
     }
 
     public void complete(String id) {
         MalfunctionWarning malfunctionWarning = dataService.getMalfunctionWarning(id);
+        Room room = dataService.getRoom(malfunctionWarning.getRoomId());
+        House house = dataService.getHouse(room.getHouseId());
+
         malfunctionWarning.setStatus(MalfunctionWarningEnum.COMPLETE.name());
         malfunctionWarningRepository.save(malfunctionWarning);
+
+        NotificationReqDTO notificationReqDTO = NotificationReqDTO.builder()
+                .title("Thông báo sự cố")
+                .content(String.format("""
+                        Sự cố %s phòng %s - nhà %s đã được chủ trọ hoàn tất xử lý.
+                        Bấm để xem chi tiết.
+                        """, malfunctionWarning.getTitle(), room.getRoomName(), house.getHouseName()))
+                .data(JsonUtils.toJson(new NotificationType(NotificationTypeEnum.WARNING.name(), id)))
+                .userReceive(malfunctionWarning.getTenant())
+                .build();
+        fcmService.sendNotificationToUser(notificationReqDTO);
     }
 }
