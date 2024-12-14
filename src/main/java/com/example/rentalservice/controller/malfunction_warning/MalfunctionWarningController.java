@@ -46,4 +46,18 @@ public class MalfunctionWarningController {
     public ResponseEntity<Object> viewDetail(@PathVariable String id) {
         return new ResponseEntity<>(service.viewDetail(id), HttpStatus.OK);
     }
+
+    @Secured(roles = {RoleEnum.TENANT})
+    @PostMapping("/cancel/{id}")
+    public ResponseEntity<Object> cancel(@PathVariable String id) {
+        service.cancel(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Secured(roles = {RoleEnum.LESSOR})
+    @PostMapping("/complete/{id}")
+    public ResponseEntity<Object> complete(@PathVariable String id) {
+        service.complete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

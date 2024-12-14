@@ -22,6 +22,7 @@ public class DataService {
     private final UserProfileRepository userProfileRepository;
     private final BillRepository billRepository;
     private final UserNotificationRepository userNotificationRepository;
+    private final MalfunctionWarningRepository malfunctionWarningRepository;
 
     //Lấy data phòng theo id
     public Room getRoom(String roomId) {
@@ -107,9 +108,18 @@ public class DataService {
     public UserNotification getUserNotification(String id) {
         Optional<UserNotification> userNotification = userNotificationRepository.findById(id);
         if (userNotification.isEmpty()) {
-            throw new ApplicationException("");
+            throw new ApplicationException("Thông báo không hợp lệ");
         }
 
         return userNotification.get();
+    }
+
+    public MalfunctionWarning getMalfunctionWarning(String id) {
+        Optional<MalfunctionWarning> malfunctionWarning = malfunctionWarningRepository.findById(id);
+        if (malfunctionWarning.isEmpty()) {
+            throw new ApplicationException("Sự cố không hợp lệ");
+        }
+
+        return malfunctionWarning.get();
     }
 }

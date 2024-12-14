@@ -30,7 +30,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.naming.directory.SearchResult;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -167,5 +166,17 @@ public class MalfunctionWarningService {
         detailDTO.setImages(images);
 
         return detailDTO;
+    }
+
+    public void cancel(String id) {
+        MalfunctionWarning malfunctionWarning = dataService.getMalfunctionWarning(id);
+        malfunctionWarning.setStatus(MalfunctionWarningEnum.CANCEL.name());
+        malfunctionWarningRepository.save(malfunctionWarning);
+    }
+
+    public void complete(String id) {
+        MalfunctionWarning malfunctionWarning = dataService.getMalfunctionWarning(id);
+        malfunctionWarning.setStatus(MalfunctionWarningEnum.COMPLETE.name());
+        malfunctionWarningRepository.save(malfunctionWarning);
     }
 }
