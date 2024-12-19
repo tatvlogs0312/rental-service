@@ -67,9 +67,9 @@ public class PostService {
         post.setCreateTime(LocalDateTime.now());
         post.setNumberWatch(0L);
         post.setPositionDetail(req.getPositionDetail());
-        post.setWard(req.getWard());
-        post.setDistrict(req.getDistrict());
-        post.setProvince(req.getProvince());
+        post.setWard(Utils.handleWard(req.getWard()));
+        post.setDistrict(Utils.handleDistrict(req.getDistrict()));
+        post.setProvince(Utils.handleProvince(req.getProvince()));
         post.setPrice(req.getPrice());
         post.setRoomTypeId(req.getRoomType());
         post.setAcreage(req.getAcreage());

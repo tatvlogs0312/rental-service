@@ -426,6 +426,8 @@ public class UserProfileService {
         UserPaperResDTO userPaperResDTO = storageServiceProxy.uploadFile(file);
         userProfile.setAvatar(userPaperResDTO.getFile());
 
+        userProfileRepository.save(userProfile);
+
         return userPaperResDTO.getFile();
     }
 }

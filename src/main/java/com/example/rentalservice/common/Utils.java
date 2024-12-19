@@ -1,6 +1,7 @@
 package com.example.rentalservice.common;
 
 import com.example.rentalservice.exception.ApplicationException;
+import org.apache.commons.lang3.StringUtils;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
@@ -47,5 +48,32 @@ public class Utils {
         }
 
         return otp.toString();
+    }
+
+    public static String handleProvince(String province) {
+        if (StringUtils.isNotBlank(province)) {
+            String provinceReplace = province.replace("Thành phố", "");
+            return provinceReplace.trim();
+        }
+
+        return province;
+    }
+
+    public static String handleDistrict(String district) {
+        if (StringUtils.isNotBlank(district)) {
+            String districtReplace = district.replaceAll("\\b(Huyện|Thành phố|Quận|Thị xã)\\b", "");
+            return districtReplace.trim();
+        }
+
+        return district;
+    }
+
+    public static String handleWard(String ward) {
+        if (StringUtils.isNotBlank(ward)) {
+            String wardReplace = ward.replaceAll("\\b(Xã|Phường|Thị trấn)\\b", "");
+            return wardReplace.trim();
+        }
+
+        return ward;
     }
 }

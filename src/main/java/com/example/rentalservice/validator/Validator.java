@@ -40,7 +40,9 @@ public class Validator {
 
     public static void genderValidator(String gender) {
         if (StringUtils.isNotBlank(gender)) {
-            if (!StringUtils.equalsIgnoreCase(gender, "Nam") && !StringUtils.equalsIgnoreCase(gender, "Nữ")) {
+            if (!StringUtils.equalsIgnoreCase(gender, "Nam")
+                    && !StringUtils.equalsIgnoreCase(gender, "Nữ")
+                    && !StringUtils.equalsIgnoreCase(gender, "Khác")) {
                 throw new ApplicationException("Giới tính không đúng định dạng");
             }
         }
