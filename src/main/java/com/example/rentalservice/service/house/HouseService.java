@@ -7,6 +7,8 @@ import com.example.rentalservice.exception.ApplicationException;
 import com.example.rentalservice.model.house.CreateHouseReqDTO;
 import com.example.rentalservice.model.search.PagingResponse;
 import com.example.rentalservice.model.search.res.HouseSearchResDTO;
+import com.example.rentalservice.model.user_profile.UserPaperResDTO;
+import com.example.rentalservice.proxy.StorageServiceProxy;
 import com.example.rentalservice.repository.HouseRepository;
 import com.example.rentalservice.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class HouseService {
 
     private final HouseRepository houseRepository;
     private final RoomRepository roomRepository;
+    private final StorageServiceProxy storageServiceProxy;
 
     public void createHouse (CreateHouseReqDTO req) {
         House house = new House();
@@ -35,6 +38,23 @@ public class HouseService {
         house.setProvince(req.getProvince());
         house.setLessor(JwtUtils.getUsername());
         house.setDeleted(false);
+        houseRepository.save(house);
+    }
+
+    public void createHouseV2 (CreateHouseReqDTO req) {
+        House house = new House();
+        house.setId(UUID.randomUUID().toString());
+        house.setHouseName(req.getHouseName());
+        house.setPositionDetail(req.getPositionDetail());
+        house.setWard(req.getWard());
+        house.setDistrict(req.getDistrict());
+        house.setProvince(req.getProvince());
+        house.setLessor(JwtUtils.getUsername());
+        house.setDeleted(false);
+
+        UserPaperResDTO userPaperResDTO = storageServiceProxy.uploadFile(req.getImage());
+        house.setImage(userPaperResDTO.getFile());
+
         houseRepository.save(house);
     }
 

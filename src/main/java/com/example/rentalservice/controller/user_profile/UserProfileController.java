@@ -68,6 +68,11 @@ public class UserProfileController {
         return new ResponseEntity<>(userProfileService.getUser(username), HttpStatus.OK);
     }
 
+    @GetMapping("/get-by-keyword")
+    public ResponseEntity<Object> getUserByKeyword(@RequestParam String keyword, @RequestParam String role) {
+        return new ResponseEntity<>(userProfileService.getUserV2(keyword, role), HttpStatus.OK);
+    }
+
     @Secured
     @GetMapping("/get")
     public ResponseEntity<Object> getUserV2(@RequestParam String username, @RequestParam String role) {

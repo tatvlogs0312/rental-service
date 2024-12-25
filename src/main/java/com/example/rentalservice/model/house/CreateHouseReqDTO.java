@@ -1,6 +1,7 @@
 package com.example.rentalservice.model.house;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,4 +14,5 @@ public class CreateHouseReqDTO {
     private String ward;
     private String district;
     private String province;
+    private MultipartFile image;
 }

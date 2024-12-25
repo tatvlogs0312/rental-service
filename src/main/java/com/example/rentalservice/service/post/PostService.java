@@ -39,7 +39,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class PostService {
     private final RoomTypeRepository roomTypeRepository;
-
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
     private final UserProfileRepository userProfileRepository;

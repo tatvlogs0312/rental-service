@@ -38,4 +38,6 @@ public class House {
     private String lessor;
 
     private Boolean deleted;
+
+    private String image;
 }

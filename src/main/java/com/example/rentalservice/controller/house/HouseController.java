@@ -27,6 +27,13 @@ public class HouseController {
     }
 
     @Secured(roles = {RoleEnum.LESSOR})
+    @PostMapping("/create/v2")
+    public ResponseEntity<Object> createHouseV2(CreateHouseReqDTO req) {
+        houseService.createHouseV2(req);
+        return ResponseEntity.ok().build();
+    }
+
+    @Secured(roles = {RoleEnum.LESSOR})
     @GetMapping("/search")
     public ResponseEntity<Object> search(@RequestParam Integer page, @RequestParam Integer size) {
         return new ResponseEntity<>(houseService.search(PageRequest.of(page, size)), HttpStatus.OK);

@@ -20,7 +20,7 @@ public class ProvinceProxy {
 
     public BaseProvinceResDTO getProvince() {
         try {
-            String url = PROVINCE_URL + "/api/province/";
+            String url = PROVINCE_URL + "/api/v2/province/";
             return (BaseProvinceResDTO) baseProxy.get(url, BaseProvinceResDTO.class);
         } catch (Exception e) {
             log.info("ProvinceProxy getProvince - Exception: {}", e.getMessage());
@@ -30,7 +30,7 @@ public class ProvinceProxy {
 
     public BaseDistrictResDTO getDistrict(String provinceId) {
         try {
-            String url = PROVINCE_URL + "/api/province/district/" + provinceId;
+            String url = PROVINCE_URL + "/api/v2/province/district/" + provinceId;
             return (BaseDistrictResDTO) baseProxy.get(url, BaseDistrictResDTO.class);
         } catch (Exception e) {
             log.info("ProvinceProxy getDistrict - Exception: {}", e.getMessage());
@@ -40,7 +40,7 @@ public class ProvinceProxy {
 
     public BaseWardResDTO getWard(String districtId) {
         try {
-            String url = PROVINCE_URL + "/api/province/ward/" + districtId;
+            String url = PROVINCE_URL + "/api/v2/province/ward/" + districtId;
             return (BaseWardResDTO) baseProxy.get(url, BaseWardResDTO.class);
         } catch (Exception e) {
             log.info("ProvinceProxy getWard - Exception: {}", e.getMessage());

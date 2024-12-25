@@ -17,6 +17,7 @@ public class HouseSearchResDTO {
     private String positionDetail;
     private Integer totalRoom;
     private Integer totalEmptyRoom;
+    private String image;
 
     public HouseSearchResDTO(House house) {
         this.id = house.getId();
@@ -25,5 +26,6 @@ public class HouseSearchResDTO {
         this.district = house.getDistrict();
         this.ward = house.getWard();
         this.positionDetail = house.getPositionDetail();
+        this.image = house.getImage();
     }
 }

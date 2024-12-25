@@ -46,6 +46,7 @@ import com.example.rentalservice.service.common.MailService;
 import com.example.rentalservice.validator.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -178,6 +179,10 @@ public class UserProfileService {
             throw new ApplicationException("Người dùng đã tồn tại");
         }
 
+//        checkExistEmail(req.getEmail());
+//
+//        checkExistPhoneNumber(req.getPhoneNumber());
+
         //Tạo user trên keycloak
         KeyCloakNewUserReqDTO keyCloakNewUserReqDTO = KeyCloakNewUserReqDTO.builder()
                 .enabled(true)
@@ -195,7 +200,9 @@ public class UserProfileService {
         UserProfile userProfile = new UserProfile();
         userProfile.setId(id);
         userProfile.setUsername(req.getUsername());
-        userProfile.setRole(req.getRole());
+        userProfile.setPhoneNumber(req.getPhoneNumber());
+//        userProfile.setEmail(req.getEmail());
+//        userProfile.setRole(req.getRole());
         userProfile.setStatus("PENDING");
         userProfile.setPassword(rsaUtils.encryptData(req.getPassword()));
         userProfileRepository.save(userProfile);
@@ -247,6 +254,10 @@ public class UserProfileService {
         if (userOptional.isEmpty()) {
             throw new ApplicationException("Người dùng không tồn tại");
         }
+
+        checkExistEmail(req.getEmail());
+
+        checkExistPhoneNumber(req.getPhoneNumber());
 
         UserProfile userProfile = userOptional.get();
         userProfile.setFirstName(req.getFirstName());
@@ -334,6 +345,14 @@ public class UserProfileService {
             throw new ApplicationException("Người dùng chưa đăng ký email");
         }
         return userProfile;
+    }
+
+    public UserProfile getUserV2(String keyword, String role) {
+        Optional<UserProfile> userProfile = userProfileRepository.findByKeyword(keyword, role);
+        if (userProfile.isEmpty()) {
+            throw new ApplicationException("Người dùng không tồn tại");
+        }
+        return userProfile.get();
     }
 
     public UserProfile getUser(String user, String role) {
@@ -429,5 +448,23 @@ public class UserProfileService {
         userProfileRepository.save(userProfile);
 
         return userPaperResDTO.getFile();
+    }
+
+    public void checkExistEmail(String email) {
+        if (StringUtils.isNotBlank(email)) {
+            Boolean isExist = userProfileRepository.existsAllByEmail(email);
+            if (BooleanUtils.isTrue(isExist)) {
+                throw new ApplicationException("Email đã được đăng ký, vui lòng điền email khác");
+            }
+        }
+    }
+
+    public void checkExistPhoneNumber(String phoneNumber) {
+        if (StringUtils.isNotBlank(phoneNumber)) {
+            Boolean isExist = userProfileRepository.existsAllByPhoneNumber(phoneNumber);
+            if (BooleanUtils.isTrue(isExist)) {
+                throw new ApplicationException("Số điện thoại đã được đăng ký, vui lòng điền số điện thoại khác");
+            }
+        }
     }
 }

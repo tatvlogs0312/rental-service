@@ -12,4 +12,5 @@ public class LessorPostResDTO {
     private String title;
     private String createTime;
     private Long numberWatch;
+    private String image;
 }
