@@ -38,4 +38,6 @@ public class Room {
     private String houseId;
 
     private Boolean deleted;
+
+    private String floor;
 }

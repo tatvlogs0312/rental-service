@@ -81,6 +81,7 @@ public class RoomService {
         room.setNumberOfRom(req.getNumberOfRoom());
         room.setAcreage(req.getAcreage());
         room.setRoomStatus(RoomStatusEnum.EMPTY.name());
+        room.setFloor(req.getFloor());
         room.setDeleted(false);
 
         log.info("insert room: {}", JsonUtils.toJson(room));

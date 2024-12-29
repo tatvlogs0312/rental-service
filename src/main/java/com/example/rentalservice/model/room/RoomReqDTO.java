@@ -17,4 +17,5 @@ public class RoomReqDTO {
     private Long price;
     private Integer acreage;
     private Integer numberOfRoom;
+    private String floor;
 }

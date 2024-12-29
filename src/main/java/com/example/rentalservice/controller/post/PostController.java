@@ -61,6 +61,12 @@ public class PostController {
         return new ResponseEntity<>(postService.searchForLessor(req), HttpStatus.OK);
     }
 
+    @PostMapping("/search-for-lessor/v2")
+    public ResponseEntity<Object> searchForLessorV2(@RequestBody PostSearchReqDTO req) {
+        log.info("/rental-service/post/search-for-lessor/v2 - user: {} - req: {}", JwtUtils.getUsername(), JsonUtils.toJson(req));
+        return new ResponseEntity<>(postService.searchForLessorV2(req), HttpStatus.OK);
+    }
+
     @GetMapping("/{postId}")
     public ResponseEntity<Object> getById(@PathVariable String postId) {
         log.info("/rental-service/post/{}", JsonUtils.toJson(postId));

@@ -3,12 +3,14 @@ package com.example.rentalservice.service.post;
 import com.example.rentalservice.common.*;
 import com.example.rentalservice.entity.*;
 import com.example.rentalservice.exception.ApplicationException;
+import com.example.rentalservice.model.post.ILessorPost;
 import com.example.rentalservice.model.post.NewPostReqDTO;
 import com.example.rentalservice.model.post.detail.PostDetailDTO;
 import com.example.rentalservice.model.room.detail.PositionDTO;
 import com.example.rentalservice.model.search.KeywordDTO;
 import com.example.rentalservice.model.search.PagingResponse;
 import com.example.rentalservice.model.search.req.PostSearchReqDTO;
+import com.example.rentalservice.model.search.res.LessorPostDTO;
 import com.example.rentalservice.model.search.res.LessorPostResDTO;
 import com.example.rentalservice.model.search.res.PostSearchResDTO;
 import com.example.rentalservice.model.user_profile.UserPaperResDTO;
@@ -275,6 +277,25 @@ public class PostService {
                             .createTime(DateUtils.toStr(p.getCreateTime(), DateUtils.F_HHMMSSDDMMYYYY))
                             .build())
                     .toList();
+            response.setData(data);
+        } else {
+            response.setData(new ArrayList<>());
+        }
+
+        response.setTotalData(postPage.getTotalElements());
+        response.setTotalPage(postPage.getTotalPages());
+
+        return response;
+    }
+
+    public PagingResponse<LessorPostDTO> searchForLessorV2(PostSearchReqDTO req) {
+        String username = JwtUtils.getUsername();
+        Pageable pageable = PageRequest.of(req.getPage(), req.getSize());
+
+        PagingResponse<LessorPostDTO> response = new PagingResponse<>();
+        Page<ILessorPost> postPage = postRepository.findAllByLessor(username, pageable);
+        if (postPage.hasContent()) {
+            List<LessorPostDTO> data = postPage.stream().map(LessorPostDTO::new).toList();
             response.setData(data);
         } else {
             response.setData(new ArrayList<>());
