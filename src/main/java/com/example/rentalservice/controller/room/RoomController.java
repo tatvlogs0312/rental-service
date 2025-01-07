@@ -48,9 +48,12 @@ public class RoomController {
 
     @Secured(roles = {RoleEnum.LESSOR})
     @GetMapping("/search/v2")
-    public ResponseEntity<Object> searchRoomV2(@RequestParam String houseId, @RequestParam Integer page, @RequestParam Integer size) {
+    public ResponseEntity<Object> searchRoomV2(@RequestParam String houseId,
+                                               @RequestParam String status,
+                                               @RequestParam Integer page,
+                                               @RequestParam Integer size) {
         log.info("call /rental-service/room/search/v2");
-        return new ResponseEntity<>(roomService.search(houseId, page, size), HttpStatus.OK);
+        return new ResponseEntity<>(roomService.search(houseId, status, page, size), HttpStatus.OK);
     }
 
     @Secured(roles = {RoleEnum.LESSOR})
