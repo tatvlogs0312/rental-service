@@ -5,8 +5,10 @@ import com.example.rentalservice.model.room.IRoomData;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,6 +17,8 @@ import java.util.List;
 public interface RoomRepository extends JpaRepository<Room, String> {
 
     Long countAllByHouseIdAndRoomStatusAndDeleted(String houseId, String roomStatus, Boolean deleted);
+
+    Long countAllByRoomStatusAndLessorAndDeleted(String status, String lessor, Boolean deleted);
 
     List<Room> findAllByHouseIdIn(List<String> houseId);
 
@@ -86,4 +90,9 @@ public interface RoomRepository extends JpaRepository<Room, String> {
               and c.status = 'SIGNED';
             """, nativeQuery = true)
     List<Object[]> getRoomRented(String tenant, String lessor);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update room set deleted = true where house_id = :houseId", nativeQuery = true)
+    void updateRoomDeleted(String houseId);
 }

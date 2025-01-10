@@ -19,6 +19,8 @@ public interface BillRepository extends JpaRepository<Bill, String> {
 
     List<Bill> findAllByContractIdAndMonthAndYearAndStatusIn(String contractId, Integer month, Integer year, List<String> status);
 
+    Long countAllByLessorAndStatus(String lessor, String status);
+
     @Query(value = """
             select b.id         as billId,
                    b.bill_code  as billCode,
@@ -68,4 +70,37 @@ public interface BillRepository extends JpaRepository<Bill, String> {
             where b.id = :id
             """, nativeQuery = true)
     List<Object[]> findBillById(String id);
+
+    @Query(value = """
+            WITH months AS (SELECT 1 AS month
+                            UNION ALL
+                            SELECT 2
+                            UNION ALL
+                            SELECT 3
+                            UNION ALL
+                            SELECT 4
+                            UNION ALL
+                            SELECT 5
+                            UNION ALL
+                            SELECT 6
+                            UNION ALL
+                            SELECT 7
+                            UNION ALL
+                            SELECT 8
+                            UNION ALL
+                            SELECT 9
+                            UNION ALL
+                            SELECT 10
+                            UNION ALL
+                            SELECT 11
+                            UNION ALL
+                            SELECT 12)
+            SELECT m.month, COALESCE(SUM(b.number_payed), 0)::bigint AS total
+            FROM months m LEFT JOIN bill b ON m.month = b.month
+                                                  AND b.lessor = :lessor
+                                                  AND b.status = 'PAYED'
+                                                  AND b.year = :year
+            GROUP BY m.month ORDER BY m.month
+            """, nativeQuery = true)
+    List<Object[]> getBillInYear(String lessor, Integer year);
 }

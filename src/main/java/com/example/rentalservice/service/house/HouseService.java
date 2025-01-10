@@ -28,7 +28,7 @@ public class HouseService {
     private final RoomRepository roomRepository;
     private final StorageServiceProxy storageServiceProxy;
 
-    public void createHouse (CreateHouseReqDTO req) {
+    public void createHouse(CreateHouseReqDTO req) {
         House house = new House();
         house.setId(UUID.randomUUID().toString());
         house.setHouseName(req.getHouseName());
@@ -41,7 +41,7 @@ public class HouseService {
         houseRepository.save(house);
     }
 
-    public void createHouseV2 (CreateHouseReqDTO req) {
+    public void createHouseV2(CreateHouseReqDTO req) {
         House house = new House();
         house.setId(UUID.randomUUID().toString());
         house.setHouseName(req.getHouseName());
@@ -77,7 +77,7 @@ public class HouseService {
         return new PagingResponse<>(data, housePage.getTotalElements(), housePage.getTotalPages());
     }
 
-    public void delete (String houseId) {
+    public void delete(String houseId) {
         Optional<House> houseOtp = houseRepository.findById(houseId);
         if (houseOtp.isEmpty()) {
             throw new ApplicationException("Nhà không tồn tại");
@@ -91,5 +91,6 @@ public class HouseService {
         House house = houseOtp.get();
         house.setDeleted(true);
         houseRepository.save(house);
+        roomRepository.updateRoomDeleted(houseId);
     }
 }
