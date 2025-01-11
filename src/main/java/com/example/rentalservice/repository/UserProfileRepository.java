@@ -28,4 +28,10 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, String
             limit 1;
             """, nativeQuery = true)
     Optional<UserProfile> findByKeyword(String keyword, String role);
+
+    @Query(value = "select (count(*) > 0) from user_profile where email = :email and username <> :username", nativeQuery = true)
+    Boolean existOtherEmail(String email, String username);
+
+    @Query(value = "select (count(*) > 0) from user_profile where phone_number = :phoneNumber and username <> :username", nativeQuery = true)
+    Boolean existOtherPhoneNumber(String phoneNumber, String username);
 }

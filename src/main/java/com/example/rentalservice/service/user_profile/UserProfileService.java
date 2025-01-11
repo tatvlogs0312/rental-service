@@ -300,15 +300,22 @@ public class UserProfileService {
     }
 
     public void updateInformation(UpdateInformationReqDTO req) {
-        UserProfile userProfile = dataService.getUserByUsername(JwtUtils.getUsername());
+        String username = JwtUtils.getUsername();
+        UserProfile userProfile = dataService.getUserByUsername(username);
 
         if (StringUtils.isNotBlank(req.getEmail())) {
             Validator.emailValidator(req.getEmail());
+            if (userProfileRepository.existOtherEmail(req.getEmail(), username)) {
+                throw new ApplicationException("Email đã được đăng ký");
+            }
             userProfile.setEmail(req.getEmail());
         }
 
         if (StringUtils.isNotBlank(req.getPhoneNumber())) {
             Validator.phoneNumberValidator(req.getPhoneNumber());
+            if (userProfileRepository.existOtherPhoneNumber(req.getPhoneNumber(), username)) {
+                throw new ApplicationException("Số điện thoại đã được đăng ký");
+            }
             userProfile.setPhoneNumber(req.getPhoneNumber());
         }
 
