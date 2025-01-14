@@ -22,7 +22,7 @@ public class FirebaseConfiguration {
     FirebaseMessaging firebaseMessaging() throws IOException {
         GoogleCredentials googleCredentials = GoogleCredentials.fromStream(new ClassPathResource("rent-app-v2-firebase-adminsdk-gczhp-f60c134bc7.json").getInputStream());
         FirebaseOptions firebaseOptions = FirebaseOptions.builder().setCredentials(googleCredentials).build();
-        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "my-app");
+        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions);
         return FirebaseMessaging.getInstance(app);
     }
 }

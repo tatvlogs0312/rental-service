@@ -16,7 +16,7 @@ public class SearchService {
 
     private final KeywordRepository keywordRepository;
 
-    private final Pattern pricePattern = Pattern.compile("(\\d+\\.?\\d*)\\s*(triệu|tr|rưỡi)", Pattern.CASE_INSENSITIVE);
+    private final Pattern pricePattern = Pattern.compile("(\\d+\\.?\\d*)\\s*(triệu|trieu|tr|rưỡi|ruoi|m|M)", Pattern.CASE_INSENSITIVE);
 
     public KeywordDTO handleKeyword(String keyword) {
         keyword = keyword.toLowerCase();
@@ -26,12 +26,11 @@ public class SearchService {
         Matcher priceMatcher = pricePattern.matcher(keyword);
         if (priceMatcher.find()) {
             Double price;
-            if (keyword.contains("rưỡi")) {
+            if (keyword.contains("rưỡi") || keyword.contains("ruoi")) {
                 price = Double.parseDouble(priceMatcher.group(1)) * 1000000 + 500000;
             } else {
                 price = Double.parseDouble(priceMatcher.group(1)) * 1000000;
             }
-
 
 //            if (keyword.contains("khoảng")) {
 //                keywordDTO.setPriceFrom(price.longValue() - 1000000);
@@ -39,14 +38,15 @@ public class SearchService {
 //            } else {
 //                keywordDTO.setPriceIs(price.longValue());
 //            }
+
             keywordDTO.setPriceFrom(price.longValue() - 1000000);
             keywordDTO.setPriceTo(price.longValue() + 1000000);
         }
 
         //Roomtype
-        for (String roomType : keywordRepository.roomTypes) {
+        for (String roomType : keywordRepository.roomTypes.keySet()) {
             if (keyword.toLowerCase().contains(roomType.toLowerCase())) {
-                keywordDTO.setRoomType(roomType);
+                keywordDTO.setRoomType(keywordRepository.roomTypes.get(roomType));
                 break;
             }
         }

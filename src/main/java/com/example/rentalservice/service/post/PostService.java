@@ -16,6 +16,7 @@ import com.example.rentalservice.model.search.res.PostSearchResDTO;
 import com.example.rentalservice.model.user_profile.UserPaperResDTO;
 import com.example.rentalservice.proxy.StorageServiceProxy;
 import com.example.rentalservice.repository.*;
+import com.example.rentalservice.repository.custom.KeywordRepository;
 import com.example.rentalservice.service.common.DataService;
 import com.example.rentalservice.service.common.SearchService;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,7 @@ public class PostService {
     private final SearchService searchService;
     private final DataService dataService;
     private final StorageServiceProxy storageServiceProxy;
+    private final KeywordRepository keywordRepository;
 
     @Qualifier("cachedThreadPool")
     @Autowired
@@ -98,6 +100,7 @@ public class PostService {
         postRepository.save(post);
         if (!CollectionUtils.isEmpty(postImages)) {
             postImageRepository.saveAll(postImages);
+            keywordRepository.getAfterAdd();
         }
     }
 
@@ -165,6 +168,7 @@ public class PostService {
             req.setProvince(keywordDTO.getProvince());
             req.setDistrict(keywordDTO.getDistrict());
             req.setWard(keywordDTO.getWard());
+            req.setRoomTypeId(keywordDTO.getRoomType());
             if (Objects.nonNull(keywordDTO.getPriceIs())) {
                 req.setPriceFrom(keywordDTO.getPriceIs());
                 req.setPriceTo(keywordDTO.getPriceIs());
@@ -325,7 +329,7 @@ public class PostService {
                 .detail(post.getPositionDetail())
                 .ward(post.getWard())
                 .district(post.getDistrict())
-                .province(post.getDistrict())
+                .province(post.getProvince())
                 .build());
 
         Optional<UserProfile> userProfileOtp = userProfileRepository.findFirstByUsername(post.getLessor());

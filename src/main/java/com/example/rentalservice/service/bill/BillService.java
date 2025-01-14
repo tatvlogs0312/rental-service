@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -55,7 +56,8 @@ public class BillService {
         }
 
         LocalDate startDate = contract.getEffectDate();
-        if (req.getMonth() < startDate.getMonthValue() && req.getYear() <= startDate.getYear()) {
+        if (LocalDate.of(startDate.getYear(), startDate.getMonthValue(), 1)
+                .isAfter(LocalDate.of(req.getYear(), req.getMonth(), 1))) {
             throw new ApplicationException("Không thể tạo hóa đơn trước tháng hợp đồng có hiệu lực");
         }
 

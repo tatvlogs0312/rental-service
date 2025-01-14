@@ -201,8 +201,8 @@ public class UserProfileService {
         userProfile.setId(id);
         userProfile.setUsername(req.getUsername());
         userProfile.setPhoneNumber(req.getPhoneNumber());
-//        userProfile.setEmail(req.getEmail());
-//        userProfile.setRole(req.getRole());
+        userProfile.setEmail(req.getEmail());
+        userProfile.setRole(req.getRole());
         userProfile.setStatus("PENDING");
         userProfile.setPassword(rsaUtils.encryptData(req.getPassword()));
         userProfileRepository.save(userProfile);
@@ -255,9 +255,9 @@ public class UserProfileService {
             throw new ApplicationException("Người dùng không tồn tại");
         }
 
-        checkExistEmail(req.getEmail());
+        checkExistEmail(req.getEmail(), username);
 
-        checkExistPhoneNumber(req.getPhoneNumber());
+        checkExistPhoneNumber(req.getPhoneNumber(), username);
 
         UserProfile userProfile = userOptional.get();
         userProfile.setFirstName(req.getFirstName());
@@ -457,18 +457,18 @@ public class UserProfileService {
         return userPaperResDTO.getFile();
     }
 
-    public void checkExistEmail(String email) {
+    public void checkExistEmail(String email, String username) {
         if (StringUtils.isNotBlank(email)) {
-            Boolean isExist = userProfileRepository.existsAllByEmail(email);
+            Boolean isExist = userProfileRepository.existOtherEmail(email, username);
             if (BooleanUtils.isTrue(isExist)) {
                 throw new ApplicationException("Email đã được đăng ký, vui lòng điền email khác");
             }
         }
     }
 
-    public void checkExistPhoneNumber(String phoneNumber) {
+    public void checkExistPhoneNumber(String phoneNumber, String username) {
         if (StringUtils.isNotBlank(phoneNumber)) {
-            Boolean isExist = userProfileRepository.existsAllByPhoneNumber(phoneNumber);
+            Boolean isExist = userProfileRepository.existOtherPhoneNumber(phoneNumber, username);
             if (BooleanUtils.isTrue(isExist)) {
                 throw new ApplicationException("Số điện thoại đã được đăng ký, vui lòng điền số điện thoại khác");
             }
