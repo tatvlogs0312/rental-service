@@ -228,8 +228,8 @@ public class PostService {
 
             if (viewHistories.size() > 1) {
                 List<Long> prices = viewHistories.stream().map(ViewHistory::getPrice).sorted().toList();
-                priceFrom = prices.get(0);
-                priceTo = prices.get(viewHistories.size() - 1);
+                priceFrom = prices.get(0) - 500000;
+                priceTo = prices.get(viewHistories.size() - 1) + 500000;
             } else {
                 priceFrom = viewHistories.get(0).getPrice() - 1000000;
                 priceTo = viewHistories.get(0).getPrice() + 1000000;

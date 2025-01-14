@@ -13,6 +13,6 @@ public interface ViewHistoryRepository extends JpaRepository<ViewHistory, String
 
     Optional<ViewHistory> findFirstByUsernameAndPostId(String username, String postId);
 
-    @Query(value = "select * from view_history where username = :username limit 1", nativeQuery = true)
+    @Query(value = "select * from view_history where username = :username order by time_view desc limit 3", nativeQuery = true)
     List<ViewHistory> findAllByUsername(String username);
 }
