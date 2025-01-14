@@ -103,6 +103,7 @@ public class ContractController {
     @Secured(roles = {RoleEnum.LESSOR})
     @PostMapping("/end-contract")
     public ResponseEntity<Object> endContract(@RequestBody ContractEndReqDTO req) {
+        log.info("call /rental-service/contract/end-contract - req: {}", JsonUtils.toJson(req));
         contractService.endContract(req);
         return new ResponseEntity<>(HttpStatus.OK);
     }

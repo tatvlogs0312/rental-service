@@ -355,7 +355,7 @@ public class ContractService {
                 .content(String.format("""
                         Hợp đồng %s của bạn đã được chủ trọ kết thúc vào ngày %s .
                         Bấm để xem chi tiết hợp đồng
-                        """, contract.getContractCode(), req.getDateEnd()))
+                        """, contract.getContractCode(), DateUtils.toStr(req.getEndDate(), DateUtils.F_DDMMYYYY)))
                 .data(JsonUtils.toJson(new NotificationType(NotificationTypeEnum.CONTRACT.name(), contract.getId())))
                 .userReceive(contract.getTenant())
                 .build();
