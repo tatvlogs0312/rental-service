@@ -345,10 +345,18 @@ public class ContractService {
     }
 
     public void endContract(ContractEndReqDTO req) {
+        LocalDate now = LocalDate.now();
         Contract contract = dataService.getContract(req.getContractId());
-        contract.setStatus(ContractStatusEnum.END.name());
         contract.setEndDate(req.getEndDate());
-        contractRepository.save(contract);
+        if (req.getEndDate().isBefore(now) || req.getEndDate().equals(now)) {
+            contract.setStatus(ContractStatusEnum.END.name());
+
+            Room room = dataService.getRoom(contract.getRoomId());
+            room.setRoomStatus(RoomStatusEnum.EMPTY.name());
+
+            contractRepository.save(contract);
+            roomRepository.save(room);
+        }
 
         NotificationReqDTO notificationReqDTO = NotificationReqDTO.builder()
                 .title("Hợp đồng " + contract.getContractCode() + " đã được kết thúc")
