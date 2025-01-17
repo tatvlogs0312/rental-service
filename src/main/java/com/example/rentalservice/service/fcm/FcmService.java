@@ -34,6 +34,10 @@ public class FcmService {
     public void send(FCMReq req) throws FirebaseMessagingException {
         Message message = Message.builder()
                 .setToken(req.getToken())
+                .putData("priority", "high")
+                .setAndroidConfig(AndroidConfig.builder()
+                        .setPriority(AndroidConfig.Priority.HIGH)
+                        .build())
                 .setNotification(Notification.builder()
                         .setTitle("Hello")
                         .setBody("Test from spring")
@@ -51,6 +55,10 @@ public class FcmService {
                 if (!CollectionUtils.isEmpty(tokenDevices)) {
                     MulticastMessage multicastMessage = MulticastMessage.builder()
                             .addAllTokens(tokenDevices)
+                            .putData("priority", "high")
+                            .setAndroidConfig(AndroidConfig.builder()
+                                    .setPriority(AndroidConfig.Priority.HIGH)
+                                    .build())
                             .setNotification(Notification.builder()
                                     .setTitle(req.getTitle())
                                     .setBody(req.getContent())
