@@ -23,16 +23,14 @@ public class DashboardRepository {
                 union
                 select 'CONTRACT_PENDING' as type, count(*) from contract where status = 'PENDING_SIGNED' and lessor = :lessor
                 union
-                select 'BILL_DRAFT' as type, count(*) from bill where month = :month and year = :year and status = 'DRAFT' and lessor = :lessor
+                select 'BILL_DRAFT' as type, count(*) from bill where status = 'DRAFT' and lessor = :lessor
                 union
-                select 'BILL_PENDING' as type, count(*) from bill where month = :month and year = :year and status = 'PENDING' and lessor = :lessor
+                select 'BILL_PENDING' as type, count(*) from bill where status = 'PENDING' and lessor = :lessor
                 union
-                select 'WARNING_PENDING' as type, count(*) from malfunction_warning where status = 'PENDING' and lessor = :lessor;
+                select 'WARNING_PENDING' as type, count(*) from malfunction_warning where status = 'PENDING' and lessor = :lessor
                 """;
         Query query = entityManager.createNativeQuery(sql);
         query.setParameter("lessor", lessor);
-        query.setParameter("month", month);
-        query.setParameter("year", year);
 
         List<Object[]> result = (List<Object[]>) query.getResultList();
         List<DashboardDTO> dashboardDTOS = new ArrayList<>();
