@@ -151,7 +151,7 @@ public class BillService {
                 .title(String.format("Hoá đơn tháng %s năm %s", bill.getMonth(), bill.getYear()))
                 .content(String.format("""
                         Hóa đơn tháng %s năm %s đã được chủ trọ xác nhận bạn đã thanh toán.
-                        Bấm để xem chi tiết lý do.
+                        Bấm để xem chi tiết.
                         """, bill.getMonth(), bill.getYear()))
                 .data(JsonUtils.toJson(new NotificationType(NotificationTypeEnum.BILL.name(), billId)))
                 .userReceive(contract.getTenant())
