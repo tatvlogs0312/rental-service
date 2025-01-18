@@ -31,7 +31,7 @@ public class ScheduleService {
     private final DataService dataService;
     private final FcmService fcmService;
 
-    @Scheduled(fixedDelay = 1000 * 60 * 60)
+    @Scheduled(fixedDelay = 1000 * 60 * 60 * 3)
     public void runUpdateRoomEndContract() {
         log.info("Run job update contract");
         LocalDate now = LocalDate.now();
